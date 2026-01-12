@@ -11,6 +11,8 @@ import { Star, MapPin, Search, Filter, ArrowRight } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_dublin-study/artifacts/o9gnc0xi_WhatsApp%20Image%202026-01-11%20at%2023.59.07.jpeg";
+
 export const Schools = () => {
   const { t, language } = useLanguage();
   const [schools, setSchools] = useState([]);
@@ -69,12 +71,21 @@ export const Schools = () => {
       {/* Header */}
       <div className="bg-emerald-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4" data-testid="schools-title">
-            {t('schools_title')}
-          </h1>
-          <p className="text-emerald-200 text-lg max-w-2xl">
-            {t('schools_subtitle')}
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4" data-testid="schools-title">
+                {t('schools_title')}
+              </h1>
+              <p className="text-emerald-200 text-lg max-w-2xl">
+                {t('schools_subtitle')}
+              </p>
+            </div>
+            <img 
+              src={LOGO_URL} 
+              alt="STUFF Intercâmbio" 
+              className="h-16 md:h-20 w-auto object-contain bg-white/10 backdrop-blur-sm rounded-xl p-2 hidden sm:block"
+            />
+          </div>
         </div>
       </div>
 

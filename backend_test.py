@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class DublinStudyAPITester:
-    def __init__(self, base_url="https://dublin-study.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://dublin-exchange.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.admin_token = None
@@ -237,7 +237,7 @@ class DublinStudyAPITester:
             
         checkout_data = {
             "enrollment_id": self.enrollment_id,
-            "origin_url": "https://dublin-study.preview.emergentagent.com"
+            "origin_url": "https://dublin-exchange.preview.emergentagent.com"
         }
         
         result = self.run_test("Create Checkout Session", "POST", "payments/checkout", 200, checkout_data)

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_dublin-study/artifacts/o9gnc0xi_WhatsApp%20Image%202026-01-11%20at%2023.59.07.jpeg";
+const HERO_IMAGE_URL = "https://customer-assets.emergentagent.com/job_dublin-exchange/artifacts/498i1soq_WhatsApp%20Image%202026-01-12%20at%2000.30.29.jpeg";
 
 export const Landing = () => {
   const { t, language } = useLanguage();
@@ -113,7 +114,23 @@ export const Landing = () => {
     <div className="min-h-screen" data-testid="landing-page">
       {/* Hero Section */}
       <section className="relative hero-gradient text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1668631629754-0ddbd0c252dd?w=1920')] bg-cover bg-center opacity-20" />
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={HERO_IMAGE_URL} 
+            alt="" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/90 via-emerald-900/80 to-emerald-800/70" />
+          {/* Watermark Logo */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <img 
+              src={LOGO_URL} 
+              alt="" 
+              className="w-[500px] h-[500px] object-contain opacity-[0.08]"
+            />
+          </div>
+        </div>
         <div className="relative max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32">
           <div className="max-w-3xl">
             {/* Logo STUFF Intercâmbio */}

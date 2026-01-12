@@ -73,10 +73,36 @@ Criação de um aplicativo completo de intercâmbio educacional com foco em Dubl
   - Processo completo de obtenção
   - Link para NDLS (https://www.ndls.ie)
 
+### Fase 4 - Chat Comunidade ✅ (Janeiro 2026)
+- **Chat em Tempo Real** (/chat) - Comunidade STUFF
+  - WebSocket para mensagens em tempo real
+  - Grupo geral para todos os usuários logados
+  - Suporte a texto + emojis (emoji-picker-react)
+  - Histórico de mensagens com auto-delete após 2 dias (MongoDB TTL)
+  - Indicador de usuários online
+  - Status de conexão (Conectado/Desconectado)
+  - Notificações do navegador para novas mensagens
+  
+- **Moderação (Admin)**
+  - Deletar mensagens
+  - Banir usuários temporariamente (24h padrão)
+  - Ver lista de usuários banidos
+  - Desbanir usuários
+
+- **Endpoints Chat (8 novos)**
+  - WebSocket: /api/chat/ws
+  - GET /api/chat/messages
+  - GET /api/chat/online
+  - GET /api/chat/ban-status
+  - DELETE /api/chat/messages/{id}
+  - POST /api/chat/ban
+  - DELETE /api/chat/ban/{user_id}
+  - GET /api/chat/bans
+
 ### Credenciais de Teste
 - **Admin**: admin@dublinstudy.com / admin123
 
-### Backend Endpoints (35 total)
+### Backend Endpoints (43 total)
 - Auth: register, register-school, login, me
 - Schools: list, detail, courses (public)
 - Courses: list, detail
@@ -87,7 +113,8 @@ Criação de um aplicativo completo de intercâmbio educacional com foco em Dubl
 - Guides: pps, gnib, passport, driving-license
 - Admin: stats, schools, users, enrollments, payments, approve/reject
 - School: dashboard, profile, courses CRUD, enrollments, send-letter
-- **Contact: form submission** (NEW)
+- Contact: form submission
+- **Chat: ws, messages, online, ban-status, delete, ban, unban, bans** (NEW)
 - Seed
 
 ## Prioritized Backlog
@@ -101,7 +128,7 @@ Criação de um aplicativo completo de intercâmbio educacional com foco em Dubl
 - [ ] Edição de perfil da escola (imagem, facilities)
 - [ ] Sistema de reviews/avaliações
 - [ ] Notificações push
-- [ ] Chat de suporte integrado na página STUFF Dúvidas
+- [x] ~~Chat de suporte integrado~~ → Implementado como Comunidade STUFF
 
 ### P2 - Nice to Have
 - [ ] Tela de splash com logo STUFF
@@ -111,6 +138,8 @@ Criação de um aplicativo completo de intercâmbio educacional com foco em Dubl
 - [ ] Seção de depoimentos de estudantes
 - [ ] PWA mobile
 - [ ] Blog/artigos
+- [ ] Mensagens privadas no chat (DM)
+- [ ] Grupos de chat por escola/curso
 
 ## Tecnologias
 - FastAPI 0.110.1
@@ -120,3 +149,5 @@ Criação de um aplicativo completo de intercâmbio educacional com foco em Dubl
 - Tailwind CSS 3.4
 - Shadcn UI
 - lucide-react icons
+- **WebSockets (FastAPI native)** - para chat em tempo real
+- **emoji-picker-react** - seletor de emojis

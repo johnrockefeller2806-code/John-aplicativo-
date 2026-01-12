@@ -133,7 +133,7 @@ export const Transport = () => {
     <div className="min-h-screen bg-slate-50" data-testid="transport-page">
       {/* Header */}
       <div className="relative bg-emerald-900 text-white py-16 overflow-hidden">
-        {/* Background Image with Watermark Effect - Left Side */}
+        {/* Background Image - Left Side */}
         <div className="absolute left-0 top-0 bottom-0 w-1/3 opacity-20">
           <img 
             src={TRANSPORT_IMAGE_URL}
@@ -141,15 +141,6 @@ export const Transport = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-900" />
-        </div>
-        
-        {/* Logo Watermark - Subtle */}
-        <div className="absolute left-8 top-1/2 -translate-y-1/2 opacity-[0.06] pointer-events-none">
-          <img 
-            src={LOGO_URL}
-            alt=""
-            className="w-32 h-32 object-contain"
-          />
         </div>
         
         <div className="relative max-w-7xl mx-auto px-6 md:px-12 lg:px-24">

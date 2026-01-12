@@ -17,6 +17,7 @@ import { PPSGuide, GNIBGuide, PassportGuide, DrivingLicenseGuide } from "./pages
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { SchoolDashboard } from "./pages/SchoolDashboard";
 import { SchoolRegister } from "./pages/SchoolRegister";
+import { SchoolSubscription } from "./pages/SchoolSubscription";
 import { StuffDuvidas } from "./pages/StuffDuvidas";
 import { Chat } from "./pages/Chat";
 
@@ -56,6 +57,8 @@ function App() {
                 
                 {/* School Routes */}
                 <Route path="/school" element={<SchoolDashboard />} />
+                <Route path="/school/subscription" element={<SchoolSubscription />} />
+                <Route path="/school/subscription/success" element={<SchoolSubscription />} />
               </Routes>
             </main>
             <Footer />

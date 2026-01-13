@@ -332,55 +332,55 @@ export const SchoolDetail = () => {
 
       {/* Enrollment Dialog - Mobile Optimized */}
       <Dialog open={enrollDialogOpen} onOpenChange={setEnrollDialogOpen}>
-        <DialogContent className="w-[95vw] max-w-md mx-auto max-h-[85vh] overflow-y-auto rounded-xl" data-testid="enroll-dialog">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-lg md:text-xl">
+        <DialogContent className="w-[92vw] sm:max-w-md max-h-[80vh] overflow-y-auto rounded-2xl p-4 sm:p-6" data-testid="enroll-dialog">
+          <DialogHeader className="pb-2">
+            <DialogTitle className="font-serif text-lg">
               {language === 'pt' ? 'Confirmar Matrícula' : 'Confirm Enrollment'}
             </DialogTitle>
-            <DialogDescription className="text-sm">
+            <DialogDescription className="text-xs text-slate-500">
               {selectedCourse && (language === 'pt' ? selectedCourse.name : selectedCourse.name_en)}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-3 space-y-3">
+          <div className="py-2 space-y-3">
             {/* Course Summary */}
-            <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-emerald-100 rounded-lg">
-                  <BookOpen className="h-5 w-5 text-emerald-700" />
+            <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 bg-emerald-100 rounded-lg">
+                  <BookOpen className="h-4 w-4 text-emerald-700" />
                 </div>
-                <div>
-                  <p className="font-medium text-emerald-900 text-sm">{school?.name}</p>
-                  <p className="text-xs text-emerald-700">{school?.city}, {school?.country}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-emerald-900 text-sm truncate">{school?.name}</p>
+                  <p className="text-xs text-emerald-700">{school?.city}</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 text-xs text-emerald-700">
+              <div className="flex gap-3 text-xs text-emerald-700">
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {selectedCourse?.duration_weeks} {t('course_weeks')}
+                  {selectedCourse?.duration_weeks} sem
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {selectedCourse?.hours_per_week}h/{language === 'pt' ? 'sem' : 'wk'}
+                  {selectedCourse?.hours_per_week}h/sem
                 </span>
               </div>
             </div>
 
             {/* Date Selection */}
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-2 block">
+              <label className="text-xs font-medium text-slate-700 mb-1.5 block">
                 {t('course_start_dates')}
               </label>
               <Select value={selectedDate} onValueChange={setSelectedDate}>
-                <SelectTrigger className="h-11 text-sm" data-testid="date-select">
-                  <SelectValue placeholder={language === 'pt' ? 'Selecione uma data' : 'Select a date'} />
+                <SelectTrigger className="h-10" data-testid="date-select">
+                  <SelectValue placeholder={language === 'pt' ? 'Selecione' : 'Select'} />
                 </SelectTrigger>
                 <SelectContent>
                   {selectedCourse?.start_dates?.map((date) => (
-                    <SelectItem key={date} value={date} className="py-2">
+                    <SelectItem key={date} value={date}>
                       {new Date(date).toLocaleDateString(language === 'pt' ? 'pt-BR' : 'en-US', {
                         day: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         year: 'numeric'
                       })}
                     </SelectItem>
@@ -390,48 +390,49 @@ export const SchoolDetail = () => {
             </div>
             
             {/* Price Summary */}
-            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200">
+            <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
               <div className="flex justify-between items-center">
-                <span className="text-slate-600 text-sm">{t('course_price')}</span>
-                <span className="text-xl font-bold text-emerald-700">
-                  €{selectedCourse?.price?.toLocaleString()}
-                </span>
+                <div>
+                  <span className="text-xs text-slate-500 block">Valor</span>
+                  <span className="text-xl font-bold text-emerald-700">
+                    €{selectedCourse?.price?.toLocaleString()}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-slate-400">Pagamento seguro</span>
+                  <p className="text-xs font-medium text-slate-600">via Stripe</p>
+                </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                {language === 'pt' 
-                  ? 'Pagamento seguro via Stripe' 
-                  : 'Secure payment via Stripe'}
-              </p>
             </div>
           </div>
 
-          <DialogFooter className="flex-col gap-2 sm:flex-row">
-            <Button 
-              variant="outline" 
-              onClick={() => setEnrollDialogOpen(false)}
-              className="w-full sm:w-auto order-2 sm:order-1 h-11"
-            >
-              {t('cancel')}
-            </Button>
+          <div className="flex flex-col gap-2 pt-2">
             <Button 
               onClick={handleEnroll}
               disabled={!selectedDate || enrolling}
-              className="w-full sm:w-auto bg-emerald-900 hover:bg-emerald-800 h-11 text-base order-1 sm:order-2"
+              className="w-full bg-emerald-900 hover:bg-emerald-800 h-11"
               data-testid="confirm-enroll-button"
             >
               {enrolling ? (
                 <span className="flex items-center gap-2">
                   <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {language === 'pt' ? 'Processando...' : 'Processing...'}
+                  Processando...
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  {language === 'pt' ? 'Pagar Agora' : 'Pay Now'}
+                  <CheckCircle className="h-4 w-4" />
+                  Pagar Agora
                 </span>
               )}
             </Button>
-          </DialogFooter>
+            <Button 
+              variant="ghost" 
+              onClick={() => setEnrollDialogOpen(false)}
+              className="w-full h-9 text-slate-500"
+            >
+              {t('cancel')}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

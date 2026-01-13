@@ -483,15 +483,14 @@ async def update_profile(data: UserProfileUpdate, user: dict = Depends(get_curre
 @api_router.post("/auth/upload-avatar")
 async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
     """Upload profile avatar image"""
-    # Validate file type
-    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
-    if file.content_type not in allowed_types:
-        raise HTTPException(status_code=400, detail="Tipo de arquivo não suportado. Use JPEG, PNG, WebP ou GIF.")
+    # Validate file type - accept all image types
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="Por favor, envie uma imagem.")
     
-    # Validate file size (max 2MB)
+    # Validate file size (max 5MB for mobile photos)
     contents = await file.read()
-    if len(contents) > 2 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="Arquivo muito grande. Máximo 2MB.")
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Arquivo muito grande. Máximo 5MB.")
     
     # Convert to base64
     base64_image = base64.b64encode(contents).decode('utf-8')

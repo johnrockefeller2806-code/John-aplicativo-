@@ -166,13 +166,13 @@ export const SchoolDetail = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 py-6 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 md:space-y-8">
             {/* School Info */}
             <Card className="border-slate-100" data-testid="school-info-card">
-              <CardContent className="p-6 md:p-8">
+              <CardContent className="p-4 md:p-8">
                 <div className="flex flex-wrap gap-2 mb-4">
                   {school.accreditation?.map((acc, i) => (
                     <Badge key={i} className="bg-emerald-100 text-emerald-800">

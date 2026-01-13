@@ -226,7 +226,7 @@ export const SchoolDetail = () => {
 
             {/* Courses */}
             <div data-testid="courses-section">
-              <h2 className="font-serif text-2xl font-semibold text-slate-900 mb-6">
+              <h2 className="font-serif text-xl md:text-2xl font-semibold text-slate-900 mb-4 md:mb-6">
                 {language === 'pt' ? 'Cursos Disponíveis' : 'Available Courses'}
               </h2>
               <div className="space-y-4">
@@ -236,36 +236,46 @@ export const SchoolDetail = () => {
                     className="border-slate-100 hover:shadow-lg transition-shadow"
                     data-testid={`course-card-${course.id}`}
                   >
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="flex flex-col gap-4">
+                        {/* Course Info */}
                         <div className="flex-1">
-                          <h3 className="font-semibold text-lg text-slate-900 mb-2">
+                          <h3 className="font-semibold text-base md:text-lg text-slate-900 mb-2">
                             {language === 'pt' ? course.name : course.name_en}
                           </h3>
-                          <p className="text-slate-500 text-sm mb-4">
+                          <p className="text-slate-500 text-sm mb-3 line-clamp-2">
                             {language === 'pt' ? course.description : course.description_en}
                           </p>
-                          <div className="flex flex-wrap gap-4 text-sm text-slate-600">
+                          <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-slate-600">
                             <div className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />
-                              {course.duration_weeks} {t('course_weeks')} • {course.hours_per_week} {t('course_hours')}
+                              {course.duration_weeks} {t('course_weeks')}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-4 w-4" />
+                              {course.hours_per_week}h/{language === 'pt' ? 'sem' : 'wk'}
                             </div>
                             <div className="flex items-center gap-1">
                               <Users className="h-4 w-4" />
                               {course.available_spots} {t('course_spots')}
                             </div>
                           </div>
-                          <div className="mt-3">
-                            <Badge variant="secondary">{getLevelLabel(course.level)}</Badge>
+                          <div className="mt-2">
+                            <Badge variant="secondary" className="text-xs">{getLevelLabel(course.level)}</Badge>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-emerald-700 mb-2">
-                            €{course.price.toLocaleString()}
+                        
+                        {/* Price and Button - Mobile Optimized */}
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                          <div>
+                            <p className="text-xs text-slate-500">{language === 'pt' ? 'A partir de' : 'From'}</p>
+                            <p className="text-xl md:text-2xl font-bold text-emerald-700">
+                              €{course.price.toLocaleString()}
+                            </p>
                           </div>
                           <Button 
                             onClick={() => handleEnrollClick(course)}
-                            className="bg-emerald-900 hover:bg-emerald-800"
+                            className="bg-emerald-900 hover:bg-emerald-800 h-11 px-6"
                             data-testid={`enroll-button-${course.id}`}
                           >
                             {t('course_enroll')}

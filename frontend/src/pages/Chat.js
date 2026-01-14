@@ -572,22 +572,19 @@ export const Chat = () => {
                       )}
                       
                       {/* Audio Message with Play Button */}
-                      {isAudioMessage(msg.content) ? (
+                      {msg.message_type === 'audio' && msg.audio_data ? (
+                        <AudioMessage 
+                          audioUrl={msg.audio_data} 
+                          duration={msg.audio_duration || 0}
+                          isOwn={isOwn}
+                        />
+                      ) : isAudioMessage(msg.content) ? (
                         <div className="flex items-center gap-2 min-w-[180px]">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 rounded-full bg-[#00a884] hover:bg-[#06cf9c] flex-shrink-0"
-                          >
-                            <Play className="h-4 w-4 text-white ml-0.5" />
-                          </Button>
+                          <div className="h-9 w-9 rounded-full bg-[#00a884] flex items-center justify-center flex-shrink-0">
+                            <Mic className="h-4 w-4 text-white" />
+                          </div>
                           <div className="flex-1">
-                            <div className="flex items-center gap-1">
-                              {[...Array(20)].map((_, i) => (
-                                <div key={i} className={`w-1 bg-[#8696a0] rounded-full`} style={{ height: `${Math.random() * 12 + 4}px` }} />
-                              ))}
-                            </div>
-                            <span className="text-[10px] text-[#8696a0]">{formatRecordingTime(getAudioDuration(msg.content))}</span>
+                            <p className="text-sm text-white">{msg.content}</p>
                           </div>
                         </div>
                       ) : (

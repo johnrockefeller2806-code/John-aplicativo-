@@ -193,6 +193,7 @@ export const Chat = () => {
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
   
   const wsRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -203,6 +204,7 @@ export const Chat = () => {
   const audioChunksRef = useRef([]);
   const recordingIntervalRef = useRef(null);
   const notificationSoundRef = useRef(null);
+  const previewAudioRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Hide Emergent badge on chat page

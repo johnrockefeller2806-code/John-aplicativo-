@@ -320,26 +320,26 @@ export const StudentGuide = () => {
           {/* CHECKLIST TAB */}
           <TabsContent value="checklist" data-testid="checklist-content">
             {/* Progress Bar */}
-            <Card className="border-slate-100 mb-6 bg-gradient-to-r from-emerald-50 to-teal-50">
+            <Card className="border-emerald-200 mb-6 bg-gradient-to-r from-emerald-50 to-teal-50 border-2">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-5 w-5 text-emerald-600" />
-                    <h3 className="font-semibold text-slate-900">
+                    <h3 className="font-semibold text-emerald-800">
                       {language === 'pt' ? 'Seu Progresso' : 'Your Progress'}
                     </h3>
                   </div>
-                  <Badge className={progressPercent === 100 ? 'bg-emerald-600' : 'bg-slate-600'}>
+                  <Badge className={progressPercent === 100 ? 'bg-emerald-600' : 'bg-emerald-700'}>
                     {completedCount}/{totalCount} {language === 'pt' ? 'completos' : 'completed'}
                   </Badge>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3 mb-2">
+                <div className="w-full bg-emerald-200 rounded-full h-3 mb-2">
                   <div 
                     className="bg-gradient-to-r from-emerald-500 to-teal-500 h-3 rounded-full transition-all duration-500"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-emerald-700">
                   {progressPercent === 100 
                     ? (language === 'pt' ? '🎉 Parabéns! Você completou todos os itens!' : '🎉 Congratulations! You completed all items!')
                     : (language === 'pt' ? `${progressPercent}% concluído - Continue assim!` : `${progressPercent}% complete - Keep going!`)}

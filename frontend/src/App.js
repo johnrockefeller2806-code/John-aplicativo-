@@ -22,6 +22,7 @@ import { StuffDuvidas } from "./pages/StuffDuvidas";
 import { StudentGuide } from "./pages/StudentGuide";
 import { About } from "./pages/About";
 import { Flights } from "./pages/Flights";
+import { Insurance } from "./pages/Insurance";
 import { Chat } from "./pages/Chat";
 import { Profile } from "./pages/Profile";
 

@@ -41,7 +41,9 @@ import {
   Search,
   CheckCheck,
   ArrowLeft,
-  StopCircle
+  StopCircle,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import EmojiPicker from 'emoji-picker-react';
 

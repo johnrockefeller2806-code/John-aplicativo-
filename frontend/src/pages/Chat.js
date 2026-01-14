@@ -680,13 +680,13 @@ export const Chat = () => {
 
         {/* Message Input */}
         {!isRecording && !audioBlob && (
-          <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2 flex-shrink-0 safe-area-inset-bottom">
+          <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2 flex-shrink-0 safe-area-inset-bottom relative z-50">
             <div className="relative">
               <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
                 <Smile className="h-6 w-6" />
               </Button>
               {showEmojiPicker && (
-                <div className="absolute bottom-full left-0 mb-2 z-50">
+                <div className="absolute bottom-full left-0 mb-2 z-[60]">
                   <Button variant="ghost" size="icon" className="absolute -top-2 -right-2 h-6 w-6 bg-[#202c33] rounded-full z-10 text-white" onClick={() => setShowEmojiPicker(false)}>
                     <X className="h-3 w-3" />
                   </Button>
@@ -709,11 +709,11 @@ export const Chat = () => {
               />
               
               {newMessage.trim() ? (
-                <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
+                <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0 z-50">
                   <Send className="h-5 w-5" />
                 </Button>
               ) : (
-                <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
+                <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0 z-50">
                   <Mic className="h-5 w-5" />
                 </Button>
               )}

@@ -615,13 +615,19 @@ export const Chat = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Delete message (admin)
+  // Delete message (user can delete own, admin can delete any)
   const deleteMessage = async (messageId) => {
     try {
-      await fetch(`${API_URL}/api/chat/messages/${messageId}?token=${token}`, { method: 'DELETE' });
-      toast.success(language === 'pt' ? 'Mensagem removida' : 'Message deleted');
+      const response = await fetch(`${API_URL}/api/chat/messages/${messageId}?token=${token}`, { method: 'DELETE' });
+      if (response.ok) {
+        toast.success(language === 'pt' ? 'Mensagem apagada' : 'Message deleted');
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || (language === 'pt' ? 'Erro ao apagar' : 'Error deleting'));
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Delete error:', error);
+      toast.error(language === 'pt' ? 'Erro ao apagar mensagem' : 'Error deleting message');
     }
   };
 

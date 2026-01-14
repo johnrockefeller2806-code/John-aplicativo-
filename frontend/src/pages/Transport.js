@@ -11,7 +11,13 @@ import {
   Clock, 
   MapPin,
   Euro,
-  Info
+  Info,
+  Bike,
+  ExternalLink,
+  CreditCard,
+  Smartphone,
+  MapPinned,
+  CheckCircle
 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;

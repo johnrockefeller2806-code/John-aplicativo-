@@ -706,7 +706,7 @@ export const Chat = () => {
 
         {/* Message Input */}
         {!isRecording && !audioBlob && (
-          <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2 flex-shrink-0 safe-area-inset-bottom relative z-50">
+          <div className="bg-[#202c33] px-3 py-2 pb-16 md:pb-2 flex items-center gap-2 flex-shrink-0 safe-area-inset-bottom relative z-50">
             <div className="relative">
               <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
                 <Smile className="h-6 w-6" />

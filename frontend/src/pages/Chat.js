@@ -791,45 +791,58 @@ export const Chat = () => {
 
         {/* Message Input */}
         {!isRecording && !audioBlob && (
-          <div className="bg-[#202c33] px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 relative z-50">
-            <div className="relative">
-              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
-                <Smile className="h-6 w-6" />
-              </Button>
-              {showEmojiPicker && (
-                <div className="absolute bottom-full left-0 mb-2 z-[60]">
-                  <Button variant="ghost" size="icon" className="absolute -top-2 -right-2 h-6 w-6 bg-[#202c33] rounded-full z-10 text-white" onClick={() => setShowEmojiPicker(false)}>
-                    <X className="h-3 w-3" />
+          <>
+            {/* Emoji Picker - Bottom Sheet on Mobile */}
+            {showEmojiPicker && (
+              <div className="bg-[#202c33] border-t border-[#374045] flex-shrink-0">
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-[#8696a0] text-sm">Emojis</span>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-[#8696a0] hover:bg-[#2a3942]" onClick={() => setShowEmojiPicker(false)}>
+                    <X className="h-5 w-5" />
                   </Button>
-                  <EmojiPicker onEmojiClick={onEmojiClick} width={280} height={320} theme="dark" />
                 </div>
-              )}
-            </div>
+                <EmojiPicker 
+                  onEmojiClick={onEmojiClick} 
+                  width="100%" 
+                  height={280} 
+                  theme="dark"
+                  searchPlaceholder="Buscar emoji..."
+                  previewConfig={{ showPreview: false }}
+                />
+              </div>
+            )}
+            
+            <div className="bg-[#202c33] px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 relative z-50">
+              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
+                {showEmojiPicker ? <X className="h-6 w-6" /> : <Smile className="h-6 w-6" />}
+              </Button>
 
-            <form onSubmit={sendMessage} className="flex-1 flex items-center gap-2">
-              <Input
-                ref={inputRef}
-                value={newMessage}
-                onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
-                placeholder={language === 'pt' ? 'Mensagem' : 'Message'}
-                className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-full h-11 text-base focus-visible:ring-0"
-                disabled={!isConnected}
-                autoComplete="off"
-                autoCorrect="off"
-                enterKeyHint="send"
-              />
-              
-              {newMessage.trim() ? (
-                <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
-                  <Send className="h-5 w-5" />
-                </Button>
-              ) : (
-                <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
-                  <Mic className="h-5 w-5" />
-                </Button>
-              )}
-            </form>
-          </div>
+              <form onSubmit={sendMessage} className="flex-1 flex items-center gap-2">
+                <Input
+                  ref={inputRef}
+                  value={newMessage}
+                  onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
+                  placeholder={language === 'pt' ? 'Mensagem' : 'Message'}
+                  className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-full h-11 text-base focus-visible:ring-0"
+                  disabled={!isConnected}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  enterKeyHint="send"
+                  onFocus={() => setShowEmojiPicker(false)}
+                />
+                
+                {newMessage.trim() ? (
+                  <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
+                    <Send className="h-5 w-5" />
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
+                    <Mic className="h-5 w-5" />
+                  </Button>
+                )}
+              </form>
+            </div>
+          </>
         )}
       </div>
 

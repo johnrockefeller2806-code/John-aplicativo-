@@ -731,30 +731,30 @@ export const StudentGuide = () => {
           {/* BRASIL NA IRLANDA TAB */}
           <TabsContent value="brasil" data-testid="brasil-content">
             {/* Restaurants */}
-            <Card className="border-emerald-200 border-2 mb-6">
-              <CardHeader className="bg-emerald-50">
-                <CardTitle className="flex items-center gap-2 text-emerald-800">
-                  <Utensils className="h-5 w-5 text-emerald-600" />
+            <Card className="border-orange-300 border-2 mb-6">
+              <CardHeader className="bg-orange-500">
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Utensils className="h-5 w-5 text-white" />
                   {language === 'pt' ? 'Restaurantes Brasileiros' : 'Brazilian Restaurants'}
-                  <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Toque para ver' : 'Tap to view'}</Badge>
+                  <Badge className="bg-white text-orange-600 ml-2">{language === 'pt' ? 'Toque para ver' : 'Tap to view'}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {brazilianData.restaurants.map((restaurant, index) => (
-                    <div key={index} className="flex items-center gap-4 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200 hover:border-emerald-400 hover:bg-emerald-100 transition-all cursor-pointer">
+                    <div key={index} className="flex items-center gap-4 p-4 bg-orange-50 rounded-xl border-2 border-orange-200 hover:border-orange-400 hover:bg-orange-100 transition-all cursor-pointer">
                       <div className="p-3 bg-green-100 rounded-xl">
                         <span className="text-2xl">🇧🇷</span>
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-emerald-900">{restaurant.name}</h4>
-                        <div className="flex items-center gap-2 text-sm text-emerald-700">
+                        <h4 className="font-semibold text-orange-900">{restaurant.name}</h4>
+                        <div className="flex items-center gap-2 text-sm text-orange-700">
                           <MapPin className="h-3 w-3" />
                           {restaurant.location}
-                          <span className="text-emerald-300">|</span>
+                          <span className="text-orange-300">|</span>
                           {restaurant.type}
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-emerald-600 mt-1">
+                        <div className="flex items-center gap-1 text-sm text-orange-600 mt-1">
                           <Phone className="h-3 w-3" />
                           {restaurant.phone}
                         </div>

@@ -386,8 +386,14 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
             
             if data.get("type") == "message":
                 content = data.get("content", "").strip()
+                message_type = data.get("message_type", "text")
+                audio_data = data.get("audio_data")
+                audio_duration = data.get("audio_duration")
                 
-                if not content or len(content) > 1000:
+                # For audio messages, allow larger content (base64)
+                max_length = 5000000 if message_type == "audio" else 1000
+                
+                if not content or len(content) > max_length:
                     await websocket.send_json({
                         "type": "error",
                         "message": "Mensagem inválida (vazia ou muito longa)"
@@ -407,7 +413,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                     user_id=user_id,
                     user_name=user_info["name"],
                     user_avatar=user_info.get("avatar"),
-                    content=content
+                    content=content,
+                    message_type=message_type,
+                    audio_data=audio_data,
+                    audio_duration=audio_duration
                 )
                 
                 # Save to database with TTL (2 days = 48 hours)
@@ -424,6 +433,9 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                         "user_name": message.user_name,
                         "user_avatar": message.user_avatar,
                         "content": message.content,
+                        "message_type": message.message_type,
+                        "audio_data": message.audio_data,
+                        "audio_duration": message.audio_duration,
                         "created_at": message.created_at,
                         "is_admin": user_info["role"] == "admin"
                     }

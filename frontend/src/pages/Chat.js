@@ -836,15 +836,15 @@ export const Chat = () => {
 
         {/* Typing indicator */}
         {typingUsers.length > 0 && (
-          <div className="px-4 py-1 text-xs text-[#00a884]">
+          <div className="px-4 py-1 text-xs text-[#00a884] bg-gray-100">
             {typingUsers.join(', ')} {language === 'pt' ? 'digitando...' : 'typing...'}
           </div>
         )}
 
         {/* Recording UI */}
         {isRecording && (
-          <div className="bg-[#005c4b] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0">
-            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-white hover:bg-[#00a884]">
+          <div className="bg-[#00a884] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0">
+            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-white hover:bg-white/20">
               <Trash2 className="h-5 w-5" />
             </Button>
             <div className="flex-1 flex items-center gap-3">
@@ -856,7 +856,7 @@ export const Chat = () => {
                 ))}
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={stopRecording} className="text-white hover:bg-[#00a884]">
+            <Button variant="ghost" size="icon" onClick={stopRecording} className="text-white hover:bg-white/20">
               <StopCircle className="h-6 w-6" />
             </Button>
           </div>
@@ -864,11 +864,11 @@ export const Chat = () => {
 
         {/* Audio Preview */}
         {audioBlob && !isRecording && (
-          <div className="bg-[#202c33] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0">
-            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-400 hover:bg-[#2a3942]">
+          <div className="bg-gray-100 px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0 border-t">
+            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-500 hover:bg-red-50">
               <Trash2 className="h-5 w-5" />
             </Button>
-            <div className="flex-1 flex items-center gap-3 bg-[#2a3942] rounded-full px-4 py-2">
+            <div className="flex-1 flex items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm">
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -883,10 +883,10 @@ export const Chat = () => {
               </Button>
               <div className="flex-1 flex items-center gap-0.5">
                 {[...Array(25)].map((_, i) => (
-                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-[#8696a0]'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
+                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-gray-300'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
                 ))}
               </div>
-              <span className="text-white text-sm">{formatRecordingTime(recordingTime)}</span>
+              <span className="text-gray-700 text-sm">{formatRecordingTime(recordingTime)}</span>
             </div>
             <Button onClick={sendAudioMessage} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-10 w-10">
               <Send className="h-5 w-5" />

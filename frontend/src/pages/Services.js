@@ -77,6 +77,70 @@ export const Services = () => {
     },
   ];
 
+  // Banks data
+  const banks = {
+    traditional: [
+      {
+        id: 'aib',
+        name: 'AIB - Allied Irish Banks',
+        logo: '🏦',
+        type: language === 'pt' ? 'Banco Tradicional' : 'Traditional Bank',
+        description: language === 'pt' 
+          ? 'Um dos maiores bancos da Irlanda. Oferece conta estudante com benefícios especiais e app mobile completo.'
+          : 'One of Ireland\'s largest banks. Offers student account with special benefits and complete mobile app.',
+        bookingUrl: 'https://aib.ie/ways-to-bank/appointments',
+        website: 'https://aib.ie',
+        features: language === 'pt' 
+          ? ['Conta estudante gratuita', 'App mobile', 'Cartão de débito', 'Internet banking']
+          : ['Free student account', 'Mobile app', 'Debit card', 'Internet banking'],
+        branches: {
+          'Dublin City Centre': ['66 Grafton Street', '7/12 Dame Street', '1 Lower O\'Connell Street'],
+          'Dublin Norte': ['Unit 9/10 Omni Shopping Centre, Santry', '45 Main Street, Swords'],
+          'Dublin Sul': ['46 George\'s Street, Dun Laoghaire', 'Dundrum Town Centre']
+        }
+      },
+      {
+        id: 'boi',
+        name: 'Bank of Ireland',
+        logo: '🏛️',
+        type: language === 'pt' ? 'Banco Tradicional' : 'Traditional Bank',
+        description: language === 'pt'
+          ? 'Banco histórico da Irlanda, fundado em 1783. Excelente para estudantes internacionais com suporte dedicado.'
+          : 'Historic Irish bank, founded in 1783. Excellent for international students with dedicated support.',
+        bookingUrl: 'https://personalbanking.bankofireland.com/branch-appointments/',
+        website: 'https://www.bankofireland.com',
+        features: language === 'pt'
+          ? ['Conta estudante', 'Atendimento em português', 'App 365', 'Sem taxas para estudantes']
+          : ['Student account', 'Portuguese support', '365 App', 'No fees for students'],
+        branches: {
+          'Dublin City Centre': ['College Green (sede histórica)', '6 Lower O\'Connell Street', '88 Grafton Street'],
+          'Dublin Norte': ['Drumcondra Road Upper', 'Main Street, Swords'],
+          'Dublin Sul': ['106 Lower George\'s Street, Dun Laoghaire', 'Dundrum Town Centre']
+        }
+      }
+    ],
+    digital: [
+      {
+        id: 'revolut',
+        name: 'Revolut',
+        logo: '💳',
+        type: language === 'pt' ? 'Banco Digital' : 'Digital Bank',
+        description: language === 'pt'
+          ? 'Banco digital europeu sem taxas de manutenção. Perfeito para receber salário e fazer transferências internacionais com câmbio justo.'
+          : 'European digital bank with no maintenance fees. Perfect for receiving salary and making international transfers with fair exchange rates.',
+        bookingUrl: 'https://www.revolut.com/app/',
+        website: 'https://www.revolut.com',
+        features: language === 'pt'
+          ? ['Sem taxa de manutenção', 'Câmbio sem spread até €1000/mês', 'Cartão virtual e físico', 'Transferências instantâneas']
+          : ['No maintenance fee', 'No spread exchange up to €1000/month', 'Virtual and physical card', 'Instant transfers'],
+        branches: null // Digital only
+      }
+    ]
+  };
+
+  const [selectedRegion, setSelectedRegion] = useState('Dublin City Centre');
+  const regions = ['Dublin City Centre', 'Dublin Norte', 'Dublin Sul'];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 py-12" data-testid="services-loading">

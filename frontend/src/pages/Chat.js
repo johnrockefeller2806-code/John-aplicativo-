@@ -156,12 +156,16 @@ export const Chat = () => {
         
         case 'message':
           setMessages(prev => [...prev, data.message]);
-          // Show notification if window not focused
-          if (document.hidden && data.message.user_id !== user?.id) {
-            new Notification(`${data.message.user_name}`, {
-              body: data.message.content.substring(0, 100),
-              icon: LOGO_URL
-            });
+          // Play sound and show notification if message is from another user
+          if (data.message.user_id !== user?.id) {
+            playNotificationSound();
+            // Show browser notification if window not focused
+            if (document.hidden) {
+              new Notification(`${data.message.user_name}`, {
+                body: data.message.content.substring(0, 100),
+                icon: LOGO_URL
+              });
+            }
           }
           break;
         

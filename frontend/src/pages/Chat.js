@@ -61,7 +61,7 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(duration || 0);
   const [hasError, setHasError] = useState(false);
-  const audioRef = useRef(null);
+  const [audioElement, setAudioElement] = useState(null);
 
   // Check if audioUrl is valid
   const isValidAudioUrl = audioUrl && typeof audioUrl === 'string' && (
@@ -70,72 +70,74 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
     audioUrl.startsWith('http')
   );
 
+  // Create audio element when URL changes
   useEffect(() => {
-    setHasError(false);
-    setIsPlaying(false);
-    setCurrentTime(0);
-  }, [audioUrl]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !isValidAudioUrl) return;
-
-    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    if (!isValidAudioUrl) return;
+    
+    const audio = new Audio();
+    
     const handleLoadedMetadata = () => {
       if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
         setAudioDuration(audio.duration);
       }
+      setHasError(false);
     };
+    
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+    
     const handleEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
     };
-    const handleError = (e) => {
-      console.error('Audio load error:', e.target?.error);
+    
+    const handleError = () => {
+      console.error('Audio error for URL starting with:', audioUrl?.substring(0, 50));
       setHasError(true);
+      setIsPlaying(false);
     };
-    const handleCanPlayThrough = () => {
-      console.log('Audio can play through');
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
+    
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
-    audio.addEventListener('canplaythrough', handleCanPlayThrough);
-
+    
+    // Set source and load
+    audio.src = audioUrl;
+    audio.load();
+    
+    setAudioElement(audio);
+    setHasError(false);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.pause();
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
-      audio.removeEventListener('canplaythrough', handleCanPlayThrough);
     };
-  }, [isValidAudioUrl]);
+  }, [audioUrl, isValidAudioUrl]);
 
   const togglePlay = async () => {
-    const audio = audioRef.current;
-    if (!audio || !isValidAudioUrl) {
-      console.log('Cannot play: no audio element or invalid URL');
-      return;
-    }
+    if (!audioElement || !isValidAudioUrl || hasError) return;
 
     try {
       if (isPlaying) {
-        audio.pause();
+        audioElement.pause();
         setIsPlaying(false);
       } else {
-        if (audio.ended || audio.currentTime >= audio.duration) {
-          audio.currentTime = 0;
+        if (audioElement.ended) {
+          audioElement.currentTime = 0;
         }
-        console.log('Attempting to play audio...');
-        await audio.play();
-        console.log('Audio playing');
+        await audioElement.play();
         setIsPlaying(true);
       }
     } catch (error) {
-      console.error('Play error:', error.name, error.message);
-      setHasError(true);
+      console.error('Play error:', error);
+      // Don't set hasError here, just log - might be user interaction required
     }
   };
 
@@ -148,14 +150,14 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
 
   const progress = audioDuration > 0 && isFinite(audioDuration) ? (currentTime / audioDuration) * 100 : 0;
 
-  if (!isValidAudioUrl || hasError) {
+  if (!isValidAudioUrl) {
     return (
       <div className="flex items-center gap-3 min-w-[180px]">
         <div className="h-10 w-10 rounded-full flex-shrink-0 bg-[#374045] flex items-center justify-center">
           <Mic className="h-5 w-5 text-[#8696a0]" />
         </div>
         <div className="flex-1">
-          <p className="text-xs text-[#8696a0]">{hasError ? 'Erro ao carregar' : 'Áudio não disponível'}</p>
+          <p className="text-xs text-[#8696a0]">Áudio não disponível</p>
           <span className="text-[10px] text-[#8696a0]">{formatTime(duration)}</span>
         </div>
       </div>
@@ -164,31 +166,31 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
 
   return (
     <div className="flex items-center gap-3 min-w-[200px]">
-      <audio 
-        ref={audioRef} 
-        src={audioUrl} 
-        preload="auto"
-        playsInline
-      />
       <Button
         variant="ghost"
         size="icon"
         onClick={togglePlay}
-        className="h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c] active:scale-95 transition-transform"
+        className={`h-10 w-10 rounded-full flex-shrink-0 ${hasError ? 'bg-[#374045]' : 'bg-[#00a884] hover:bg-[#06cf9c]'} active:scale-95 transition-transform`}
       >
-        {isPlaying ? (
+        {hasError ? (
+          <Mic className="h-5 w-5 text-[#8696a0]" />
+        ) : isPlaying ? (
           <Pause className="h-5 w-5 text-white" />
         ) : (
           <Play className="h-5 w-5 text-white ml-0.5" />
         )}
       </Button>
       <div className="flex-1">
-        <div className="h-1.5 bg-[#374045] rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-[#00a884] transition-all duration-100"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {hasError ? (
+          <p className="text-xs text-[#8696a0]">Formato não suportado</p>
+        ) : (
+          <div className="h-1.5 bg-[#374045] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#00a884] transition-all duration-100"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
         <div className="flex justify-between mt-1">
           <span className="text-[11px] text-[#8696a0]">
             {isPlaying ? formatTime(currentTime) : formatTime(audioDuration || duration)}

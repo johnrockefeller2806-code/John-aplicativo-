@@ -757,14 +757,16 @@ export const Chat = () => {
               <p className="text-sm">{language === 'pt' ? 'Seja o primeiro!' : 'Be the first!'}</p>
             </div>
           ) : (
-            messages.map((msg, index) => {
+            messages.filter(msg => !msg.deleted).map((msg, index) => {
               const isOwn = msg.user_id === user?.id;
-              const showAvatar = !isOwn && (index === 0 || messages[index - 1]?.user_id !== msg.user_id);
+              const filteredMessages = messages.filter(m => !m.deleted);
+              const prevMsg = index > 0 ? filteredMessages[index - 1] : null;
+              const showAvatar = !isOwn && (!prevMsg || prevMsg.user_id !== msg.user_id);
               
               if (msg.message_type === 'system') {
                 return (
                   <div key={msg.id} className="flex justify-center">
-                    <span className="bg-[#182229] text-[#8696a0] text-xs px-3 py-1 rounded-lg">{msg.content}</span>
+                    <span className="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-lg">{msg.content}</span>
                   </div>
                 );
               }
@@ -780,9 +782,9 @@ export const Chat = () => {
                     )}
                     {!isOwn && !showAvatar && <div className="w-8" />}
                     
-                    <div className={`relative px-3 py-2 rounded-lg ${isOwn ? 'bg-[#005c4b] rounded-tr-none' : 'bg-[#202c33] rounded-tl-none'} ${msg.deleted ? 'opacity-60 italic' : ''}`}>
+                    <div className={`relative px-3 py-2 rounded-lg shadow-sm ${isOwn ? 'bg-[#dcf8c6] rounded-tr-none' : 'bg-white rounded-tl-none'}`}>
                       {!isOwn && showAvatar && (
-                        <p className={`text-xs font-medium mb-1 ${msg.is_admin ? 'text-[#f59e0b]' : 'text-[#00a884]'}`}>
+                        <p className={`text-xs font-medium mb-1 ${msg.is_admin ? 'text-amber-600' : 'text-[#00a884]'}`}>
                           {msg.user_name} {msg.is_admin && '⭐'}
                         </p>
                       )}
@@ -800,11 +802,11 @@ export const Chat = () => {
                             <Mic className="h-4 w-4 text-white" />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm text-white">{msg.content}</p>
+                            <p className="text-sm text-gray-800">{msg.content}</p>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm text-white break-words">{msg.content}</p>
+                        <p className="text-sm text-gray-800 break-words">{msg.content}</p>
                       )}
                       
                       <div className="flex items-center justify-end gap-1 mt-1">

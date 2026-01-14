@@ -486,10 +486,10 @@ export const Chat = () => {
   }
 
   return (
-    <div className="h-screen bg-[#111b21] flex flex-col md:flex-row overflow-hidden" data-testid="chat-page">
+    <div className="fixed inset-0 bg-[#111b21] flex flex-col md:flex-row" style={{ height: '100dvh' }} data-testid="chat-page">
       
       {/* LEFT - Messages Area */}
-      <div className={`flex-1 flex flex-col bg-[#0b141a] ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`flex-1 flex flex-col bg-[#0b141a] min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
         <div className="h-14 bg-[#202c33] flex items-center justify-between px-3 flex-shrink-0">
           <div className="flex items-center gap-3">

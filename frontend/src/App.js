@@ -43,6 +43,7 @@ function App() {
                 <Route path="/services/passport" element={<PassportGuide />} />
                 <Route path="/services/driving-license" element={<DrivingLicenseGuide />} />
                 <Route path="/duvidas" element={<StuffDuvidas />} />
+                <Route path="/guia-estudante" element={<StudentGuide />} />
                 <Route path="/chat" element={<Chat />} />
                 
                 {/* Auth Routes */}

@@ -36,7 +36,9 @@ import {
   Wifi,
   WifiOff,
   Shield,
-  X
+  X,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import EmojiPicker from 'emoji-picker-react';
 

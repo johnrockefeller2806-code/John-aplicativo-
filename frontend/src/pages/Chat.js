@@ -76,6 +76,40 @@ export const Chat = () => {
   const typingTimeoutRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const inputRef = useRef(null);
+  const notificationSoundRef = useRef(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Initialize notification sound
+  useEffect(() => {
+    notificationSoundRef.current = createNotificationSound();
+    // Load sound preference from localStorage
+    const savedSoundPref = localStorage.getItem('chat_sound_enabled');
+    if (savedSoundPref !== null) {
+      setSoundEnabled(savedSoundPref === 'true');
+    }
+    return () => {
+      if (notificationSoundRef.current) {
+        notificationSoundRef.current = null;
+      }
+    };
+  }, []);
+
+  // Save sound preference to localStorage
+  const toggleSound = () => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    localStorage.setItem('chat_sound_enabled', newValue.toString());
+  };
+
+  // Play notification sound
+  const playNotificationSound = useCallback(() => {
+    if (soundEnabled && notificationSoundRef.current) {
+      notificationSoundRef.current.currentTime = 0;
+      notificationSoundRef.current.play().catch(err => {
+        console.log('Audio play failed:', err);
+      });
+    }
+  }, [soundEnabled]);
 
   // Scroll to bottom when new messages arrive
   const scrollToBottom = useCallback(() => {

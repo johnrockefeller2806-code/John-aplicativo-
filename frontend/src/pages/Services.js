@@ -19,7 +19,13 @@ import {
   Landmark,
   Smartphone,
   ExternalLink,
-  MapPinned
+  MapPinned,
+  Stethoscope,
+  Wifi,
+  Hospital,
+  Pill,
+  AlertCircle,
+  CheckCircle
 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;

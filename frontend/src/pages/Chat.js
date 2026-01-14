@@ -682,13 +682,13 @@ export const Chat = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#111b21] flex items-center justify-center p-4">
-        <div className="bg-[#202c33] rounded-2xl p-8 text-center max-w-md w-full">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl p-8 text-center max-w-md w-full shadow-lg">
           <img src={LOGO_URL} alt="STUFF" className="w-20 h-20 rounded-full mx-auto mb-6 object-cover" />
-          <h2 className="text-xl font-semibold text-white mb-2">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
             {language === 'pt' ? 'Faça login para acessar o chat' : 'Login to access chat'}
           </h2>
-          <p className="text-[#8696a0] mb-6">
+          <p className="text-gray-500 mb-6">
             {language === 'pt' 
               ? 'Você precisa estar logado para participar da comunidade STUFF.'
               : 'You need to be logged in to join the STUFF community.'}
@@ -702,24 +702,24 @@ export const Chat = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-[#111b21] flex flex-col md:flex-row" style={{ height: '100dvh' }} data-testid="chat-page">
+    <div className="fixed inset-0 bg-gray-100 flex flex-col md:flex-row" style={{ height: '100dvh' }} data-testid="chat-page">
       
       {/* LEFT - Messages Area */}
-      <div className={`flex-1 flex flex-col bg-[#0b141a] min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`flex-1 flex flex-col bg-gray-50 min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
-        <div className="h-14 bg-[#202c33] flex items-center justify-between px-3 flex-shrink-0">
+        <div className="h-14 bg-[#00a884] flex items-center justify-between px-3 flex-shrink-0 shadow-md">
           <div className="flex items-center gap-2">
-            <a href="/" className="text-[#aebac1] hover:bg-[#2a3942] p-2 rounded-full md:hidden">
+            <a href="/" className="text-white hover:bg-white/20 p-2 rounded-full md:hidden">
               <ArrowLeft className="h-5 w-5" />
             </a>
-            <img src={LOGO_URL} alt="STUFF" className="w-10 h-10 rounded-full object-cover" />
+            <img src={LOGO_URL} alt="STUFF" className="w-10 h-10 rounded-full object-cover border-2 border-white" />
             <div>
               <h2 className="text-white font-medium text-sm">STUFF Comunidade</h2>
-              <p className="text-[#8696a0] text-xs flex items-center gap-1">
+              <p className="text-white/80 text-xs flex items-center gap-1">
                 {isConnected ? (
-                  <><Circle className="h-2 w-2 fill-[#00a884] text-[#00a884]" />{onlineUsers.length} online</>
+                  <><Circle className="h-2 w-2 fill-white text-white" />{onlineUsers.length} online</>
                 ) : isConnecting ? 'Conectando...' : (
-                  <><Circle className="h-2 w-2 fill-red-500 text-red-500" />Desconectado</>
+                  <><Circle className="h-2 w-2 fill-red-300 text-red-300" />Desconectado</>
                 )}
               </p>
             </div>
@@ -730,15 +730,15 @@ export const Chat = () => {
               variant="ghost" 
               size="icon" 
               onClick={toggleSound}
-              className="text-[#aebac1] hover:bg-[#2a3942] h-9 w-9"
+              className="text-white hover:bg-white/20 h-9 w-9"
             >
-              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-200" />}
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowUsersList(true)}
-              className="md:hidden text-[#aebac1] hover:bg-[#2a3942]"
+              className="md:hidden text-white hover:bg-white/20"
             >
               <Users className="h-5 w-5" />
             </Button>

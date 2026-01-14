@@ -413,6 +413,24 @@ export const Chat = () => {
             </div>
             
             <div className="flex items-center gap-2 md:gap-3">
+              {/* Sound toggle button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white/10 p-2"
+                onClick={toggleSound}
+                title={soundEnabled 
+                  ? (language === 'pt' ? 'Desativar som' : 'Mute sound')
+                  : (language === 'pt' ? 'Ativar som' : 'Enable sound')}
+                data-testid="sound-toggle"
+              >
+                {soundEnabled ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4 text-red-300" />
+                )}
+              </Button>
+              
               {/* Connection status */}
               <div className="flex items-center gap-1 md:gap-2 text-sm">
                 {isConnected ? (

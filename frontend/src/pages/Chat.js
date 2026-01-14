@@ -556,20 +556,33 @@ export const Chat = () => {
   };
 
   const sendAudioMessage = async () => {
-    if (audioBlob && wsRef.current?.readyState === WebSocket.OPEN) {
-      try {
-        // Stop preview if playing
-        if (previewAudioRef.current) {
-          previewAudioRef.current.pause();
-          previewAudioRef.current = null;
-        }
-        setIsPreviewPlaying(false);
+    // Check if WebSocket is connected
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      toast.error(language === 'pt' ? 'Não conectado ao chat. Reconectando...' : 'Not connected to chat. Reconnecting...');
+      connectWebSocket();
+      return;
+    }
+    
+    if (!audioBlob) {
+      toast.error(language === 'pt' ? 'Nenhum áudio para enviar' : 'No audio to send');
+      return;
+    }
+    
+    try {
+      // Stop preview if playing
+      if (previewAudioRef.current) {
+        previewAudioRef.current.pause();
+        previewAudioRef.current = null;
+      }
+      setIsPreviewPlaying(false);
+      
+      // Convert blob to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Audio = reader.result;
+        console.log('Sending audio, data length:', base64Audio?.length);
         
-        // Convert blob to base64
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Audio = reader.result;
-          console.log('Sending audio, data length:', base64Audio?.length);
+        try {
           wsRef.current.send(JSON.stringify({
             type: 'message',
             content: `🎤 Mensagem de voz (${formatRecordingTime(recordingTime)})`,
@@ -581,11 +594,18 @@ export const Chat = () => {
           setAudioUrl(null);
           setRecordingTime(0);
           toast.success(language === 'pt' ? 'Áudio enviado!' : 'Audio sent!');
-        };
-        reader.readAsDataURL(audioBlob);
-      } catch (error) {
-        toast.error(language === 'pt' ? 'Erro ao enviar áudio' : 'Error sending audio');
-      }
+        } catch (sendError) {
+          console.error('Send error:', sendError);
+          toast.error(language === 'pt' ? 'Erro ao enviar. Tente novamente.' : 'Error sending. Try again.');
+        }
+      };
+      reader.onerror = () => {
+        toast.error(language === 'pt' ? 'Erro ao processar áudio' : 'Error processing audio');
+      };
+      reader.readAsDataURL(audioBlob);
+    } catch (error) {
+      console.error('Audio send error:', error);
+      toast.error(language === 'pt' ? 'Erro ao enviar áudio' : 'Error sending audio');
     }
   };
 

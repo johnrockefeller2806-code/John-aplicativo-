@@ -392,14 +392,15 @@ export const StudentGuide = () => {
           {/* EMPREGO TAB */}
           <TabsContent value="emprego" data-testid="emprego-content">
             {/* Job Sites */}
-            <Card className="border-slate-100 mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border-emerald-200 border-2 mb-6">
+              <CardHeader className="bg-emerald-50">
+                <CardTitle className="flex items-center gap-2 text-emerald-800">
                   <Globe className="h-5 w-5 text-emerald-600" />
                   {language === 'pt' ? 'Sites de Emprego' : 'Job Sites'}
+                  <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Clique para abrir' : 'Click to open'}</Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {employmentData.jobSites.map((site, index) => (
                     <a
@@ -407,16 +408,16 @@ export const StudentGuide = () => {
                       href={site.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 border border-transparent transition-all group"
+                      className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 border-2 border-emerald-200 hover:border-emerald-400 transition-all group"
                     >
                       <div className="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
                         <Globe className="h-5 w-5 text-emerald-600" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-slate-900 group-hover:text-emerald-700">{site.name}</p>
-                        <p className="text-xs text-slate-500">{site.desc}</p>
+                        <p className="font-semibold text-emerald-800 group-hover:text-emerald-900">{site.name}</p>
+                        <p className="text-xs text-emerald-600">{site.desc}</p>
                       </div>
-                      <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-emerald-600" />
+                      <ExternalLink className="h-4 w-4 text-emerald-500 group-hover:text-emerald-700" />
                     </a>
                   ))}
                 </div>

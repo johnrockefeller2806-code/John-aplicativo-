@@ -223,6 +223,10 @@ export const Chat = () => {
           break;
         case 'message':
           setMessages(prev => [...prev, data.message]);
+          // Play notification sound for messages from others
+          if (data.message.user_id !== user?.id) {
+            playNotificationSound();
+          }
           break;
         case 'user_joined':
           setOnlineUsers(prev => {

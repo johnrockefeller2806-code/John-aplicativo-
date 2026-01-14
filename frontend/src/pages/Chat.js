@@ -36,9 +36,7 @@ import {
   Wifi,
   WifiOff,
   Shield,
-  X,
-  Volume2,
-  VolumeX
+  X
 } from 'lucide-react';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -46,16 +44,6 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 const WS_URL = API_URL.replace('https://', 'wss://').replace('http://', 'ws://');
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_dublin-study/artifacts/o9gnc0xi_WhatsApp%20Image%202026-01-11%20at%2023.59.07.jpeg";
-
-// Notification sound URL - using a free notification sound
-const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3";
-
-// Create audio element for notification sound
-const createNotificationSound = () => {
-  const audio = new Audio(NOTIFICATION_SOUND_URL);
-  audio.volume = 0.5;
-  return audio;
-};
 
 export const Chat = () => {
   const { user, token, isAdmin } = useAuth();
@@ -78,40 +66,6 @@ export const Chat = () => {
   const typingTimeoutRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const inputRef = useRef(null);
-  const notificationSoundRef = useRef(null);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-
-  // Initialize notification sound
-  useEffect(() => {
-    notificationSoundRef.current = createNotificationSound();
-    // Load sound preference from localStorage
-    const savedSoundPref = localStorage.getItem('chat_sound_enabled');
-    if (savedSoundPref !== null) {
-      setSoundEnabled(savedSoundPref === 'true');
-    }
-    return () => {
-      if (notificationSoundRef.current) {
-        notificationSoundRef.current = null;
-      }
-    };
-  }, []);
-
-  // Save sound preference to localStorage
-  const toggleSound = () => {
-    const newValue = !soundEnabled;
-    setSoundEnabled(newValue);
-    localStorage.setItem('chat_sound_enabled', newValue.toString());
-  };
-
-  // Play notification sound
-  const playNotificationSound = useCallback(() => {
-    if (soundEnabled && notificationSoundRef.current) {
-      notificationSoundRef.current.currentTime = 0;
-      notificationSoundRef.current.play().catch(err => {
-        console.log('Audio play failed:', err);
-      });
-    }
-  }, [soundEnabled]);
 
   // Scroll to bottom when new messages arrive
   const scrollToBottom = useCallback(() => {
@@ -158,16 +112,12 @@ export const Chat = () => {
         
         case 'message':
           setMessages(prev => [...prev, data.message]);
-          // Play sound and show notification if message is from another user
-          if (data.message.user_id !== user?.id) {
-            playNotificationSound();
-            // Show browser notification if window not focused
-            if (document.hidden) {
-              new Notification(`${data.message.user_name}`, {
-                body: data.message.content.substring(0, 100),
-                icon: LOGO_URL
-              });
-            }
+          // Show notification if window not focused
+          if (document.hidden && data.message.user_id !== user?.id) {
+            new Notification(`${data.message.user_name}`, {
+              body: data.message.content.substring(0, 100),
+              icon: LOGO_URL
+            });
           }
           break;
         
@@ -248,7 +198,7 @@ export const Chat = () => {
     };
     
     wsRef.current = ws;
-  }, [token, user?.id, language, playNotificationSound]);
+  }, [token, user?.id, language]);
 
   // Initialize chat
   useEffect(() => {
@@ -413,24 +363,6 @@ export const Chat = () => {
             </div>
             
             <div className="flex items-center gap-2 md:gap-3">
-              {/* Sound toggle button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:bg-white/10 p-2"
-                onClick={toggleSound}
-                title={soundEnabled 
-                  ? (language === 'pt' ? 'Desativar som' : 'Mute sound')
-                  : (language === 'pt' ? 'Ativar som' : 'Enable sound')}
-                data-testid="sound-toggle"
-              >
-                {soundEnabled ? (
-                  <Volume2 className="h-4 w-4" />
-                ) : (
-                  <VolumeX className="h-4 w-4 text-red-300" />
-                )}
-              </Button>
-              
               {/* Connection status */}
               <div className="flex items-center gap-1 md:gap-2 text-sm">
                 {isConnected ? (

@@ -208,6 +208,53 @@ export const About = () => {
           </Card>
         </div>
 
+        {/* Founder Section - John Weslley */}
+        <div className="mb-16">
+          <Card className="border-none shadow-xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">
+            <CardContent className="p-0">
+              <div className="grid grid-cols-1 lg:grid-cols-3">
+                {/* Left - Photo/Avatar Area */}
+                <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-8 md:p-12 flex flex-col items-center justify-center text-center">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 border-4 border-white/30">
+                    <span className="text-6xl md:text-7xl">👨‍🎓</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">John Weslley</h3>
+                  <Badge className="bg-white/20 text-white border-white/30 mb-4">
+                    {language === 'pt' ? 'Fundador & Criador' : 'Founder & Creator'}
+                  </Badge>
+                  <p className="text-emerald-100 text-sm">
+                    🇧🇷 {language === 'pt' ? 'Estudante Brasileiro na Irlanda' : 'Brazilian Student in Ireland'} 🇮🇪
+                  </p>
+                </div>
+                
+                {/* Right - Message */}
+                <div className="lg:col-span-2 p-8 md:p-12 flex flex-col justify-center">
+                  <Quote className="h-10 w-10 text-emerald-500 mb-6 opacity-50" />
+                  <blockquote className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-6">
+                    {language === 'pt'
+                      ? '"Quando cheguei na Irlanda, percebi como a falta de informação confiável pode dificultar a vida de quem está começando. Por isso criei o STUFF — para que outros brasileiros não passem pelas mesmas dificuldades que eu passei."'
+                      : '"When I arrived in Ireland, I realized how the lack of reliable information can make life difficult for those who are starting out. That\'s why I created STUFF — so that other Brazilians don\'t go through the same difficulties I went through."'}
+                  </blockquote>
+                  <div className="flex items-center gap-4">
+                    <div className="h-px flex-1 bg-gradient-to-r from-emerald-500/50 to-transparent" />
+                    <p className="text-emerald-400 font-semibold">
+                      — John Weslley
+                    </p>
+                  </div>
+                  
+                  <div className="mt-8 pt-6 border-t border-white/10">
+                    <p className="text-slate-300 text-sm leading-relaxed">
+                      {language === 'pt'
+                        ? 'John Weslley é estudante brasileiro que vive na Irlanda e conhece de perto os desafios enfrentados por quem decide estudar no exterior. Com base em sua própria experiência e na de outros colegas, ele desenvolveu o STUFF Intercâmbio para ser um guia completo e confiável para a comunidade brasileira.'
+                        : 'John Weslley is a Brazilian student living in Ireland who knows firsthand the challenges faced by those who decide to study abroad. Based on his own experience and that of other colleagues, he developed STUFF Exchange to be a complete and reliable guide for the Brazilian community.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Values */}
         <div className="mb-16">
           <div className="text-center mb-10">

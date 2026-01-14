@@ -517,7 +517,7 @@ export const Chat = () => {
 
         {/* Messages */}
         <div 
-          className="flex-1 overflow-y-auto p-3 space-y-2"
+          className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0"
           style={{ backgroundColor: '#0b141a' }}
         >
           {messages.length === 0 ? (

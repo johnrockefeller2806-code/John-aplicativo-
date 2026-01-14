@@ -61,79 +61,80 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(duration || 0);
   const [hasError, setHasError] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef(null);
 
-  // Check if audioUrl is valid base64 data URL
-  const isValidAudioUrl = audioUrl && (
+  // Check if audioUrl is valid
+  const isValidAudioUrl = audioUrl && typeof audioUrl === 'string' && (
     audioUrl.startsWith('data:audio/') || 
     audioUrl.startsWith('blob:') ||
     audioUrl.startsWith('http')
   );
 
   useEffect(() => {
-    // Reset state when audioUrl changes
     setHasError(false);
-    setIsLoaded(false);
     setIsPlaying(false);
     setCurrentTime(0);
   }, [audioUrl]);
 
   useEffect(() => {
-    if (audioRef.current && isValidAudioUrl) {
-      const audio = audioRef.current;
-      
-      const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-      const handleLoadedMetadata = () => {
-        if (audio.duration && !isNaN(audio.duration)) {
-          setAudioDuration(audio.duration);
-        }
-        setIsLoaded(true);
-      };
-      const handleEnded = () => {
-        setIsPlaying(false);
-        setCurrentTime(0);
-      };
-      const handleError = (e) => {
-        console.error('Audio error:', e);
-        setHasError(true);
-        setIsPlaying(false);
-      };
-      const handleCanPlay = () => setIsLoaded(true);
-      
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.addEventListener('ended', handleEnded);
-      audio.addEventListener('error', handleError);
-      audio.addEventListener('canplay', handleCanPlay);
-      
-      return () => {
-        audio.removeEventListener('timeupdate', handleTimeUpdate);
-        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        audio.removeEventListener('ended', handleEnded);
-        audio.removeEventListener('error', handleError);
-        audio.removeEventListener('canplay', handleCanPlay);
-      };
-    }
+    const audio = audioRef.current;
+    if (!audio || !isValidAudioUrl) return;
+
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const handleLoadedMetadata = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setAudioDuration(audio.duration);
+      }
+    };
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+    const handleError = (e) => {
+      console.error('Audio load error:', e.target?.error);
+      setHasError(true);
+    };
+    const handleCanPlayThrough = () => {
+      console.log('Audio can play through');
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('canplaythrough', handleCanPlayThrough);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('canplaythrough', handleCanPlayThrough);
+    };
   }, [isValidAudioUrl]);
 
   const togglePlay = async () => {
-    if (!audioRef.current || !isValidAudioUrl) return;
-    
+    const audio = audioRef.current;
+    if (!audio || !isValidAudioUrl) {
+      console.log('Cannot play: no audio element or invalid URL');
+      return;
+    }
+
     try {
       if (isPlaying) {
-        audioRef.current.pause();
+        audio.pause();
         setIsPlaying(false);
       } else {
-        // Reset to beginning if ended
-        if (audioRef.current.ended) {
-          audioRef.current.currentTime = 0;
+        if (audio.ended || audio.currentTime >= audio.duration) {
+          audio.currentTime = 0;
         }
-        await audioRef.current.play();
+        console.log('Attempting to play audio...');
+        await audio.play();
+        console.log('Audio playing');
         setIsPlaying(true);
       }
     } catch (error) {
-      console.error('Audio play error:', error);
+      console.error('Play error:', error.name, error.message);
       setHasError(true);
     }
   };
@@ -147,7 +148,6 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
 
   const progress = audioDuration > 0 && isFinite(audioDuration) ? (currentTime / audioDuration) * 100 : 0;
 
-  // If no valid audio URL or error, show unavailable message
   if (!isValidAudioUrl || hasError) {
     return (
       <div className="flex items-center gap-3 min-w-[180px]">
@@ -155,7 +155,7 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
           <Mic className="h-5 w-5 text-[#8696a0]" />
         </div>
         <div className="flex-1">
-          <p className="text-xs text-[#8696a0]">Áudio não disponível</p>
+          <p className="text-xs text-[#8696a0]">{hasError ? 'Erro ao carregar' : 'Áudio não disponível'}</p>
           <span className="text-[10px] text-[#8696a0]">{formatTime(duration)}</span>
         </div>
       </div>
@@ -164,12 +164,18 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
 
   return (
     <div className="flex items-center gap-3 min-w-[200px]">
-      <audio ref={audioRef} src={audioUrl} preload="auto" />
+      <audio 
+        ref={audioRef} 
+        src={audioUrl} 
+        preload="auto"
+        playsInline
+        crossOrigin="anonymous"
+      />
       <Button
         variant="ghost"
         size="icon"
         onClick={togglePlay}
-        className={`h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c]`}
+        className="h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c] active:scale-95 transition-transform"
       >
         {isPlaying ? (
           <Pause className="h-5 w-5 text-white" />
@@ -178,14 +184,14 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         )}
       </Button>
       <div className="flex-1">
-        <div className="h-1 bg-[#374045] rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[#374045] rounded-full overflow-hidden">
           <div 
             className="h-full bg-[#00a884] transition-all duration-100"
             style={{ width: `${progress}%` }}
           />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-[10px] text-[#8696a0]">
+          <span className="text-[11px] text-[#8696a0]">
             {isPlaying ? formatTime(currentTime) : formatTime(audioDuration || duration)}
           </span>
         </div>

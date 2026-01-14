@@ -283,7 +283,7 @@ export const Chat = () => {
     
     ws.onerror = () => setIsConnecting(false);
     wsRef.current = ws;
-  }, [token, user?.id]);
+  }, [token, user?.id, playNotificationSound]);
 
   useEffect(() => {
     if (token) {

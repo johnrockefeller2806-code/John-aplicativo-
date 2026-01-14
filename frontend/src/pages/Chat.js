@@ -952,11 +952,11 @@ export const Chat = () => {
       </div>
 
       {/* RIGHT - Users List */}
-      <div className={`w-full md:w-80 bg-[#111b21] flex flex-col border-l border-[#2a3942] ${showUsersList ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`w-full md:w-80 bg-white flex flex-col border-l border-gray-200 ${showUsersList ? 'flex' : 'hidden md:flex'}`}>
         {/* Header with STUFF Logo */}
-        <div className="h-14 bg-[#202c33] flex items-center justify-between px-4 flex-shrink-0">
+        <div className="h-14 bg-[#00a884] flex items-center justify-between px-4 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <img src={LOGO_URL} alt="STUFF" className="h-10 w-10 rounded-full object-cover" />
+            <img src={LOGO_URL} alt="STUFF" className="h-10 w-10 rounded-full object-cover border-2 border-white" />
             <span className="text-white font-semibold">STUFF Online</span>
           </div>
           <div className="flex items-center gap-2">
@@ -965,45 +965,45 @@ export const Chat = () => {
               variant="ghost" 
               size="icon" 
               onClick={toggleSound}
-              className="text-[#aebac1] hover:bg-[#2a3942]"
+              className="text-white hover:bg-white/20"
               title={soundEnabled ? 'Desativar som' : 'Ativar som'}
             >
-              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-200" />}
             </Button>
-            {isConnected ? <Wifi className="h-5 w-5 text-[#00a884]" /> : <WifiOff className="h-5 w-5 text-red-400" />}
-            <Button variant="ghost" size="icon" className="md:hidden text-[#aebac1] hover:bg-[#2a3942]" onClick={() => setShowUsersList(false)}>
+            {isConnected ? <Wifi className="h-5 w-5 text-white" /> : <WifiOff className="h-5 w-5 text-red-200" />}
+            <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" onClick={() => setShowUsersList(false)}>
               <X className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
         {/* Search */}
-        <div className="p-2 flex-shrink-0">
+        <div className="p-2 flex-shrink-0 bg-gray-50">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8696a0]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               value={searchUser}
               onChange={(e) => setSearchUser(e.target.value)}
               placeholder={language === 'pt' ? 'Pesquisar' : 'Search'}
-              className="w-full bg-[#202c33] border-none text-white placeholder:text-[#8696a0] pl-10 rounded-lg h-9 focus-visible:ring-0"
+              className="w-full bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 pl-10 rounded-lg h-9 focus-visible:ring-[#00a884]"
             />
           </div>
         </div>
 
         {/* Community Chat Entry */}
         <div 
-          className="flex items-center gap-3 p-3 hover:bg-[#202c33] cursor-pointer border-b border-[#2a3942]"
+          className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-200"
           onClick={() => setShowUsersList(false)}
         >
           <img src={LOGO_URL} alt="STUFF" className="w-12 h-12 rounded-full object-cover" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <h3 className="text-white font-medium">STUFF Comunidade</h3>
-              <span className="text-[#8696a0] text-xs">
+              <h3 className="text-gray-800 font-medium">STUFF Comunidade</h3>
+              <span className="text-gray-500 text-xs">
                 {messages.length > 0 && formatTime(messages[messages.length - 1]?.created_at)}
               </span>
             </div>
-            <p className="text-[#8696a0] text-sm truncate">
+            <p className="text-gray-500 text-sm truncate">
               {messages.length > 0 ? `${messages[messages.length - 1]?.user_name}: ${messages[messages.length - 1]?.content?.substring(0, 25)}...` : 'Toque para abrir'}
             </p>
           </div>

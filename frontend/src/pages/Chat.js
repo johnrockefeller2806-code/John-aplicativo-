@@ -492,7 +492,10 @@ export const Chat = () => {
       <div className={`flex-1 flex flex-col bg-[#0b141a] min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
         <div className="h-14 bg-[#202c33] flex items-center justify-between px-3 flex-shrink-0">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <a href="/" className="text-[#aebac1] hover:bg-[#2a3942] p-2 rounded-full md:hidden">
+              <ArrowLeft className="h-5 w-5" />
+            </a>
             <img src={LOGO_URL} alt="STUFF" className="w-10 h-10 rounded-full object-cover" />
             <div>
               <h2 className="text-white font-medium text-sm">STUFF Comunidade</h2>
@@ -505,14 +508,25 @@ export const Chat = () => {
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowUsersList(true)}
-            className="md:hidden text-[#aebac1] hover:bg-[#2a3942]"
-          >
-            <Users className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            {/* Sound toggle - mobile */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSound}
+              className="text-[#aebac1] hover:bg-[#2a3942] h-9 w-9"
+            >
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowUsersList(true)}
+              className="md:hidden text-[#aebac1] hover:bg-[#2a3942]"
+            >
+              <Users className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Messages */}

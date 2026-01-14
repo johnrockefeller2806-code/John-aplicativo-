@@ -64,20 +64,38 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef(null);
 
+  // Check if audioUrl is valid base64 data URL
+  const isValidAudioUrl = audioUrl && (
+    audioUrl.startsWith('data:audio/') || 
+    audioUrl.startsWith('blob:') ||
+    audioUrl.startsWith('http')
+  );
+
   useEffect(() => {
-    if (audioRef.current) {
+    // Reset state when audioUrl changes
+    setHasError(false);
+    setIsLoaded(false);
+    setIsPlaying(false);
+    setCurrentTime(0);
+  }, [audioUrl]);
+
+  useEffect(() => {
+    if (audioRef.current && isValidAudioUrl) {
       const audio = audioRef.current;
       
       const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
       const handleLoadedMetadata = () => {
-        setAudioDuration(audio.duration);
+        if (audio.duration && !isNaN(audio.duration)) {
+          setAudioDuration(audio.duration);
+        }
         setIsLoaded(true);
       };
       const handleEnded = () => {
         setIsPlaying(false);
         setCurrentTime(0);
       };
-      const handleError = () => {
+      const handleError = (e) => {
+        console.error('Audio error:', e);
         setHasError(true);
         setIsPlaying(false);
       };
@@ -97,16 +115,20 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         audio.removeEventListener('canplay', handleCanPlay);
       };
     }
-  }, []);
+  }, [isValidAudioUrl]);
 
   const togglePlay = async () => {
-    if (!audioRef.current || hasError || !audioUrl) return;
+    if (!audioRef.current || !isValidAudioUrl) return;
     
     try {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
+        // Reset to beginning if ended
+        if (audioRef.current.ended) {
+          audioRef.current.currentTime = 0;
+        }
         await audioRef.current.play();
         setIsPlaying(true);
       }
@@ -117,16 +139,16 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   };
 
   const formatTime = (time) => {
-    if (!time || isNaN(time)) return '0:00';
+    if (!time || isNaN(time) || !isFinite(time)) return '0:00';
     const mins = Math.floor(time / 60);
     const secs = Math.floor(time % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progress = audioDuration > 0 ? (currentTime / audioDuration) * 100 : 0;
+  const progress = audioDuration > 0 && isFinite(audioDuration) ? (currentTime / audioDuration) * 100 : 0;
 
-  // If no audio URL or error, show unavailable message
-  if (!audioUrl || hasError) {
+  // If no valid audio URL or error, show unavailable message
+  if (!isValidAudioUrl || hasError) {
     return (
       <div className="flex items-center gap-3 min-w-[180px]">
         <div className="h-10 w-10 rounded-full flex-shrink-0 bg-[#374045] flex items-center justify-center">
@@ -142,13 +164,12 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
 
   return (
     <div className="flex items-center gap-3 min-w-[200px]">
-      <audio ref={audioRef} src={audioUrl} preload="metadata" />
+      <audio ref={audioRef} src={audioUrl} preload="auto" />
       <Button
         variant="ghost"
         size="icon"
         onClick={togglePlay}
-        disabled={!isLoaded && !hasError}
-        className={`h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c] disabled:opacity-50`}
+        className={`h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c]`}
       >
         {isPlaying ? (
           <Pause className="h-5 w-5 text-white" />
@@ -165,7 +186,7 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         </div>
         <div className="flex justify-between mt-1">
           <span className="text-[10px] text-[#8696a0]">
-            {isPlaying ? formatTime(currentTime) : formatTime(audioDuration)}
+            {isPlaying ? formatTime(currentTime) : formatTime(audioDuration || duration)}
           </span>
         </div>
       </div>

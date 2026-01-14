@@ -373,19 +373,29 @@ export const Chat = () => {
     if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
   };
 
-  const sendAudioMessage = () => {
+  const sendAudioMessage = async () => {
     if (audioBlob && wsRef.current?.readyState === WebSocket.OPEN) {
-      // Send audio message with special format
-      wsRef.current.send(JSON.stringify({
-        type: 'message',
-        content: `[AUDIO:${recordingTime}]`,
-        message_type: 'audio',
-        audio_duration: recordingTime
-      }));
-      setAudioBlob(null);
-      setAudioUrl(null);
-      setRecordingTime(0);
-      toast.success(language === 'pt' ? 'Áudio enviado!' : 'Audio sent!');
+      try {
+        // Convert blob to base64
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Audio = reader.result;
+          wsRef.current.send(JSON.stringify({
+            type: 'message',
+            content: `🎤 Mensagem de voz (${formatRecordingTime(recordingTime)})`,
+            message_type: 'audio',
+            audio_data: base64Audio,
+            audio_duration: recordingTime
+          }));
+          setAudioBlob(null);
+          setAudioUrl(null);
+          setRecordingTime(0);
+          toast.success(language === 'pt' ? 'Áudio enviado!' : 'Audio sent!');
+        };
+        reader.readAsDataURL(audioBlob);
+      } catch (error) {
+        toast.error(language === 'pt' ? 'Erro ao enviar áudio' : 'Error sending audio');
+      }
     }
   };
 

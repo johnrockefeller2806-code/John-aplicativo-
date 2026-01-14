@@ -130,7 +130,13 @@ export const StudentGuide = () => {
       tips: language === 'pt' 
         ? ['Ofertas especiais toda quinta-feira', 'Padaria fresca e barata', 'Frutas e vegetais baratos']
         : ['Special offers every Thursday', 'Fresh and cheap bakery', 'Cheap fruits and vegetables'],
-      website: 'https://www.lidl.ie'
+      website: 'https://www.lidl.ie',
+      storeFinder: 'https://www.lidl.ie/store-finder',
+      locations: {
+        'City Centre': ['Parnell Street', 'Aungier Street', 'North Circular Road'],
+        'Dublin Sul': ['Rathmines', 'Ballsbridge', 'Nutgrove (Rathfarnham)'],
+        'Dublin Norte': ['Drumcondra', 'Finglas', 'Artane']
+      }
     },
     {
       name: 'Aldi',
@@ -143,7 +149,13 @@ export const StudentGuide = () => {
       tips: language === 'pt'
         ? ['Super Savers às quartas e domingos', 'Produtos irlandeses de qualidade', 'Vinhos premiados baratos']
         : ['Super Savers on Wednesdays and Sundays', 'Quality Irish products', 'Cheap award-winning wines'],
-      website: 'https://www.aldi.ie'
+      website: 'https://www.aldi.ie',
+      storeFinder: 'https://www.aldi.ie/store-finder',
+      locations: {
+        'City Centre': ['Thomas Street', 'Cork Street', 'Dorset Street'],
+        'Dublin Sul': ['Rathmines', 'Crumlin', 'Sundrive Road'],
+        'Dublin Norte': ['Phibsborough', 'Glasnevin', 'Coolock']
+      }
     },
     {
       name: 'Tesco',
@@ -156,7 +168,13 @@ export const StudentGuide = () => {
       tips: language === 'pt'
         ? ['Faça o Clubcard para descontos', 'Tesco Express para compras rápidas', 'Delivery disponível']
         : ['Get Clubcard for discounts', 'Tesco Express for quick shopping', 'Delivery available'],
-      website: 'https://www.tesco.ie'
+      website: 'https://www.tesco.ie',
+      storeFinder: 'https://www.tesco.ie/store-locator',
+      locations: {
+        'City Centre': ['Jervis Centre (Metro)', 'Baggot Street (Express)', 'Parnell Street (Express)'],
+        'Dublin Sul': ['Dundrum (Extra)', 'Ranelagh (Metro)', 'Rathmines (Metro)'],
+        'Dublin Norte': ['Clearwater (Extra)', 'Drumcondra (Express)', 'Santry (Extra)']
+      }
     },
     {
       name: 'Dunnes Stores',
@@ -169,9 +187,18 @@ export const StudentGuide = () => {
       tips: language === 'pt'
         ? ['Simply Better = produtos premium', 'Também vende roupas e casa', 'Shop & Save vouchers']
         : ['Simply Better = premium products', 'Also sells clothes and home', 'Shop & Save vouchers'],
-      website: 'https://www.dunnesstores.com'
+      website: 'https://www.dunnesstores.com',
+      storeFinder: 'https://www.dunnesstores.com/store-finder',
+      locations: {
+        'City Centre': ['St. Stephen\'s Green Centre', 'Henry Street (Ilac)', 'George\'s Street'],
+        'Dublin Sul': ['Dundrum Town Centre', 'Cornelscourt', 'Nutgrove'],
+        'Dublin Norte': ['Northside Shopping Centre', 'Omni Park Santry', 'Blanchardstown']
+      }
     },
   ];
+
+  const [selectedSupermarketRegion, setSelectedSupermarketRegion] = useState('City Centre');
+  const supermarketRegions = ['City Centre', 'Dublin Sul', 'Dublin Norte'];
 
   // Brazilian services data
   const brazilianData = {

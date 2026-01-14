@@ -766,23 +766,24 @@ export const StudentGuide = () => {
             </Card>
 
             {/* Brazilian Stores */}
-            <Card className="border-slate-100 mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border-emerald-200 border-2 mb-6">
+              <CardHeader className="bg-emerald-50">
+                <CardTitle className="flex items-center gap-2 text-emerald-800">
                   <ShoppingCart className="h-5 w-5 text-emerald-600" />
                   {language === 'pt' ? 'Lojas de Produtos Brasileiros' : 'Brazilian Product Stores'}
+                  <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Toque para ver' : 'Tap to view'}</Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {brazilianData.stores.map((store, index) => (
-                    <div key={index} className="p-4 bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl border border-green-100">
-                      <h4 className="font-semibold text-slate-900 mb-1">{store.name}</h4>
-                      <div className="flex items-center gap-1 text-sm text-slate-500 mb-2">
+                    <div key={index} className="p-4 bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl border-2 border-emerald-200 hover:border-emerald-400 transition-all cursor-pointer">
+                      <h4 className="font-semibold text-emerald-900 mb-1">{store.name}</h4>
+                      <div className="flex items-center gap-1 text-sm text-emerald-700 mb-2">
                         <MapPin className="h-3 w-3" />
                         {store.location}
                       </div>
-                      <p className="text-xs text-slate-600">{store.desc}</p>
+                      <p className="text-xs text-emerald-600">{store.desc}</p>
                     </div>
                   ))}
                 </div>

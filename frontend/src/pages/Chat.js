@@ -462,11 +462,40 @@ export const Chat = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
     }
+    // Stop preview if playing
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    setIsPreviewPlaying(false);
     setIsRecording(false);
     setAudioBlob(null);
     setAudioUrl(null);
     setRecordingTime(0);
     if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
+  };
+
+  // Play/Pause preview audio
+  const togglePreviewPlay = async () => {
+    if (!audioUrl) return;
+    
+    try {
+      if (isPreviewPlaying && previewAudioRef.current) {
+        previewAudioRef.current.pause();
+        setIsPreviewPlaying(false);
+      } else {
+        // Create new audio element if needed
+        if (!previewAudioRef.current) {
+          previewAudioRef.current = new Audio(audioUrl);
+          previewAudioRef.current.onended = () => setIsPreviewPlaying(false);
+        }
+        await previewAudioRef.current.play();
+        setIsPreviewPlaying(true);
+      }
+    } catch (error) {
+      console.error('Preview play error:', error);
+      toast.error(language === 'pt' ? 'Erro ao reproduzir áudio' : 'Error playing audio');
+    }
   };
 
   const sendAudioMessage = async () => {

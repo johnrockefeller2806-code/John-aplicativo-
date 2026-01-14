@@ -95,8 +95,8 @@ export const StuffDuvidas = () => {
         {
           q: language === 'pt' ? 'Preciso de visto para estudar na Irlanda?' : 'Do I need a visa to study in Ireland?',
           a: language === 'pt'
-            ? 'Brasileiros não precisam de visto prévio para cursos de até 90 dias. Para cursos mais longos, você entra como turista e faz o registro (GNIB/IRP) já na Irlanda.'
-            : 'Brazilians do not need a prior visa for courses up to 90 days. For longer courses, you enter as a tourist and register (GNIB/IRP) in Ireland.'
+            ? 'Brasileiros não necessitam de visto para entrar na Irlanda como turista, com prazo máximo de 90 dias de permanência. Para permanecer por um período maior, é necessário realizar um intercâmbio seguindo as regras da imigração irlandesa.'
+            : 'Brazilians do not need a visa to enter Ireland as tourists, with a maximum stay of 90 days. To stay for a longer period, it is necessary to enroll in an exchange program following Irish immigration rules.'
         },
         {
           q: language === 'pt' ? 'O que é o GNIB/IRP?' : 'What is GNIB/IRP?',

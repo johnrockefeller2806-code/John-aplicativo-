@@ -116,3 +116,19 @@
 .chat-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #4a5568;
 }
+
+/* Hide Emergent badge on chat page */
+[data-testid="chat-page"] ~ div[style*="position: fixed"],
+.chat-page-active div[style*="Made with Emergent"],
+body:has([data-testid="chat-page"]) div[style*="position: fixed"][style*="bottom"] {
+    display: none !important;
+}
+
+/* Alternative: Move badge higher on mobile chat */
+@media (max-width: 768px) {
+    body:has([data-testid="chat-page"]) iframe,
+    body:has([data-testid="chat-page"]) div[style*="position: fixed"][style*="right"] {
+        bottom: 80px !important;
+        z-index: 1 !important;
+    }
+}

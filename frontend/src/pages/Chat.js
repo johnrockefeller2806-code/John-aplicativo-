@@ -684,6 +684,16 @@ export const Chat = () => {
             <span className="text-white font-semibold">STUFF Online</span>
           </div>
           <div className="flex items-center gap-2">
+            {/* Sound toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSound}
+              className="text-[#aebac1] hover:bg-[#2a3942]"
+              title={soundEnabled ? 'Desativar som' : 'Ativar som'}
+            >
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
+            </Button>
             {isConnected ? <Wifi className="h-5 w-5 text-[#00a884]" /> : <WifiOff className="h-5 w-5 text-red-400" />}
             <Button variant="ghost" size="icon" className="md:hidden text-[#aebac1] hover:bg-[#2a3942]" onClick={() => setShowUsersList(false)}>
               <X className="h-5 w-5" />

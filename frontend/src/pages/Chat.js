@@ -810,19 +810,19 @@ export const Chat = () => {
                       )}
                       
                       <div className="flex items-center justify-end gap-1 mt-1">
-                        <span className="text-[10px] text-[#8696a0]">{formatTime(msg.created_at)}</span>
+                        <span className="text-[10px] text-gray-500">{formatTime(msg.created_at)}</span>
                         {isOwn && <CheckCheck className="h-4 w-4 text-[#53bdeb]" />}
                       </div>
                       
                       {/* Delete button - shows on hover/tap for own messages or admin */}
-                      {!msg.deleted && (isOwn || isAdmin) && (
+                      {(isOwn || isAdmin) && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => deleteMessage(msg.id)}
-                          className="absolute -right-1 -top-1 h-6 w-6 bg-[#202c33] rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-500/20 transition-opacity"
+                          className="absolute -right-1 -top-1 h-6 w-6 bg-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-50 transition-opacity shadow-sm"
                         >
-                          <Trash2 className="h-3 w-3 text-red-400" />
+                          <Trash2 className="h-3 w-3 text-red-500" />
                         </Button>
                       )}
                     </div>

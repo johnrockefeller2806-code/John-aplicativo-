@@ -452,20 +452,23 @@ export const Chat = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // Check supported MIME types for better compatibility
+      // iOS Safari supports audio/mp4, Chrome/Firefox support webm
+      // Check supported MIME types - prioritize mp4 for iOS compatibility
       const mimeTypes = [
-        'audio/mp4',
-        'audio/webm;codecs=opus',
-        'audio/webm',
+        'audio/mp4',           // iOS Safari
+        'audio/aac',           // iOS fallback  
+        'audio/mpeg',          // MP3
+        'audio/webm;codecs=opus', // Chrome/Firefox
+        'audio/webm',          // Chrome/Firefox fallback
         'audio/ogg;codecs=opus',
-        'audio/ogg',
-        ''  // Let browser choose default
+        ''                     // Let browser choose default
       ];
       
       let selectedMimeType = '';
       for (const type of mimeTypes) {
         if (type === '' || MediaRecorder.isTypeSupported(type)) {
           selectedMimeType = type;
+          console.log('Selected MIME type:', type || 'default');
           break;
         }
       }
@@ -474,7 +477,7 @@ export const Chat = () => {
       mediaRecorderRef.current = new MediaRecorder(stream, options);
       audioChunksRef.current = [];
       
-      console.log('Recording with MIME type:', mediaRecorderRef.current.mimeType);
+      console.log('Recording started with MIME type:', mediaRecorderRef.current.mimeType);
       
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -483,7 +486,7 @@ export const Chat = () => {
       };
       
       mediaRecorderRef.current.onstop = () => {
-        const mimeType = mediaRecorderRef.current.mimeType || 'audio/webm';
+        const mimeType = mediaRecorderRef.current.mimeType || 'audio/mp4';
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
         setAudioBlob(blob);
         setAudioUrl(URL.createObjectURL(blob));

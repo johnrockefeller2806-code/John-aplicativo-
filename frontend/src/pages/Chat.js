@@ -60,41 +60,85 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(duration || 0);
+  const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.addEventListener('timeupdate', () => {
-        setCurrentTime(audioRef.current.currentTime);
-      });
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setAudioDuration(audioRef.current.duration);
-      });
-      audioRef.current.addEventListener('ended', () => {
+      const audio = audioRef.current;
+      
+      const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+      const handleLoadedMetadata = () => {
+        setAudioDuration(audio.duration);
+        setIsLoaded(true);
+      };
+      const handleEnded = () => {
         setIsPlaying(false);
         setCurrentTime(0);
-      });
+      };
+      const handleError = () => {
+        setHasError(true);
+        setIsPlaying(false);
+      };
+      const handleCanPlay = () => setIsLoaded(true);
+      
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('error', handleError);
+      audio.addEventListener('canplay', handleCanPlay);
+      
+      return () => {
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('error', handleError);
+        audio.removeEventListener('canplay', handleCanPlay);
+      };
     }
   }, []);
 
-  const togglePlay = () => {
-    if (audioRef.current) {
+  const togglePlay = async () => {
+    if (!audioRef.current || hasError || !audioUrl) return;
+    
+    try {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
-        audioRef.current.play();
+        await audioRef.current.play();
+        setIsPlaying(true);
       }
-      setIsPlaying(!isPlaying);
+    } catch (error) {
+      console.error('Audio play error:', error);
+      setHasError(true);
     }
   };
 
   const formatTime = (time) => {
+    if (!time || isNaN(time)) return '0:00';
     const mins = Math.floor(time / 60);
     const secs = Math.floor(time % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const progress = audioDuration > 0 ? (currentTime / audioDuration) * 100 : 0;
+
+  // If no audio URL or error, show unavailable message
+  if (!audioUrl || hasError) {
+    return (
+      <div className="flex items-center gap-3 min-w-[180px]">
+        <div className="h-10 w-10 rounded-full flex-shrink-0 bg-[#374045] flex items-center justify-center">
+          <Mic className="h-5 w-5 text-[#8696a0]" />
+        </div>
+        <div className="flex-1">
+          <p className="text-xs text-[#8696a0]">Áudio não disponível</p>
+          <span className="text-[10px] text-[#8696a0]">{formatTime(duration)}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-3 min-w-[200px]">
@@ -103,7 +147,8 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         variant="ghost"
         size="icon"
         onClick={togglePlay}
-        className={`h-10 w-10 rounded-full flex-shrink-0 ${isOwn ? 'bg-[#00a884] hover:bg-[#06cf9c]' : 'bg-[#00a884] hover:bg-[#06cf9c]'}`}
+        disabled={!isLoaded && !hasError}
+        className={`h-10 w-10 rounded-full flex-shrink-0 bg-[#00a884] hover:bg-[#06cf9c] disabled:opacity-50`}
       >
         {isPlaying ? (
           <Pause className="h-5 w-5 text-white" />

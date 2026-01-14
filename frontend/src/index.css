@@ -79,3 +79,40 @@
         display: contents !important;
     }
 }
+
+/* Mobile viewport fix for chat */
+@supports (height: 100dvh) {
+    .h-dvh {
+        height: 100dvh;
+    }
+}
+
+/* Safe area for mobile devices */
+.safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Fix for iOS keyboard */
+@supports (-webkit-touch-callout: none) {
+    input, textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}
+
+/* Chat scrollbar dark theme */
+.chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+    background: #0b141a;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+    background: #374045;
+    border-radius: 3px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #4a5568;
+}

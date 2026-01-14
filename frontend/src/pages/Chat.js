@@ -764,12 +764,21 @@ export const Chat = () => {
               <Trash2 className="h-5 w-5" />
             </Button>
             <div className="flex-1 flex items-center gap-3 bg-[#2a3942] rounded-full px-4 py-2">
-              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-[#00a884]">
-                <Play className="h-4 w-4 text-white ml-0.5" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={togglePreviewPlay}
+                className="h-8 w-8 rounded-full bg-[#00a884] hover:bg-[#06cf9c]"
+              >
+                {isPreviewPlaying ? (
+                  <Pause className="h-4 w-4 text-white" />
+                ) : (
+                  <Play className="h-4 w-4 text-white ml-0.5" />
+                )}
               </Button>
               <div className="flex-1 flex items-center gap-0.5">
                 {[...Array(25)].map((_, i) => (
-                  <div key={i} className="w-1 bg-[#8696a0] rounded-full" style={{ height: `${Math.random() * 12 + 4}px` }} />
+                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-[#8696a0]'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
                 ))}
               </div>
               <span className="text-white text-sm">{formatRecordingTime(recordingTime)}</span>

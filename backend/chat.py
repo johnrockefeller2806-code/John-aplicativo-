@@ -191,7 +191,8 @@ async def get_messages(
         query["created_at"] = {"$lt": before}
     
     messages = await db.chat_messages.find(
-        query, {"_id": 0}
+        query, 
+        {"_id": 0, "expire_at": 0}  # Exclude only _id and expire_at
     ).sort("created_at", -1).limit(limit).to_list(limit)
     
     # Return in chronological order

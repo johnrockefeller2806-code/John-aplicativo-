@@ -20,6 +20,7 @@ import { SchoolRegister } from "./pages/SchoolRegister";
 import { SchoolSubscription } from "./pages/SchoolSubscription";
 import { StuffDuvidas } from "./pages/StuffDuvidas";
 import { StudentGuide } from "./pages/StudentGuide";
+import { About } from "./pages/About";
 import { Chat } from "./pages/Chat";
 import { Profile } from "./pages/Profile";
 

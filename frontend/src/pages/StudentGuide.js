@@ -731,26 +731,27 @@ export const StudentGuide = () => {
           {/* BRASIL NA IRLANDA TAB */}
           <TabsContent value="brasil" data-testid="brasil-content">
             {/* Restaurants */}
-            <Card className="border-slate-100 mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border-emerald-200 border-2 mb-6">
+              <CardHeader className="bg-emerald-50">
+                <CardTitle className="flex items-center gap-2 text-emerald-800">
                   <Utensils className="h-5 w-5 text-emerald-600" />
                   {language === 'pt' ? 'Restaurantes Brasileiros' : 'Brazilian Restaurants'}
+                  <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Toque para ver' : 'Tap to view'}</Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {brazilianData.restaurants.map((restaurant, index) => (
-                    <div key={index} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
+                    <div key={index} className="flex items-center gap-4 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200 hover:border-emerald-400 hover:bg-emerald-100 transition-all cursor-pointer">
                       <div className="p-3 bg-green-100 rounded-xl">
                         <span className="text-2xl">🇧🇷</span>
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-slate-900">{restaurant.name}</h4>
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                        <h4 className="font-semibold text-emerald-900">{restaurant.name}</h4>
+                        <div className="flex items-center gap-2 text-sm text-emerald-700">
                           <MapPin className="h-3 w-3" />
                           {restaurant.location}
-                          <span className="text-slate-300">|</span>
+                          <span className="text-emerald-300">|</span>
                           {restaurant.type}
                         </div>
                         <div className="flex items-center gap-1 text-sm text-emerald-600 mt-1">

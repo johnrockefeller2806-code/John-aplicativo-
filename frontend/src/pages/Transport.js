@@ -204,6 +204,10 @@ export const Transport = () => {
               <Train className="h-4 w-4 mr-1" />
               DART
             </TabsTrigger>
+            <TabsTrigger value="bikes" data-testid="tab-bikes">
+              <Bike className="h-4 w-4 mr-1" />
+              Bikes
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="all">

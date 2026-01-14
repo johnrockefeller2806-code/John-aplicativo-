@@ -219,6 +219,244 @@ export const Services = () => {
           </div>
         </div>
 
+        {/* Banks Section */}
+        <div className="mb-12" data-testid="banks-section">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-emerald-100 rounded-xl">
+              <Landmark className="h-6 w-6 text-emerald-700" />
+            </div>
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-slate-900">
+                {language === 'pt' ? 'Bancos na Irlanda' : 'Banks in Ireland'}
+              </h2>
+              <p className="text-slate-500 text-sm">
+                {language === 'pt' ? 'Abra sua conta bancária para receber seu salário' : 'Open your bank account to receive your salary'}
+              </p>
+            </div>
+          </div>
+
+          {/* Region Filter */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPinned className="h-4 w-4 text-slate-500" />
+              <span className="text-sm font-medium text-slate-700">
+                {language === 'pt' ? 'Filtrar por região:' : 'Filter by region:'}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {regions.map((region) => (
+                <button
+                  key={region}
+                  onClick={() => setSelectedRegion(region)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedRegion === region
+                      ? 'bg-emerald-700 text-white shadow-md'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                  }`}
+                  data-testid={`region-filter-${region.replace(/\s+/g, '-').toLowerCase()}`}
+                >
+                  {region}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Traditional Banks */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Landmark className="h-5 w-5 text-blue-600" />
+              <h3 className="font-semibold text-lg text-slate-800">
+                {language === 'pt' ? 'Bancos Tradicionais' : 'Traditional Banks'}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {banks.traditional.map((bank) => (
+                <Card 
+                  key={bank.id} 
+                  className="border-slate-100 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                  data-testid={`bank-card-${bank.id}`}
+                >
+                  <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-700" />
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-4xl">{bank.logo}</span>
+                        <div>
+                          <h4 className="font-semibold text-slate-900">{bank.name}</h4>
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            {bank.type}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-slate-600 text-sm mb-4">{bank.description}</p>
+                    
+                    <div className="mb-4">
+                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+                        {language === 'pt' ? 'Benefícios' : 'Benefits'}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {bank.features.map((feature, i) => (
+                          <Badge key={i} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {bank.branches && bank.branches[selectedRegion] && (
+                      <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {language === 'pt' ? `Agências em ${selectedRegion}` : `Branches in ${selectedRegion}`}
+                        </p>
+                        <ul className="space-y-1">
+                          {bank.branches[selectedRegion].map((branch, i) => (
+                            <li key={i} className="text-sm text-slate-600 flex items-start gap-2">
+                              <span className="text-emerald-500 mt-1">•</span>
+                              {branch}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-2">
+                      <a
+                        href={bank.bookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 transition-colors"
+                        data-testid={`book-appointment-${bank.id}`}
+                      >
+                        <Clock className="h-4 w-4" />
+                        {language === 'pt' ? 'Agendar Abertura' : 'Book Appointment'}
+                      </a>
+                      <a
+                        href={bank.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Site
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Digital Banks */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Smartphone className="h-5 w-5 text-purple-600" />
+              <h3 className="font-semibold text-lg text-slate-800">
+                {language === 'pt' ? 'Bancos Digitais' : 'Digital Banks'}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {banks.digital.map((bank) => (
+                <Card 
+                  key={bank.id} 
+                  className="border-slate-100 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                  data-testid={`bank-card-${bank.id}`}
+                >
+                  <div className="h-2 bg-gradient-to-r from-purple-500 to-pink-500" />
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-4xl">{bank.logo}</span>
+                        <div>
+                          <h4 className="font-semibold text-slate-900">{bank.name}</h4>
+                          <Badge variant="secondary" className="text-xs mt-1 bg-purple-100 text-purple-700">
+                            {bank.type}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-slate-600 text-sm mb-4">{bank.description}</p>
+                    
+                    <div className="mb-4">
+                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+                        {language === 'pt' ? 'Benefícios' : 'Benefits'}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {bank.features.map((feature, i) => (
+                          <Badge key={i} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-4 p-3 bg-purple-50 rounded-lg">
+                      <p className="text-sm text-purple-800">
+                        <Smartphone className="h-4 w-4 inline mr-1" />
+                        {language === 'pt' 
+                          ? '100% Digital - Abra sua conta pelo app em minutos, sem ir a agência!'
+                          : '100% Digital - Open your account via app in minutes, no branch visit needed!'}
+                      </p>
+                    </div>
+
+                    <div className="flex gap-3 pt-2">
+                      <a
+                        href={bank.bookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+                        data-testid={`download-app-${bank.id}`}
+                      >
+                        <Smartphone className="h-4 w-4" />
+                        {language === 'pt' ? 'Baixar App' : 'Download App'}
+                      </a>
+                      <a
+                        href={bank.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Site
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Tips Box */}
+          <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200">
+            <h4 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
+              💡 {language === 'pt' ? 'Dicas Importantes' : 'Important Tips'}
+            </h4>
+            <ul className="space-y-2 text-sm text-amber-800">
+              <li className="flex items-start gap-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                {language === 'pt' 
+                  ? 'Para abrir conta em banco tradicional, você precisará do PPS Number e comprovante de endereço.'
+                  : 'To open an account at a traditional bank, you will need your PPS Number and proof of address.'}
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                {language === 'pt'
+                  ? 'O Revolut pode ser aberto apenas com passaporte - ideal para usar enquanto espera o PPS.'
+                  : 'Revolut can be opened with just a passport - ideal to use while waiting for your PPS.'}
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                {language === 'pt'
+                  ? 'Muitos empregadores na Irlanda aceitam pagamento via Revolut!'
+                  : 'Many employers in Ireland accept payment via Revolut!'}
+              </li>
+            </ul>
+          </div>
+        </div>
+
         {/* Agencies Section */}
         <div>
           <h2 className="font-serif text-2xl font-semibold text-slate-900 mb-6">

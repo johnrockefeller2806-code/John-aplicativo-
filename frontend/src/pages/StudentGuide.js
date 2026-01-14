@@ -521,6 +521,31 @@ export const StudentGuide = () => {
 
           {/* SUPERMERCADOS TAB */}
           <TabsContent value="supermercados" data-testid="supermercados-content">
+            {/* Region Filter */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="h-4 w-4 text-slate-500" />
+                <span className="text-sm font-medium text-slate-700">
+                  {language === 'pt' ? 'Filtrar por região:' : 'Filter by region:'}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {supermarketRegions.map((region) => (
+                  <button
+                    key={region}
+                    onClick={() => setSelectedSupermarketRegion(region)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      selectedSupermarketRegion === region
+                        ? 'bg-emerald-700 text-white shadow-md'
+                        : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                    }`}
+                  >
+                    {region}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               {supermarkets.map((market, index) => (
                 <Card key={index} className="border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
@@ -558,7 +583,25 @@ export const StudentGuide = () => {
                     
                     <p className="text-slate-600 text-sm mb-4">{market.desc}</p>
                     
-                    <div className="bg-slate-50 rounded-xl p-3">
+                    {/* Locations Section */}
+                    {market.locations && market.locations[selectedSupermarketRegion] && (
+                      <div className="bg-emerald-50 rounded-xl p-3 mb-4 border border-emerald-100">
+                        <p className="text-xs font-medium text-emerald-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {language === 'pt' ? `Lojas em ${selectedSupermarketRegion}` : `Stores in ${selectedSupermarketRegion}`}
+                        </p>
+                        <ul className="space-y-1">
+                          {market.locations[selectedSupermarketRegion].map((location, i) => (
+                            <li key={i} className="text-sm text-emerald-800 flex items-start gap-2">
+                              <span className="text-emerald-500 mt-0.5">•</span>
+                              {location}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    <div className="bg-slate-50 rounded-xl p-3 mb-4">
                       <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
                         💡 {language === 'pt' ? 'Dicas' : 'Tips'}
                       </p>
@@ -571,6 +614,18 @@ export const StudentGuide = () => {
                         ))}
                       </ul>
                     </div>
+
+                    {/* Store Finder Button */}
+                    <a
+                      href={market.storeFinder}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 ${market.color} text-white rounded-lg font-medium hover:opacity-90 transition-opacity`}
+                    >
+                      <MapPin className="h-4 w-4" />
+                      {language === 'pt' ? 'Ver Todas as Lojas na Irlanda' : 'Find All Stores in Ireland'}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
                   </CardContent>
                 </Card>
               ))}

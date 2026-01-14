@@ -431,10 +431,10 @@ export const Chat = () => {
 
   return (
     <div className="h-screen bg-[#111b21] flex overflow-hidden" data-testid="chat-page">
-      {/* Left Side - Messages */}
-      <div className={`flex-1 flex flex-col bg-[#0b141a] ${!showUsersList ? 'flex' : 'hidden md:flex'}`}>
+      {/* LEFT Side - Messages */}
+      <div className={`flex-1 flex flex-col bg-[#0b141a] order-1 ${!showUsersList ? 'flex' : 'hidden md:flex'}`}>
         {/* Chat Header */}
-        <div className="h-16 bg-[#202c33] flex items-center justify-between px-4 border-l border-[#2a3942]">
+        <div className="h-16 bg-[#202c33] flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
@@ -444,9 +444,11 @@ export const Chat = () => {
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <div className="w-10 h-10 bg-[#00a884] rounded-full flex items-center justify-center">
-              <Users className="h-5 w-5 text-white" />
-            </div>
+            <img 
+              src={LOGO_URL} 
+              alt="STUFF" 
+              className="w-10 h-10 rounded-full object-cover"
+            />
             <div>
               <h2 className="text-white font-medium">STUFF Comunidade</h2>
               <p className="text-[#8696a0] text-xs flex items-center gap-1">

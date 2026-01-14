@@ -463,7 +463,269 @@ export const Services = () => {
           </div>
         </div>
 
-        {/* Agencies Section */}
+        {/* Health Section */}
+        <div className="mb-12" data-testid="health-section">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-red-100 rounded-xl">
+              <Stethoscope className="h-6 w-6 text-red-600" />
+            </div>
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-slate-900">
+                {language === 'pt' ? 'Saúde na Irlanda' : 'Health in Ireland'}
+              </h2>
+              <p className="text-slate-500 text-sm">
+                {language === 'pt' ? 'Sistema de saúde e onde buscar atendimento' : 'Healthcare system and where to seek treatment'}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* Emergency Card */}
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-red-600 rounded-xl">
+                    <AlertCircle className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-red-900">{language === 'pt' ? 'Emergência' : 'Emergency'}</h3>
+                    <p className="text-3xl font-bold text-red-600">999 / 112</p>
+                  </div>
+                </div>
+                <p className="text-sm text-red-800">
+                  {language === 'pt' 
+                    ? 'Ligue para emergências médicas, bombeiros ou polícia. Gratuito de qualquer telefone.'
+                    : 'Call for medical emergencies, fire or police. Free from any phone.'}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* GP Card */}
+            <Card className="border-slate-100">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-blue-100 rounded-xl">
+                    <Stethoscope className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">GP (Clínico Geral)</h3>
+                </div>
+                <p className="text-sm text-slate-600 mb-3">
+                  {language === 'pt' 
+                    ? 'Médico de família para consultas de rotina. Custo médio: €50-70 por consulta.'
+                    : 'Family doctor for routine consultations. Average cost: €50-70 per visit.'}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-xs">{language === 'pt' ? 'Precisa de agendamento' : 'Appointment needed'}</Badge>
+                  <Badge variant="secondary" className="text-xs">{language === 'pt' ? 'Receitas médicas' : 'Prescriptions'}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pharmacy Card */}
+            <Card className="border-slate-100">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-green-100 rounded-xl">
+                    <Pill className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">{language === 'pt' ? 'Farmácias' : 'Pharmacies'}</h3>
+                </div>
+                <p className="text-sm text-slate-600 mb-3">
+                  {language === 'pt' 
+                    ? 'Boots, LloydsPharmacy e McCabes são as principais redes. Algumas têm atendimento 24h.'
+                    : 'Boots, LloydsPharmacy and McCabes are the main chains. Some have 24h service.'}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-xs">Boots</Badge>
+                  <Badge variant="secondary" className="text-xs">LloydsPharmacy</Badge>
+                  <Badge variant="secondary" className="text-xs">McCabes</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Hospitals */}
+          <Card className="border-slate-100 mb-6">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Hospital className="h-5 w-5 text-red-600" />
+                <h3 className="font-semibold text-slate-900">{language === 'pt' ? 'Hospitais Principais em Dublin' : 'Main Hospitals in Dublin'}</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { name: 'Mater Hospital', location: 'Eccles Street', type: 'A&E' },
+                  { name: "St. James's Hospital", location: 'James Street', type: 'A&E' },
+                  { name: 'Beaumont Hospital', location: 'Beaumont', type: 'A&E' },
+                  { name: "St. Vincent's Hospital", location: 'Elm Park', type: 'A&E' },
+                  { name: 'Tallaght Hospital', location: 'Tallaght', type: 'A&E' },
+                  { name: 'Connolly Hospital', location: 'Blanchardstown', type: 'A&E' },
+                ].map((hospital, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                    <Hospital className="h-5 w-5 text-red-500" />
+                    <div>
+                      <p className="font-medium text-slate-900">{hospital.name}</p>
+                      <p className="text-xs text-slate-500">{hospital.location} • {hospital.type}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Health Tips */}
+          <div className="p-6 bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl border border-red-200">
+            <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+              🏥 {language === 'pt' ? 'Dicas de Saúde para Estudantes' : 'Health Tips for Students'}
+            </h4>
+            <ul className="space-y-2 text-sm text-red-800">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-red-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'Tenha sempre um seguro saúde válido - é obrigatório para estudantes!'
+                  : 'Always have valid health insurance - it\'s mandatory for students!'}
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-red-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'Registre-se em um GP próximo de casa assim que chegar.'
+                  : 'Register with a GP near your home as soon as you arrive.'}
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-red-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'Para pequenos problemas, farmacêuticos podem ajudar sem precisar de médico.'
+                  : 'For minor issues, pharmacists can help without needing a doctor.'}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Chip/Internet Section */}
+        <div className="mb-12" data-testid="chip-section">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-cyan-100 rounded-xl">
+              <Wifi className="h-6 w-6 text-cyan-600" />
+            </div>
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-slate-900">
+                {language === 'pt' ? 'Chip e Internet' : 'SIM Card & Internet'}
+              </h2>
+              <p className="text-slate-500 text-sm">
+                {language === 'pt' ? 'Operadoras e planos para estudantes' : 'Carriers and plans for students'}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* Three */}
+            <Card className="border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-2 bg-gradient-to-r from-pink-500 to-red-500" />
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Three</h3>
+                  <Badge className="bg-pink-100 text-pink-700">{language === 'pt' ? 'Mais Popular' : 'Most Popular'}</Badge>
+                </div>
+                <p className="text-sm text-slate-600 mb-4">
+                  {language === 'pt' 
+                    ? 'Maior operadora da Irlanda. Melhor cobertura e planos pré-pagos populares entre estudantes.'
+                    : 'Ireland\'s largest carrier. Best coverage and popular prepaid plans among students.'}
+                </p>
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                    <span className="text-sm font-medium">{language === 'pt' ? 'Plano 28 dias' : '28-day Plan'}</span>
+                    <span className="font-bold text-pink-600">€20</span>
+                  </div>
+                  <p className="text-xs text-slate-500">{language === 'pt' ? 'Dados ilimitados + ligações ilimitadas' : 'Unlimited data + unlimited calls'}</p>
+                </div>
+                <a href="https://www.three.ie" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-pink-600 text-white rounded-lg font-medium hover:bg-pink-700 transition-colors">
+                  {language === 'pt' ? 'Ver Planos' : 'View Plans'}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </CardContent>
+            </Card>
+
+            {/* Vodafone */}
+            <Card className="border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-2 bg-gradient-to-r from-red-500 to-red-600" />
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Vodafone</h3>
+                  <Badge variant="secondary">{language === 'pt' ? 'Boa Cobertura' : 'Good Coverage'}</Badge>
+                </div>
+                <p className="text-sm text-slate-600 mb-4">
+                  {language === 'pt' 
+                    ? 'Segunda maior operadora. Boa cobertura em áreas rurais e planos flexíveis.'
+                    : 'Second largest carrier. Good coverage in rural areas and flexible plans.'}
+                </p>
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                    <span className="text-sm font-medium">{language === 'pt' ? 'Plano 28 dias' : '28-day Plan'}</span>
+                    <span className="font-bold text-red-600">€20</span>
+                  </div>
+                  <p className="text-xs text-slate-500">{language === 'pt' ? 'Dados ilimitados + extras' : 'Unlimited data + extras'}</p>
+                </div>
+                <a href="https://www.vodafone.ie" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors">
+                  {language === 'pt' ? 'Ver Planos' : 'View Plans'}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </CardContent>
+            </Card>
+
+            {/* Eir */}
+            <Card className="border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-2 bg-gradient-to-r from-cyan-500 to-blue-500" />
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Eir</h3>
+                  <Badge variant="secondary">{language === 'pt' ? 'Irlandês' : 'Irish'}</Badge>
+                </div>
+                <p className="text-sm text-slate-600 mb-4">
+                  {language === 'pt' 
+                    ? 'Operadora irlandesa tradicional. Oferece combos com internet fixa para quem mora em apartamento.'
+                    : 'Traditional Irish carrier. Offers combos with home internet for apartment dwellers.'}
+                </p>
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                    <span className="text-sm font-medium">{language === 'pt' ? 'Plano 28 dias' : '28-day Plan'}</span>
+                    <span className="font-bold text-cyan-600">€14.99</span>
+                  </div>
+                  <p className="text-xs text-slate-500">{language === 'pt' ? 'Dados ilimitados' : 'Unlimited data'}</p>
+                </div>
+                <a href="https://www.eir.ie" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-700 transition-colors">
+                  {language === 'pt' ? 'Ver Planos' : 'View Plans'}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Chip Tips */}
+          <div className="p-6 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-2xl border border-cyan-200">
+            <h4 className="font-semibold text-cyan-900 mb-3 flex items-center gap-2">
+              📱 {language === 'pt' ? 'Dicas sobre Chip' : 'SIM Card Tips'}
+            </h4>
+            <ul className="space-y-2 text-sm text-cyan-800">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-cyan-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'Compre o chip assim que chegar no aeroporto - tem lojas da Three e Vodafone lá!'
+                  : 'Buy your SIM card as soon as you arrive at the airport - Three and Vodafone have stores there!'}
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-cyan-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'Three é a mais popular entre estudantes brasileiros pelo preço e cobertura.'
+                  : 'Three is the most popular among Brazilian students for price and coverage.'}
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-cyan-500 mt-0.5" />
+                {language === 'pt' 
+                  ? 'WiFi gratuito está disponível em bibliotecas, cafés e no transporte público!'
+                  : 'Free WiFi is available in libraries, cafes and on public transport!'}
+              </li>
+            </ul>
+          </div>
+        </div>
         <div>
           <h2 className="font-serif text-2xl font-semibold text-slate-900 mb-6">
             {t('services_agencies')}

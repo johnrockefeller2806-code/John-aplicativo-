@@ -899,10 +899,10 @@ export const Chat = () => {
           <>
             {/* Emoji Picker - Bottom Sheet on Mobile */}
             {showEmojiPicker && (
-              <div className="bg-[#202c33] border-t border-[#374045] flex-shrink-0">
+              <div className="bg-white border-t border-gray-200 flex-shrink-0">
                 <div className="flex items-center justify-between px-3 py-2">
-                  <span className="text-[#8696a0] text-sm">Emojis</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-[#8696a0] hover:bg-[#2a3942]" onClick={() => setShowEmojiPicker(false)}>
+                  <span className="text-gray-600 text-sm">Emojis</span>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:bg-gray-100" onClick={() => setShowEmojiPicker(false)}>
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
@@ -910,15 +910,15 @@ export const Chat = () => {
                   onEmojiClick={onEmojiClick} 
                   width="100%" 
                   height={280} 
-                  theme="dark"
+                  theme="light"
                   searchPlaceholder="Buscar emoji..."
                   previewConfig={{ showPreview: false }}
                 />
               </div>
             )}
             
-            <div className="bg-[#202c33] px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 relative z-50">
-              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
+            <div className="bg-gray-100 px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 relative z-50 border-t">
+              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-gray-500 hover:bg-gray-200 h-10 w-10">
                 {showEmojiPicker ? <X className="h-6 w-6" /> : <Smile className="h-6 w-6" />}
               </Button>
 
@@ -928,7 +928,7 @@ export const Chat = () => {
                   value={newMessage}
                   onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
                   placeholder={language === 'pt' ? 'Mensagem' : 'Message'}
-                  className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-full h-11 text-base focus-visible:ring-0"
+                  className="flex-1 bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 rounded-full h-11 text-base focus-visible:ring-[#00a884] shadow-sm"
                   disabled={!isConnected}
                   autoComplete="off"
                   autoCorrect="off"

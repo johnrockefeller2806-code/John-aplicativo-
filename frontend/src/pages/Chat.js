@@ -662,7 +662,7 @@ export const Chat = () => {
 
         {/* Recording UI */}
         {isRecording && (
-          <div className="bg-[#005c4b] px-4 py-3 flex items-center gap-3 flex-shrink-0">
+          <div className="bg-[#005c4b] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0">
             <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-white hover:bg-[#00a884]">
               <Trash2 className="h-5 w-5" />
             </Button>

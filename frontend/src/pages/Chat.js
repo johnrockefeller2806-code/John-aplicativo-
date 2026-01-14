@@ -522,10 +522,18 @@ export const Chat = () => {
   const sendAudioMessage = async () => {
     if (audioBlob && wsRef.current?.readyState === WebSocket.OPEN) {
       try {
+        // Stop preview if playing
+        if (previewAudioRef.current) {
+          previewAudioRef.current.pause();
+          previewAudioRef.current = null;
+        }
+        setIsPreviewPlaying(false);
+        
         // Convert blob to base64
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Audio = reader.result;
+          console.log('Sending audio, data length:', base64Audio?.length);
           wsRef.current.send(JSON.stringify({
             type: 'message',
             content: `🎤 Mensagem de voz (${formatRecordingTime(recordingTime)})`,

@@ -169,7 +169,6 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         src={audioUrl} 
         preload="auto"
         playsInline
-        crossOrigin="anonymous"
       />
       <Button
         variant="ghost"

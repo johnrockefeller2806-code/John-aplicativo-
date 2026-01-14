@@ -46,6 +46,7 @@ export const Navbar = () => {
     { href: '/schools', label: t('nav_schools') },
     { href: '/transport', label: t('nav_transport') },
     { href: '/services', label: t('nav_services') },
+    { href: '/guia-estudante', label: language === 'pt' ? 'Guia do Estudante' : 'Student Guide', icon: Star },
     { href: '/chat', label: 'STUFF Online', icon: MessageCircle },
     { href: '/duvidas', label: 'STUFF Dúvidas' },
   ];

@@ -50,6 +50,9 @@ const WS_URL = API_URL.replace('https://', 'wss://').replace('http://', 'ws://')
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_dublin-study/artifacts/o9gnc0xi_WhatsApp%20Image%202026-01-11%20at%2023.59.07.jpeg";
 
+// Notification sound URL
+const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3";
+
 // Audio Message Component with Play button
 const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   const [isPlaying, setIsPlaying] = useState(false);

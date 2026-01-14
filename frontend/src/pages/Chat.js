@@ -246,7 +246,7 @@ export const Chat = () => {
     };
     
     wsRef.current = ws;
-  }, [token, user?.id, language]);
+  }, [token, user?.id, language, playNotificationSound]);
 
   // Initialize chat
   useEffect(() => {

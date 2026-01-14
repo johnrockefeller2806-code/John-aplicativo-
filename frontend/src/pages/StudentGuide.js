@@ -576,25 +576,39 @@ export const StudentGuide = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 bg-slate-100 rounded-lg hover:bg-emerald-100 transition-colors"
+                        title={language === 'pt' ? 'Site oficial' : 'Official website'}
                       >
-                        <ExternalLink className="h-4 w-4 text-slate-600" />
+                        <Globe className="h-4 w-4 text-slate-600" />
                       </a>
                     </div>
                     
                     <p className="text-slate-600 text-sm mb-4">{market.desc}</p>
                     
-                    {/* Locations Section */}
+                    {/* Locations Section - Now with Google Maps links */}
                     {market.locations && market.locations[selectedSupermarketRegion] && (
                       <div className="bg-emerald-50 rounded-xl p-3 mb-4 border border-emerald-100">
                         <p className="text-xs font-medium text-emerald-700 uppercase tracking-wide mb-2 flex items-center gap-1">
                           <MapPin className="h-3 w-3" />
                           {language === 'pt' ? `Lojas em ${selectedSupermarketRegion}` : `Stores in ${selectedSupermarketRegion}`}
+                          <span className="text-emerald-500 ml-1">({language === 'pt' ? 'clique para ver no mapa' : 'click to view on map'})</span>
                         </p>
-                        <ul className="space-y-1">
+                        <ul className="space-y-2">
                           {market.locations[selectedSupermarketRegion].map((location, i) => (
-                            <li key={i} className="text-sm text-emerald-800 flex items-start gap-2">
-                              <span className="text-emerald-500 mt-0.5">•</span>
-                              {location}
+                            <li key={i}>
+                              <a
+                                href={`https://www.google.com/maps/search/${encodeURIComponent(market.name + ' ' + location + ' Dublin Ireland')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 p-2 bg-white rounded-lg hover:bg-emerald-100 transition-colors group"
+                              >
+                                <div className="p-1.5 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                                  <MapPin className="h-4 w-4 text-red-600" />
+                                </div>
+                                <span className="text-sm text-emerald-800 group-hover:text-emerald-900 font-medium flex-1">
+                                  {location}
+                                </span>
+                                <ExternalLink className="h-3 w-3 text-emerald-400 group-hover:text-emerald-600" />
+                              </a>
                             </li>
                           ))}
                         </ul>
@@ -615,15 +629,15 @@ export const StudentGuide = () => {
                       </ul>
                     </div>
 
-                    {/* Store Finder Button */}
+                    {/* Google Maps Button - Search all stores */}
                     <a
-                      href={market.storeFinder}
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(market.name + ' Dublin Ireland')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 ${market.color} text-white rounded-lg font-medium hover:opacity-90 transition-opacity`}
+                      className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
                     >
                       <MapPin className="h-4 w-4" />
-                      {language === 'pt' ? 'Ver Todas as Lojas na Irlanda' : 'Find All Stores in Ireland'}
+                      {language === 'pt' ? `Ver todos ${market.name} no Google Maps` : `View all ${market.name} on Google Maps`}
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </CardContent>

@@ -399,10 +399,13 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                 audio_data = data.get("audio_data")
                 audio_duration = data.get("audio_duration")
                 
+                logger.info(f"Message from {user_info['name']}: type={message_type}, content_len={len(content)}, has_audio={bool(audio_data)}")
+                
                 # For audio messages, allow larger content (base64)
                 max_length = 5000000 if message_type == "audio" else 1000
                 
                 if not content or len(content) > max_length:
+                    logger.warning(f"Invalid message from {user_info['name']}: empty={not content}, len={len(content)}")
                     await websocket.send_json({
                         "type": "error",
                         "message": "Mensagem inválida (vazia ou muito longa)"

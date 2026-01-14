@@ -166,18 +166,44 @@ export const Chat = () => {
     const style = document.createElement('style');
     style.id = 'hide-emergent-badge';
     style.textContent = `
-      div[style*="position: fixed"][style*="bottom"][style*="right"],
+      /* Hide Emergent badge completely on chat */
+      div[style*="position: fixed"][style*="bottom"],
       div[style*="Made with Emergent"],
-      iframe[src*="emergent"] {
+      div[style*="position:fixed"][style*="bottom"],
+      iframe[src*="emergent"],
+      [class*="emergent"],
+      div:has(> a[href*="emergent"]),
+      div:has(> span:contains("Emergent")),
+      div[style*="z-index: 9999"],
+      div[style*="z-index:9999"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
       }
     `;
     document.head.appendChild(style);
     
+    // Also try to find and hide the badge directly
+    const hideBadge = () => {
+      const elements = document.querySelectorAll('div[style*="position: fixed"], div[style*="position:fixed"]');
+      elements.forEach(el => {
+        if (el.innerHTML.includes('Emergent') || el.textContent.includes('Emergent')) {
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.remove();
+        }
+      });
+    };
+    
+    hideBadge();
+    const interval = setInterval(hideBadge, 500);
+    
     return () => {
+      clearInterval(interval);
       const existingStyle = document.getElementById('hide-emergent-badge');
       if (existingStyle) existingStyle.remove();
     };

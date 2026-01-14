@@ -155,6 +155,30 @@ export const Chat = () => {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const recordingIntervalRef = useRef(null);
+  const notificationSoundRef = useRef(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Initialize notification sound
+  useEffect(() => {
+    notificationSoundRef.current = new Audio(NOTIFICATION_SOUND_URL);
+    notificationSoundRef.current.volume = 0.5;
+    // Load sound preference
+    const savedPref = localStorage.getItem('chat_sound_enabled');
+    if (savedPref !== null) setSoundEnabled(savedPref === 'true');
+  }, []);
+
+  const toggleSound = () => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    localStorage.setItem('chat_sound_enabled', newValue.toString());
+  };
+
+  const playNotificationSound = useCallback(() => {
+    if (soundEnabled && notificationSoundRef.current) {
+      notificationSoundRef.current.currentTime = 0;
+      notificationSoundRef.current.play().catch(err => console.log('Audio play failed:', err));
+    }
+  }, [soundEnabled]);
 
   // Scroll to bottom
   const scrollToBottom = useCallback(() => {

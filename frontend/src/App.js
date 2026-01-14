@@ -19,6 +19,10 @@ import { SchoolDashboard } from "./pages/SchoolDashboard";
 import { SchoolRegister } from "./pages/SchoolRegister";
 import { SchoolSubscription } from "./pages/SchoolSubscription";
 import { StuffDuvidas } from "./pages/StuffDuvidas";
+import { StudentGuide } from "./pages/StudentGuide";
+import { About } from "./pages/About";
+import { Flights } from "./pages/Flights";
+import { Insurance } from "./pages/Insurance";
 import { Chat } from "./pages/Chat";
 import { Profile } from "./pages/Profile";
 
@@ -42,6 +46,10 @@ function App() {
                 <Route path="/services/passport" element={<PassportGuide />} />
                 <Route path="/services/driving-license" element={<DrivingLicenseGuide />} />
                 <Route path="/duvidas" element={<StuffDuvidas />} />
+                <Route path="/guia-estudante" element={<StudentGuide />} />
+                <Route path="/sobre" element={<About />} />
+                <Route path="/passagens" element={<Flights />} />
+                <Route path="/seguro" element={<Insurance />} />
                 <Route path="/chat" element={<Chat />} />
                 
                 {/* Auth Routes */}

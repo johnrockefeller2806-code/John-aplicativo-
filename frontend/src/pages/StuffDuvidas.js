@@ -95,8 +95,8 @@ export const StuffDuvidas = () => {
         {
           q: language === 'pt' ? 'Preciso de visto para estudar na Irlanda?' : 'Do I need a visa to study in Ireland?',
           a: language === 'pt'
-            ? 'Brasileiros não precisam de visto prévio para cursos de até 90 dias. Para cursos mais longos, você entra como turista e faz o registro (GNIB/IRP) já na Irlanda.'
-            : 'Brazilians do not need a prior visa for courses up to 90 days. For longer courses, you enter as a tourist and register (GNIB/IRP) in Ireland.'
+            ? 'Brasileiros não necessitam de visto para entrar na Irlanda como turista, com prazo máximo de 90 dias de permanência. Para permanecer por um período maior, é necessário realizar um intercâmbio seguindo as regras da imigração irlandesa.'
+            : 'Brazilians do not need a visa to enter Ireland as tourists, with a maximum stay of 90 days. To stay for a longer period, it is necessary to enroll in an exchange program following Irish immigration rules.'
         },
         {
           q: language === 'pt' ? 'O que é o GNIB/IRP?' : 'What is GNIB/IRP?',
@@ -109,6 +109,54 @@ export const StuffDuvidas = () => {
           a: language === 'pt'
             ? 'É como o CPF irlandês. Você precisa dele para trabalhar legalmente e para algumas questões fiscais. O processo é gratuito e você agenda online.'
             : 'It is like the Irish CPF. You need it to work legally and for some tax matters. The process is free and you book online.'
+        }
+      ]
+    },
+    {
+      category: language === 'pt' ? '🛂 Turista → Estudante' : '🛂 Tourist → Student',
+      icon: Plane,
+      questions: [
+        {
+          q: language === 'pt' ? 'Posso mudar de turista para estudante estando na Irlanda?' : 'Can I change from tourist to student while in Ireland?',
+          a: language === 'pt'
+            ? '❌ Não é permitido mudar automaticamente seu status de turista para visto de estudante estando na Irlanda. Segundo as regras de imigração irlandesas, entrar como turista com a intenção de depois pedir visto de estudante não é aceito pelas autoridades. A mudança de status geralmente exige que você solicite o visto fora do país.'
+            : '❌ It is not allowed to automatically change your status from tourist to student visa while in Ireland. According to Irish immigration rules, entering as a tourist with the intention of later applying for a student visa is not accepted by authorities. Changing status usually requires you to apply for the visa outside the country.'
+        },
+        {
+          q: language === 'pt' ? 'O que é o visto de estudante (Stamp 2)?' : 'What is the student visa (Stamp 2)?',
+          a: language === 'pt'
+            ? '🎓 O Stamp 2 é a permissão de residência para estudantes na Irlanda. Com ele você pode: estudar em tempo integral em instituição reconhecida, trabalhar até 20h/semana durante aulas e 40h nas férias, permanecer legalmente no país durante seu curso. Para cursos de inglês longos, geralmente é necessário estudar no mínimo 25 semanas.'
+            : '🎓 Stamp 2 is the residence permit for students in Ireland. With it you can: study full-time at a recognized institution, work up to 20h/week during classes and 40h during holidays, stay legally in the country during your course. For long English courses, you usually need to study at least 25 weeks.'
+        },
+        {
+          q: language === 'pt' ? 'Quais documentos preciso para o visto de estudante?' : 'What documents do I need for the student visa?',
+          a: language === 'pt'
+            ? '📄 Documentos essenciais:\n• Carta de aceitação da escola\n• Comprovante de pagamento do curso\n• Seguro saúde válido\n• Prova de recursos financeiros suficientes\n• Comprovante de acomodação\n• Passaporte válido\n• Intenção clara de estudo'
+            : '📄 Essential documents:\n• School acceptance letter\n• Proof of course payment\n• Valid health insurance\n• Proof of sufficient financial resources\n• Proof of accommodation\n• Valid passport\n• Clear intention to study'
+        },
+        {
+          q: language === 'pt' ? 'Estou como turista na Irlanda. Como me organizar?' : 'I am a tourist in Ireland. How do I organize myself?',
+          a: language === 'pt'
+            ? '✈️ Se você já está na Irlanda como turista e quer estudar, uma alternativa comum é:\n\n1. Organizar toda a documentação (escola, pagamento, seguro, comprovação financeira)\n2. Sair temporariamente da Irlanda para um país próximo da Europa\n3. Realizar o processo de entrada novamente seguindo as regras de imigração\n4. Retornar à Irlanda já com o objetivo correto de estudo\n\n📌 Países próximos costumam ter passagens mais baratas, tornando o processo mais acessível. A decisão final sempre é da imigração no momento da entrada.'
+            : '✈️ If you are already in Ireland as a tourist and want to study, a common alternative is:\n\n1. Organize all documentation (school, payment, insurance, financial proof)\n2. Temporarily leave Ireland for a nearby European country\n3. Go through the entry process again following immigration rules\n4. Return to Ireland with the correct purpose of study\n\n📌 Nearby countries usually have cheaper flights, making the process more accessible. The final decision is always made by immigration at the time of entry.'
+        },
+        {
+          q: language === 'pt' ? 'Quais as vantagens de se organizar corretamente?' : 'What are the advantages of organizing correctly?',
+          a: language === 'pt'
+            ? '✅ Vantagens de seguir o processo correto:\n\n• Processo mais rápido e organizado\n• Menor custo do que retornar ao país de origem\n• Planejamento adequado\n• Respeito às regras imigratórias\n• Mais segurança na tomada de decisão\n• Evita problemas futuros com imigração'
+            : '✅ Advantages of following the correct process:\n\n• Faster and more organized process\n• Lower cost than returning to your home country\n• Proper planning\n• Respect for immigration rules\n• More security in decision making\n• Avoids future problems with immigration'
+        },
+        {
+          q: language === 'pt' ? 'O que acontece se eu ficar além do tempo permitido?' : 'What happens if I stay beyond the allowed time?',
+          a: language === 'pt'
+            ? '⚠️ Tentar permanecer no país além do tempo permitido ou sem o visto correto pode levar a consequências graves:\n\n• Deportação\n• Proibição de reentrada na Irlanda\n• Problemas em futuros pedidos de visto\n• Dificuldades para entrar em outros países\n\nPor isso, é essencial seguir as regras de imigração e fazer o processo corretamente com antecedência.'
+            : '⚠️ Trying to stay in the country beyond the allowed time or without the correct visa can lead to serious consequences:\n\n• Deportation\n• Ban on re-entry to Ireland\n• Problems with future visa applications\n• Difficulties entering other countries\n\nTherefore, it is essential to follow immigration rules and complete the process correctly in advance.'
+        },
+        {
+          q: language === 'pt' ? 'Posso estender minha permanência como turista?' : 'Can I extend my stay as a tourist?',
+          a: language === 'pt'
+            ? '📅 Existe uma possibilidade de extensão da permissão de visitante, mas apenas em circunstâncias específicas (como doença ou evento imprevisto). Isso não é garantido e é avaliado caso a caso pelo Irish Immigration Service.\n\n❌ Esta extensão NÃO é válida para quem deseja iniciar estudos regulares - para isso, é necessário obter o visto de estudante (Stamp 2) seguindo o processo correto.'
+            : '📅 There is a possibility of extending visitor permission, but only in specific circumstances (such as illness or unforeseen event). This is not guaranteed and is evaluated on a case-by-case basis by the Irish Immigration Service.\n\n❌ This extension is NOT valid for those who wish to start regular studies - for this, you need to obtain the student visa (Stamp 2) following the correct process.'
         }
       ]
     },

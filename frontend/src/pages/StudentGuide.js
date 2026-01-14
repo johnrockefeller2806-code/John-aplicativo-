@@ -523,13 +523,13 @@ export const StudentGuide = () => {
           {/* SUPERMERCADOS TAB */}
           <TabsContent value="supermercados" data-testid="supermercados-content">
             {/* Region Filter */}
-            <div className="mb-6 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200">
+            <div className="mb-6 p-4 bg-orange-500 rounded-xl">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin className="h-4 w-4 text-emerald-600" />
-                <span className="text-sm font-medium text-emerald-800">
+                <MapPin className="h-4 w-4 text-white" />
+                <span className="text-sm font-medium text-white">
                   {language === 'pt' ? 'Filtrar por região:' : 'Filter by region:'}
                 </span>
-                <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Clique para filtrar' : 'Click to filter'}</Badge>
+                <Badge className="bg-white text-orange-600 ml-2">{language === 'pt' ? 'Clique para filtrar' : 'Click to filter'}</Badge>
               </div>
               <div className="flex flex-wrap gap-2">
                 {supermarketRegions.map((region) => (
@@ -538,8 +538,8 @@ export const StudentGuide = () => {
                     onClick={() => setSelectedSupermarketRegion(region)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                       selectedSupermarketRegion === region
-                        ? 'bg-emerald-700 text-white shadow-md'
-                        : 'bg-white text-emerald-700 border-2 border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50'
+                        ? 'bg-white text-orange-600 shadow-md'
+                        : 'bg-orange-400 text-white hover:bg-orange-300'
                     }`}
                   >
                     {region}

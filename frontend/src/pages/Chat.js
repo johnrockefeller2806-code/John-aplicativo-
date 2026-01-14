@@ -1011,14 +1011,14 @@ export const Chat = () => {
         </div>
 
         {/* Online Users */}
-        <div className="px-3 py-2 flex-shrink-0">
+        <div className="px-3 py-2 flex-shrink-0 bg-gray-50">
           <p className="text-[#00a884] text-xs font-medium uppercase">{language === 'pt' ? 'Online' : 'Online'} ({filteredUsers.length})</p>
         </div>
         
         <ScrollArea className="flex-1">
-          <div className="divide-y divide-[#2a3942]">
+          <div className="divide-y divide-gray-100">
             {filteredUsers.map((onlineUser) => (
-              <div key={onlineUser.user_id} className="flex items-center gap-3 p-3 hover:bg-[#202c33] cursor-pointer group">
+              <div key={onlineUser.user_id} className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer group">
                 <div className="relative">
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={onlineUser.user_avatar} />
@@ -1026,24 +1026,24 @@ export const Chat = () => {
                       {getInitials(onlineUser.user_name)}
                     </AvatarFallback>
                   </Avatar>
-                  <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-[#00a884] text-[#00a884] border-2 border-[#111b21] rounded-full" />
+                  <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-[#00a884] text-[#00a884] border-2 border-white rounded-full" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-white font-medium truncate">{onlineUser.user_name}</h3>
-                    {onlineUser.role === 'admin' && <Badge className="bg-amber-500/20 text-amber-400 text-xs">Admin</Badge>}
+                    <h3 className="text-gray-800 font-medium truncate">{onlineUser.user_name}</h3>
+                    {onlineUser.role === 'admin' && <Badge className="bg-amber-100 text-amber-600 text-xs">Admin</Badge>}
                   </div>
-                  <p className="text-[#8696a0] text-sm">{onlineUser.role === 'admin' ? 'Administrador' : 'Estudante'}</p>
+                  <p className="text-gray-500 text-sm">{onlineUser.role === 'admin' ? 'Administrador' : 'Estudante'}</p>
                 </div>
                 {isAdmin && onlineUser.user_id !== user.id && onlineUser.role !== 'admin' && (
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 text-red-400" onClick={() => { setUserToBan(onlineUser); setBanDialogOpen(true); }}>
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 text-red-500 hover:bg-red-50" onClick={() => { setUserToBan(onlineUser); setBanDialogOpen(true); }}>
                     <Ban className="h-4 w-4" />
                   </Button>
                 )}
               </div>
             ))}
             {filteredUsers.length === 0 && (
-              <div className="p-8 text-center text-[#8696a0]">
+              <div className="p-8 text-center text-gray-400">
                 <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>{language === 'pt' ? 'Nenhum usuário online' : 'No users online'}</p>
               </div>
@@ -1054,10 +1054,10 @@ export const Chat = () => {
 
       {/* Ban Dialog */}
       <AlertDialog open={banDialogOpen} onOpenChange={setBanDialogOpen}>
-        <AlertDialogContent className="bg-[#202c33] border-[#2a3942] text-white">
+        <AlertDialogContent className="bg-white border-gray-200 text-gray-800">
           <AlertDialogHeader>
             <AlertDialogTitle>{language === 'pt' ? 'Banir usuário' : 'Ban user'}</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#8696a0]">
+            <AlertDialogDescription className="text-gray-500">
               {language === 'pt' ? `Banir ${userToBan?.user_name} por 24 horas.` : `Ban ${userToBan?.user_name} for 24 hours.`}
             </AlertDialogDescription>
           </AlertDialogHeader>

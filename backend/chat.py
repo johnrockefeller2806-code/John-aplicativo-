@@ -37,7 +37,9 @@ class ChatMessage(BaseModel):
     user_name: str
     user_avatar: Optional[str] = None
     content: str
-    message_type: str = "text"  # text, system, deleted
+    message_type: str = "text"  # text, audio, system, deleted
+    audio_data: Optional[str] = None  # Base64 audio data
+    audio_duration: Optional[int] = None  # Duration in seconds
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     deleted: bool = False
     deleted_by: Optional[str] = None

@@ -748,10 +748,10 @@ export const Chat = () => {
         {/* Messages */}
         <div 
           className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0"
-          style={{ backgroundColor: '#0b141a' }}
+          style={{ backgroundColor: '#e5ddd5', backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli0teleO...")' }}
         >
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-[#8696a0]">
+            <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <img src={LOGO_URL} alt="STUFF" className="w-16 h-16 rounded-full mb-4 opacity-50" />
               <p>{language === 'pt' ? 'Nenhuma mensagem ainda' : 'No messages yet'}</p>
               <p className="text-sm">{language === 'pt' ? 'Seja o primeiro!' : 'Be the first!'}</p>

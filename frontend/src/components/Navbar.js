@@ -49,6 +49,7 @@ export const Navbar = () => {
     { href: '/guia-estudante', label: language === 'pt' ? 'Guia do Estudante' : 'Student Guide', icon: Star },
     { href: '/chat', label: 'STUFF Online', icon: MessageCircle },
     { href: '/duvidas', label: 'STUFF Dúvidas' },
+    { href: '/sobre', label: language === 'pt' ? 'Sobre' : 'About', icon: Heart },
   ];
 
   return (

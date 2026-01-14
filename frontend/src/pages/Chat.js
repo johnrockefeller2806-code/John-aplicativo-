@@ -683,7 +683,7 @@ export const Chat = () => {
 
         {/* Audio Preview */}
         {audioBlob && !isRecording && (
-          <div className="bg-[#202c33] px-4 py-3 flex items-center gap-3 flex-shrink-0">
+          <div className="bg-[#202c33] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0">
             <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-400 hover:bg-[#2a3942]">
               <Trash2 className="h-5 w-5" />
             </Button>

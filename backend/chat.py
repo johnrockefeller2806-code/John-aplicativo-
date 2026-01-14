@@ -217,27 +217,35 @@ async def check_ban_status(user_id: str):
 
 @chat_router.delete("/messages/{message_id}")
 async def delete_message(message_id: str, token: str = Query(...)):
-    """Delete a message (admin only)"""
+    """Delete a message - users can delete their own, admins can delete any"""
     user = await verify_token(token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
+    # Find the message first
+    message = await db.chat_messages.find_one({"id": message_id})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Check permission: user can delete own messages, admin can delete any
+    is_own_message = message.get("user_id") == user["id"]
+    is_admin = user.get("role") == "admin"
+    
+    if not is_own_message and not is_admin:
+        raise HTTPException(status_code=403, detail="Você só pode apagar suas próprias mensagens")
     
     # Mark message as deleted
+    deleted_text = "[Mensagem apagada]" if is_own_message else "[Mensagem removida pelo moderador]"
     result = await db.chat_messages.update_one(
         {"id": message_id},
         {"$set": {
             "deleted": True,
             "deleted_by": user["id"],
-            "content": "[Mensagem removida pelo moderador]",
-            "message_type": "deleted"
+            "content": deleted_text,
+            "message_type": "deleted",
+            "audio_data": None  # Remove audio data too
         }}
     )
-    
-    if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Message not found")
     
     # Broadcast deletion to all connected users
     await manager.broadcast({
@@ -246,7 +254,7 @@ async def delete_message(message_id: str, token: str = Query(...)):
         "deleted_by": user["name"]
     })
     
-    logger.info(f"Message {message_id} deleted by admin {user['name']}")
+    logger.info(f"Message {message_id} deleted by {user['name']}")
     return {"message": "Message deleted"}
 
 @chat_router.post("/ban")

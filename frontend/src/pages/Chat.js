@@ -153,12 +153,12 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
   if (!isValidAudioUrl) {
     return (
       <div className="flex items-center gap-3 min-w-[180px]">
-        <div className="h-10 w-10 rounded-full flex-shrink-0 bg-[#374045] flex items-center justify-center">
-          <Mic className="h-5 w-5 text-[#8696a0]" />
+        <div className="h-10 w-10 rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
+          <Mic className="h-5 w-5 text-gray-400" />
         </div>
         <div className="flex-1">
-          <p className="text-xs text-[#8696a0]">Áudio não disponível</p>
-          <span className="text-[10px] text-[#8696a0]">{formatTime(duration)}</span>
+          <p className="text-xs text-gray-400">Áudio não disponível</p>
+          <span className="text-[10px] text-gray-400">{formatTime(duration)}</span>
         </div>
       </div>
     );
@@ -170,10 +170,10 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
         variant="ghost"
         size="icon"
         onClick={togglePlay}
-        className={`h-10 w-10 rounded-full flex-shrink-0 ${hasError ? 'bg-[#374045]' : 'bg-[#00a884] hover:bg-[#06cf9c]'} active:scale-95 transition-transform`}
+        className={`h-10 w-10 rounded-full flex-shrink-0 ${hasError ? 'bg-gray-200' : 'bg-[#00a884] hover:bg-[#06cf9c]'} active:scale-95 transition-transform`}
       >
         {hasError ? (
-          <Mic className="h-5 w-5 text-[#8696a0]" />
+          <Mic className="h-5 w-5 text-gray-400" />
         ) : isPlaying ? (
           <Pause className="h-5 w-5 text-white" />
         ) : (
@@ -182,9 +182,9 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
       </Button>
       <div className="flex-1">
         {hasError ? (
-          <p className="text-xs text-[#8696a0]">Formato não suportado</p>
+          <p className="text-xs text-gray-400">Formato não suportado</p>
         ) : (
-          <div className="h-1.5 bg-[#374045] rounded-full overflow-hidden">
+          <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-[#00a884] transition-all duration-100"
               style={{ width: `${progress}%` }}
@@ -192,7 +192,7 @@ const AudioMessage = ({ audioUrl, duration, isOwn }) => {
           </div>
         )}
         <div className="flex justify-between mt-1">
-          <span className="text-[11px] text-[#8696a0]">
+          <span className="text-[11px] text-gray-500">
             {isPlaying ? formatTime(currentTime) : formatTime(audioDuration || duration)}
           </span>
         </div>

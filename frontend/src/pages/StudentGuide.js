@@ -523,12 +523,13 @@ export const StudentGuide = () => {
           {/* SUPERMERCADOS TAB */}
           <TabsContent value="supermercados" data-testid="supermercados-content">
             {/* Region Filter */}
-            <div className="mb-6">
+            <div className="mb-6 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin className="h-4 w-4 text-slate-500" />
-                <span className="text-sm font-medium text-slate-700">
+                <MapPin className="h-4 w-4 text-emerald-600" />
+                <span className="text-sm font-medium text-emerald-800">
                   {language === 'pt' ? 'Filtrar por região:' : 'Filter by region:'}
                 </span>
+                <Badge className="bg-emerald-600 text-white ml-2">{language === 'pt' ? 'Clique para filtrar' : 'Click to filter'}</Badge>
               </div>
               <div className="flex flex-wrap gap-2">
                 {supermarketRegions.map((region) => (
@@ -538,7 +539,7 @@ export const StudentGuide = () => {
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                       selectedSupermarketRegion === region
                         ? 'bg-emerald-700 text-white shadow-md'
-                        : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                        : 'bg-white text-emerald-700 border-2 border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50'
                     }`}
                   >
                     {region}

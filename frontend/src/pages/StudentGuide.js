@@ -294,23 +294,23 @@ export const StudentGuide = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-8">
         {/* Tabs */}
         <Tabs defaultValue="checklist" className="space-y-6">
-          <TabsList className="bg-white border border-slate-100 p-1 flex-wrap h-auto">
-            <TabsTrigger value="checklist" className="gap-2" data-testid="tab-checklist">
+          <TabsList className="bg-orange-500 border-none p-2 flex-wrap h-auto rounded-xl shadow-md">
+            <TabsTrigger value="checklist" className="gap-2 text-white data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md rounded-lg" data-testid="tab-checklist">
               <CheckSquare className="h-4 w-4" />
               <span className="hidden sm:inline">{language === 'pt' ? 'Checklist' : 'Checklist'}</span>
               <span className="sm:hidden">✓</span>
             </TabsTrigger>
-            <TabsTrigger value="emprego" className="gap-2" data-testid="tab-emprego">
+            <TabsTrigger value="emprego" className="gap-2 text-white data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md rounded-lg" data-testid="tab-emprego">
               <Briefcase className="h-4 w-4" />
               <span className="hidden sm:inline">{language === 'pt' ? 'Emprego' : 'Employment'}</span>
               <span className="sm:hidden">💼</span>
             </TabsTrigger>
-            <TabsTrigger value="supermercados" className="gap-2" data-testid="tab-supermercados">
+            <TabsTrigger value="supermercados" className="gap-2 text-white data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md rounded-lg" data-testid="tab-supermercados">
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">{language === 'pt' ? 'Supermercados' : 'Supermarkets'}</span>
               <span className="sm:hidden">🛒</span>
             </TabsTrigger>
-            <TabsTrigger value="brasil" className="gap-2" data-testid="tab-brasil">
+            <TabsTrigger value="brasil" className="gap-2 text-white data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-md rounded-lg" data-testid="tab-brasil">
               <Flag className="h-4 w-4" />
               <span className="hidden sm:inline">{language === 'pt' ? 'Brasil na Irlanda' : 'Brazil in Ireland'}</span>
               <span className="sm:hidden">🇧🇷</span>

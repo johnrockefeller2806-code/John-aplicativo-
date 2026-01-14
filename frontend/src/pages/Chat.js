@@ -45,6 +45,16 @@ const WS_URL = API_URL.replace('https://', 'wss://').replace('http://', 'ws://')
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_dublin-study/artifacts/o9gnc0xi_WhatsApp%20Image%202026-01-11%20at%2023.59.07.jpeg";
 
+// Notification sound URL - using a free notification sound
+const NOTIFICATION_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3";
+
+// Create audio element for notification sound
+const createNotificationSound = () => {
+  const audio = new Audio(NOTIFICATION_SOUND_URL);
+  audio.volume = 0.5;
+  return audio;
+};
+
 export const Chat = () => {
   const { user, token, isAdmin } = useAuth();
   const { language } = useLanguage();

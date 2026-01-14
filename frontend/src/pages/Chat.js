@@ -646,9 +646,9 @@ export const Chat = () => {
 
         {/* Message Input */}
         {!isRecording && !audioBlob && (
-          <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2 flex-shrink-0">
+          <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2 flex-shrink-0 safe-area-inset-bottom">
             <div className="relative">
-              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942]">
+              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#2a3942] h-10 w-10">
                 <Smile className="h-6 w-6" />
               </Button>
               {showEmojiPicker && (
@@ -667,16 +667,19 @@ export const Chat = () => {
                 value={newMessage}
                 onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
                 placeholder={language === 'pt' ? 'Mensagem' : 'Message'}
-                className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-full h-10 focus-visible:ring-0"
+                className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-full h-11 text-base focus-visible:ring-0"
                 disabled={!isConnected}
+                autoComplete="off"
+                autoCorrect="off"
+                enterKeyHint="send"
               />
               
               {newMessage.trim() ? (
-                <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-10 w-10 flex-shrink-0">
+                <Button type="submit" disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
                   <Send className="h-5 w-5" />
                 </Button>
               ) : (
-                <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-10 w-10 flex-shrink-0">
+                <Button type="button" onClick={startRecording} disabled={!isConnected} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-11 w-11 flex-shrink-0">
                   <Mic className="h-5 w-5" />
                 </Button>
               )}

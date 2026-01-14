@@ -160,6 +160,29 @@ export const Chat = () => {
   const notificationSoundRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
+  // Hide Emergent badge on chat page
+  useEffect(() => {
+    // Hide any fixed positioned elements that might be the Emergent badge
+    const style = document.createElement('style');
+    style.id = 'hide-emergent-badge';
+    style.textContent = `
+      div[style*="position: fixed"][style*="bottom"][style*="right"],
+      div[style*="Made with Emergent"],
+      iframe[src*="emergent"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      const existingStyle = document.getElementById('hide-emergent-badge');
+      if (existingStyle) existingStyle.remove();
+    };
+  }, []);
+
   // Initialize notification sound
   useEffect(() => {
     notificationSoundRef.current = new Audio(NOTIFICATION_SOUND_URL);

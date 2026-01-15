@@ -25,6 +25,8 @@ import { Flights } from "./pages/Flights";
 import { Insurance } from "./pages/Insurance";
 import { Chat } from "./pages/Chat";
 import { Profile } from "./pages/Profile";
+import { PlusPaywall } from "./pages/PlusPaywall";
+import { PlusSuccess } from "./pages/PlusSuccess";
 
 // Layout component to conditionally show navbar/footer
 const AppLayout = ({ children }) => {

@@ -78,6 +78,10 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/payment/success" element={<PaymentSuccess />} />
               
+              {/* PLUS Plan Routes */}
+              <Route path="/plus" element={<PlusPaywall />} />
+              <Route path="/plus/success" element={<PlusSuccess />} />
+              
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminDashboard />} />
               

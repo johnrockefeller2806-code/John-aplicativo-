@@ -304,6 +304,8 @@ class AdminStats(BaseModel):
     total_enrollments: int
     paid_enrollments: int
     total_revenue: float
+    plus_subscribers: int = 0
+    plus_revenue: float = 0.0
 
 # ============== AUTH HELPERS ==============
 

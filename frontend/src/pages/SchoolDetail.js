@@ -32,7 +32,9 @@ import {
   ArrowLeft,
   Wifi,
   BookOpen,
-  Coffee
+  Coffee,
+  Lock,
+  Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -42,7 +44,7 @@ export const SchoolDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isPlusUser } = useAuth();
   
   const [school, setSchool] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -53,8 +55,13 @@ export const SchoolDetail = () => {
   const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
+    // Redirect to schools if user doesn't have PLUS
+    if (!isPlusUser) {
+      navigate('/schools');
+      return;
+    }
     fetchSchoolData();
-  }, [id]);
+  }, [id, isPlusUser]);
 
   const fetchSchoolData = async () => {
     try {
@@ -76,6 +83,12 @@ export const SchoolDetail = () => {
     if (!isAuthenticated) {
       toast.error(language === 'pt' ? 'Faça login para se matricular' : 'Login to enroll');
       navigate('/login');
+      return;
+    }
+    
+    if (!isPlusUser) {
+      toast.error(language === 'pt' ? 'Você precisa do Plano PLUS para se matricular' : 'You need the PLUS Plan to enroll');
+      navigate('/plus');
       return;
     }
     setSelectedCourse(course);

@@ -373,6 +373,7 @@ async def register(user_data: UserCreate):
         "email": user_data.email,
         "password": hash_password(user_data.password),
         "role": "student",  # Always student for regular registration
+        "plan": "free",  # Plano gratuito por padrão
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.users.insert_one(user)
@@ -385,6 +386,7 @@ async def register(user_data: UserCreate):
             name=user_data.name,
             email=user_data.email,
             role="student",
+            plan="free",
             created_at=user["created_at"]
         )
     )

@@ -496,6 +496,8 @@ async def update_profile(data: UserProfileUpdate, user: dict = Depends(get_curre
         email=updated_user["email"],
         role=updated_user.get("role", "student"),
         school_id=updated_user.get("school_id"),
+        plan=updated_user.get("plan", "free"),
+        plan_purchased_at=updated_user.get("plan_purchased_at"),
         created_at=updated_user["created_at"],
         avatar=updated_user.get("avatar")
     )

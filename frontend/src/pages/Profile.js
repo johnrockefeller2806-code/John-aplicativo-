@@ -195,7 +195,7 @@ export const Profile = () => {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="absolute bottom-0 right-0 p-2.5 md:p-3 bg-emerald-600 hover:bg-emerald-500 rounded-full shadow-lg transition-colors"
+                  className="absolute bottom-0 right-0 p-2.5 md:p-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 rounded-full shadow-lg transition-colors touch-manipulation"
                   data-testid="upload-avatar-btn"
                 >
                   {uploading ? (
@@ -205,12 +205,11 @@ export const Profile = () => {
                   )}
                 </button>
                 
-                {/* Hidden file input - accepts camera on mobile */}
+                {/* Hidden file input - NO capture to allow gallery access on mobile */}
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  capture="environment"
                   onChange={handleFileSelect}
                   className="hidden"
                   data-testid="avatar-input"
@@ -221,19 +220,19 @@ export const Profile = () => {
               <div className="mt-4 text-center">
                 <p className="text-sm text-slate-500 mb-3">
                   {language === 'pt' 
-                    ? 'Toque no ícone da câmera para alterar' 
-                    : 'Tap the camera icon to change'}
+                    ? 'Toque para escolher da galeria ou tirar foto' 
+                    : 'Tap to choose from gallery or take photo'}
                 </p>
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="lg"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="gap-2"
+                  className="gap-2 h-12 px-6 text-base touch-manipulation"
                   data-testid="change-photo-btn"
                 >
-                  <Camera className="h-4 w-4" />
-                  {language === 'pt' ? 'Escolher Foto' : 'Choose Photo'}
+                  <Camera className="h-5 w-5" />
+                  {language === 'pt' ? 'Alterar Foto' : 'Change Photo'}
                 </Button>
               </div>
             </div>

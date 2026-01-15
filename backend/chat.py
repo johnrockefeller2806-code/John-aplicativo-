@@ -37,7 +37,9 @@ class ChatMessage(BaseModel):
     user_name: str
     user_avatar: Optional[str] = None
     content: str
-    message_type: str = "text"  # text, system, deleted
+    message_type: str = "text"  # text, audio, system, deleted
+    audio_data: Optional[str] = None  # Base64 audio data
+    audio_duration: Optional[int] = None  # Duration in seconds
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     deleted: bool = False
     deleted_by: Optional[str] = None
@@ -189,7 +191,8 @@ async def get_messages(
         query["created_at"] = {"$lt": before}
     
     messages = await db.chat_messages.find(
-        query, {"_id": 0}
+        query, 
+        {"_id": 0, "expire_at": 0}  # Exclude only _id and expire_at
     ).sort("created_at", -1).limit(limit).to_list(limit)
     
     # Return in chronological order
@@ -214,27 +217,35 @@ async def check_ban_status(user_id: str):
 
 @chat_router.delete("/messages/{message_id}")
 async def delete_message(message_id: str, token: str = Query(...)):
-    """Delete a message (admin only)"""
+    """Delete a message - users can delete their own, admins can delete any"""
     user = await verify_token(token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
+    # Find the message first
+    message = await db.chat_messages.find_one({"id": message_id})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Check permission: user can delete own messages, admin can delete any
+    is_own_message = message.get("user_id") == user["id"]
+    is_admin = user.get("role") == "admin"
+    
+    if not is_own_message and not is_admin:
+        raise HTTPException(status_code=403, detail="Você só pode apagar suas próprias mensagens")
     
     # Mark message as deleted
+    deleted_text = "[Mensagem apagada]" if is_own_message else "[Mensagem removida pelo moderador]"
     result = await db.chat_messages.update_one(
         {"id": message_id},
         {"$set": {
             "deleted": True,
             "deleted_by": user["id"],
-            "content": "[Mensagem removida pelo moderador]",
-            "message_type": "deleted"
+            "content": deleted_text,
+            "message_type": "deleted",
+            "audio_data": None  # Remove audio data too
         }}
     )
-    
-    if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Message not found")
     
     # Broadcast deletion to all connected users
     await manager.broadcast({
@@ -243,7 +254,7 @@ async def delete_message(message_id: str, token: str = Query(...)):
         "deleted_by": user["name"]
     })
     
-    logger.info(f"Message {message_id} deleted by admin {user['name']}")
+    logger.info(f"Message {message_id} deleted by {user['name']}")
     return {"message": "Message deleted"}
 
 @chat_router.post("/ban")
@@ -384,8 +395,17 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
             
             if data.get("type") == "message":
                 content = data.get("content", "").strip()
+                message_type = data.get("message_type", "text")
+                audio_data = data.get("audio_data")
+                audio_duration = data.get("audio_duration")
                 
-                if not content or len(content) > 1000:
+                logger.info(f"Message from {user_info['name']}: type={message_type}, content_len={len(content)}, has_audio={bool(audio_data)}")
+                
+                # For audio messages, allow larger content (base64)
+                max_length = 5000000 if message_type == "audio" else 1000
+                
+                if not content or len(content) > max_length:
+                    logger.warning(f"Invalid message from {user_info['name']}: empty={not content}, len={len(content)}")
                     await websocket.send_json({
                         "type": "error",
                         "message": "Mensagem inválida (vazia ou muito longa)"
@@ -405,7 +425,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                     user_id=user_id,
                     user_name=user_info["name"],
                     user_avatar=user_info.get("avatar"),
-                    content=content
+                    content=content,
+                    message_type=message_type,
+                    audio_data=audio_data,
+                    audio_duration=audio_duration
                 )
                 
                 # Save to database with TTL (2 days = 48 hours)
@@ -422,6 +445,9 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                         "user_name": message.user_name,
                         "user_avatar": message.user_avatar,
                         "content": message.content,
+                        "message_type": message.message_type,
+                        "audio_data": message.audio_data,
+                        "audio_duration": message.audio_duration,
                         "created_at": message.created_at,
                         "is_admin": user_info["role"] == "admin"
                     }

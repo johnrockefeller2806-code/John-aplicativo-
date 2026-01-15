@@ -691,6 +691,10 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
     revenue_result = await db.payment_transactions.aggregate(pipeline).to_list(1)
     total_revenue = revenue_result[0]["total"] if revenue_result else 0
     
+    # PLUS subscribers stats
+    plus_subscribers = await db.users.count_documents({"plan": "plus"})
+    plus_revenue = plus_subscribers * STUDENT_PLUS_PLAN["price"]
+    
     return AdminStats(
         total_users=total_users,
         total_schools=total_schools,
@@ -699,7 +703,9 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
         total_courses=total_courses,
         total_enrollments=total_enrollments,
         paid_enrollments=paid_enrollments,
-        total_revenue=total_revenue
+        total_revenue=total_revenue,
+        plus_subscribers=plus_subscribers,
+        plus_revenue=plus_revenue
     )
 
 @api_router.get("/admin/schools")

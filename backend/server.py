@@ -82,6 +82,8 @@ class UserResponse(BaseModel):
     created_at: str
     school_id: Optional[str] = None
     avatar: Optional[str] = None  # Profile photo URL
+    plan: str = "free"  # free or plus
+    plan_purchased_at: Optional[str] = None
 
 class UserProfileUpdate(BaseModel):
     name: Optional[str] = None

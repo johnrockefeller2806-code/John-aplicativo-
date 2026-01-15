@@ -89,6 +89,18 @@ class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
     avatar: Optional[str] = None
 
+# Plano PLUS para estudantes
+STUDENT_PLUS_PLAN = {
+    "name": "PLUS",
+    "price": 49.90,
+    "currency": "EUR",
+    "type": "one_time",  # pagamento único
+    "description": "Acesso completo à plataforma STUFF Intercâmbio"
+}
+
+class PlusPlanCheckoutRequest(BaseModel):
+    origin_url: str
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

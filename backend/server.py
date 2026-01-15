@@ -456,6 +456,8 @@ async def login(credentials: UserLogin):
             email=user["email"],
             role=role,
             school_id=user.get("school_id"),
+            plan=user.get("plan", "free"),
+            plan_purchased_at=user.get("plan_purchased_at"),
             created_at=user["created_at"]
         )
     )

@@ -470,6 +470,8 @@ async def get_me(user: dict = Depends(get_current_user)):
         email=user["email"],
         role=user.get("role", "student"),
         school_id=user.get("school_id"),
+        plan=user.get("plan", "free"),
+        plan_purchased_at=user.get("plan_purchased_at"),
         created_at=user["created_at"],
         avatar=user.get("avatar")
     )

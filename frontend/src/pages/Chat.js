@@ -898,12 +898,12 @@ export const Chat = () => {
                   <div className={`flex gap-2 max-w-[85%] ${isOwn ? 'flex-row-reverse' : ''}`}>
                     {!isOwn && showAvatar && (
                       <Avatar className={`h-8 w-8 flex-shrink-0 mt-auto ${isAgent ? 'ring-2 ring-[#00a884]' : ''}`}>
-                        {isAgent ? (
+                        {isAgent || msg.is_admin ? (
                           <AvatarImage src={LOGO_URL} className="object-cover" />
                         ) : (
                           <AvatarImage src={msg.user_avatar} />
                         )}
-                        <AvatarFallback className={isAgent ? "bg-[#00a884] text-white" : "bg-[#00a884] text-white text-xs"}>
+                        <AvatarFallback className={isAgent || msg.is_admin ? "bg-[#00a884] text-white" : "bg-[#00a884] text-white text-xs"}>
                           {isAgent ? 'S' : getInitials(msg.user_name)}
                         </AvatarFallback>
                       </Avatar>

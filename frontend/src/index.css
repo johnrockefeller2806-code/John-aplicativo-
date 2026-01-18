@@ -79,3 +79,56 @@
         display: contents !important;
     }
 }
+
+/* Mobile viewport fix for chat */
+@supports (height: 100dvh) {
+    .h-dvh {
+        height: 100dvh;
+    }
+}
+
+/* Safe area for mobile devices */
+.safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Fix for iOS keyboard */
+@supports (-webkit-touch-callout: none) {
+    input, textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}
+
+/* Chat scrollbar dark theme */
+.chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+    background: #0b141a;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+    background: #374045;
+    border-radius: 3px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #4a5568;
+}
+
+/* Hide Emergent badge on chat page */
+[data-testid="chat-page"] ~ div[style*="position: fixed"],
+.chat-page-active div[style*="Made with Emergent"],
+body:has([data-testid="chat-page"]) div[style*="position: fixed"][style*="bottom"] {
+    display: none !important;
+}
+
+/* Alternative: Move badge higher on mobile chat */
+@media (max-width: 768px) {
+    body:has([data-testid="chat-page"]) iframe,
+    body:has([data-testid="chat-page"]) div[style*="position: fixed"][style*="right"] {
+        bottom: 80px !important;
+        z-index: 1 !important;
+    }
+}

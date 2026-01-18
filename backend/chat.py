@@ -7,6 +7,7 @@ Features:
 - Message history (auto-delete after 2 days)
 - Moderator controls (delete messages, ban users)
 - Emoji support
+- AI Agent "Agente Comunidade" powered by OpenAI GPT
 """
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException, Query
@@ -19,6 +20,19 @@ import json
 import logging
 import jwt
 import asyncio
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Import LLM for Agente Comunidade
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    LLM_AVAILABLE = True
+except ImportError:
+    LLM_AVAILABLE = False
+    logging.warning("emergentintegrations not available - Agente Comunidade disabled")
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +40,99 @@ logger = logging.getLogger(__name__)
 db = None
 JWT_SECRET = None
 JWT_ALGORITHM = "HS256"
+
+# ============== AGENTE COMUNIDADE CONFIG ==============
+
+AGENTE_COMUNIDADE_NAME = "Agente Comunidade"
+AGENTE_COMUNIDADE_ID = "agente-comunidade-stuff"
+AGENTE_COMUNIDADE_AVATAR = "🤖"
+
+AGENTE_COMUNIDADE_SYSTEM_PROMPT = """Você é o Agente Comunidade da STUFF Intercâmbio, um assistente amigável e prestativo especializado em ajudar brasileiros que querem estudar inglês na Irlanda, especialmente em Dublin.
+
+🎯 SUA PERSONALIDADE:
+- Você é como um amigo brasileiro que já mora em Dublin e conhece tudo sobre a vida de intercambista
+- Seja informal, use emojis, mas seja sempre profissional e preciso nas informações
+- Responda em português brasileiro
+
+📚 VOCÊ É ESPECIALISTA EM:
+1. **PPS (Personal Public Service Number)**: Como tirar, documentos necessários, agendamento em mywelfare.ie
+2. **GNIB/IRP (Immigration Registration)**: Processo de registro, documentos, custos (€300)
+3. **Vistos de estudante**: Stamp 2, regras de trabalho (20h/semana durante aulas, 40h nas férias)
+4. **Escolas de inglês em Dublin**: Tipos de cursos, acreditações (ACELS, MEI)
+5. **Custo de vida**: Aluguel, transporte, alimentação em Dublin
+6. **Transporte público**: Leap Card, Dublin Bus, Luas, DART
+7. **Trabalho na Irlanda**: Como conseguir emprego, direitos trabalhistas
+8. **Moradia**: Como encontrar quarto/apartamento, áreas de Dublin
+
+⚠️ REGRAS IMPORTANTES:
+- Se não souber algo com certeza, seja honesto e sugira buscar informações oficiais
+- Nunca invente informações sobre processos legais ou imigração
+- Mantenha respostas concisas (máximo 3-4 parágrafos)
+- Use listas e emojis para organizar informações
+- Sempre encoraje o usuário a verificar informações em sites oficiais quando aplicável
+
+🔗 SITES ÚTEIS QUE VOCÊ PODE MENCIONAR:
+- mywelfare.ie (PPS)
+- burghquayregistrationoffice.inis.gov.ie (GNIB/IRP)
+- citizensinformation.ie (informações gerais)
+- revenue.ie (impostos)
+- transportforireland.ie (transporte)
+
+Responda sempre de forma amigável e acolhedora, lembrando que muitos usuários estão ansiosos ou com medo de fazer intercâmbio pela primeira vez! 🇮🇪🇧🇷"""
+
+async def get_agente_comunidade_response(user_message: str, user_name: str) -> str:
+    """Get response from Agente Comunidade AI"""
+    if not LLM_AVAILABLE:
+        return "Desculpe, o Agente Comunidade está temporariamente indisponível. Por favor, tente novamente mais tarde! 🙏"
+    
+    try:
+        api_key = os.getenv("EMERGENT_LLM_KEY")
+        if not api_key:
+            logger.error("EMERGENT_LLM_KEY not found in environment")
+            return "Desculpe, não consegui processar sua pergunta no momento. Tente novamente! 🙏"
+        
+        # Create a unique session for this conversation
+        session_id = f"agente-comunidade-{uuid.uuid4()}"
+        
+        # Initialize the chat
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=session_id,
+            system_message=AGENTE_COMUNIDADE_SYSTEM_PROMPT
+        ).with_model("openai", "gpt-4.1")
+        
+        # Create the user message with context
+        message = UserMessage(
+            text=f"{user_name} perguntou: {user_message}"
+        )
+        
+        # Get response
+        response = await chat.send_message(message)
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error getting Agente Comunidade response: {e}")
+        return "Opa, tive um probleminha aqui! 😅 Pode repetir sua pergunta? Se o erro persistir, tente novamente em alguns minutos."
+
+def should_trigger_agente(content: str) -> bool:
+    """Check if message should trigger Agente Comunidade"""
+    content_lower = content.lower()
+    triggers = [
+        "@agentecomunidade",
+        "@agente",
+        "@stuff",
+        "@bot",
+        "@ajuda"
+    ]
+    return any(trigger in content_lower for trigger in triggers)
+
+def clean_message_for_ai(content: str) -> str:
+    """Remove trigger mentions from message for AI processing"""
+    import re
+    # Remove @mentions
+    cleaned = re.sub(r'@\w+\s*', '', content).strip()
+    return cleaned if cleaned else content
 
 chat_router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -37,7 +144,9 @@ class ChatMessage(BaseModel):
     user_name: str
     user_avatar: Optional[str] = None
     content: str
-    message_type: str = "text"  # text, system, deleted
+    message_type: str = "text"  # text, audio, system, deleted
+    audio_data: Optional[str] = None  # Base64 audio data
+    audio_duration: Optional[int] = None  # Duration in seconds
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     deleted: bool = False
     deleted_by: Optional[str] = None
@@ -189,7 +298,8 @@ async def get_messages(
         query["created_at"] = {"$lt": before}
     
     messages = await db.chat_messages.find(
-        query, {"_id": 0}
+        query, 
+        {"_id": 0, "expire_at": 0}  # Exclude only _id and expire_at
     ).sort("created_at", -1).limit(limit).to_list(limit)
     
     # Return in chronological order
@@ -214,27 +324,35 @@ async def check_ban_status(user_id: str):
 
 @chat_router.delete("/messages/{message_id}")
 async def delete_message(message_id: str, token: str = Query(...)):
-    """Delete a message (admin only)"""
+    """Delete a message - users can delete their own, admins can delete any"""
     user = await verify_token(token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
+    # Find the message first
+    message = await db.chat_messages.find_one({"id": message_id})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Check permission: user can delete own messages, admin can delete any
+    is_own_message = message.get("user_id") == user["id"]
+    is_admin = user.get("role") == "admin"
+    
+    if not is_own_message and not is_admin:
+        raise HTTPException(status_code=403, detail="Você só pode apagar suas próprias mensagens")
     
     # Mark message as deleted
+    deleted_text = "[Mensagem apagada]" if is_own_message else "[Mensagem removida pelo moderador]"
     result = await db.chat_messages.update_one(
         {"id": message_id},
         {"$set": {
             "deleted": True,
             "deleted_by": user["id"],
-            "content": "[Mensagem removida pelo moderador]",
-            "message_type": "deleted"
+            "content": deleted_text,
+            "message_type": "deleted",
+            "audio_data": None  # Remove audio data too
         }}
     )
-    
-    if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Message not found")
     
     # Broadcast deletion to all connected users
     await manager.broadcast({
@@ -243,7 +361,7 @@ async def delete_message(message_id: str, token: str = Query(...)):
         "deleted_by": user["name"]
     })
     
-    logger.info(f"Message {message_id} deleted by admin {user['name']}")
+    logger.info(f"Message {message_id} deleted by {user['name']}")
     return {"message": "Message deleted"}
 
 @chat_router.post("/ban")
@@ -329,6 +447,56 @@ async def get_banned_users(token: str = Query(...)):
     
     return bans
 
+# ============== AGENTE COMUNIDADE HANDLER ==============
+
+async def process_agente_comunidade_response(user_message: str, user_name: str):
+    """Process and broadcast Agente Comunidade response"""
+    try:
+        # Show typing indicator
+        await manager.broadcast({
+            "type": "typing",
+            "user_id": AGENTE_COMUNIDADE_ID,
+            "user_name": AGENTE_COMUNIDADE_NAME
+        })
+        
+        # Get AI response
+        response = await get_agente_comunidade_response(user_message, user_name)
+        
+        # Create agent message
+        agent_message = ChatMessage(
+            user_id=AGENTE_COMUNIDADE_ID,
+            user_name=AGENTE_COMUNIDADE_NAME,
+            user_avatar=None,
+            content=response,
+            message_type="text"
+        )
+        
+        # Save to database
+        message_dict = agent_message.model_dump()
+        message_dict["expire_at"] = datetime.now(timezone.utc) + timedelta(days=2)
+        message_dict["is_agent"] = True
+        await db.chat_messages.insert_one(message_dict)
+        
+        # Broadcast agent response
+        await manager.broadcast({
+            "type": "message",
+            "message": {
+                "id": agent_message.id,
+                "user_id": agent_message.user_id,
+                "user_name": agent_message.user_name,
+                "user_avatar": agent_message.user_avatar,
+                "content": agent_message.content,
+                "message_type": agent_message.message_type,
+                "created_at": agent_message.created_at,
+                "is_agent": True
+            }
+        })
+        
+        logger.info(f"Agente Comunidade responded to: {user_message[:50]}...")
+        
+    except Exception as e:
+        logger.error(f"Error in Agente Comunidade handler: {e}")
+
 # ============== WEBSOCKET ENDPOINT ==============
 
 @chat_router.websocket("/ws")
@@ -384,8 +552,17 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
             
             if data.get("type") == "message":
                 content = data.get("content", "").strip()
+                message_type = data.get("message_type", "text")
+                audio_data = data.get("audio_data")
+                audio_duration = data.get("audio_duration")
                 
-                if not content or len(content) > 1000:
+                logger.info(f"Message from {user_info['name']}: type={message_type}, content_len={len(content)}, has_audio={bool(audio_data)}")
+                
+                # For audio messages, allow larger content (base64)
+                max_length = 5000000 if message_type == "audio" else 1000
+                
+                if not content or len(content) > max_length:
+                    logger.warning(f"Invalid message from {user_info['name']}: empty={not content}, len={len(content)}")
                     await websocket.send_json({
                         "type": "error",
                         "message": "Mensagem inválida (vazia ou muito longa)"
@@ -405,7 +582,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                     user_id=user_id,
                     user_name=user_info["name"],
                     user_avatar=user_info.get("avatar"),
-                    content=content
+                    content=content,
+                    message_type=message_type,
+                    audio_data=audio_data,
+                    audio_duration=audio_duration
                 )
                 
                 # Save to database with TTL (2 days = 48 hours)
@@ -422,10 +602,23 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                         "user_name": message.user_name,
                         "user_avatar": message.user_avatar,
                         "content": message.content,
+                        "message_type": message.message_type,
+                        "audio_data": message.audio_data,
+                        "audio_duration": message.audio_duration,
                         "created_at": message.created_at,
                         "is_admin": user_info["role"] == "admin"
                     }
                 })
+                
+                # Check if message should trigger Agente Comunidade
+                if message_type == "text" and should_trigger_agente(content):
+                    # Process in background to not block
+                    asyncio.create_task(
+                        process_agente_comunidade_response(
+                            clean_message_for_ai(content),
+                            user_info["name"]
+                        )
+                    )
             
             elif data.get("type") == "typing":
                 # Broadcast typing indicator

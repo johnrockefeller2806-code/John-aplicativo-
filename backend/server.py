@@ -82,10 +82,24 @@ class UserResponse(BaseModel):
     created_at: str
     school_id: Optional[str] = None
     avatar: Optional[str] = None  # Profile photo URL
+    plan: str = "free"  # free or plus
+    plan_purchased_at: Optional[str] = None
 
 class UserProfileUpdate(BaseModel):
     name: Optional[str] = None
     avatar: Optional[str] = None
+
+# Plano PLUS para estudantes
+STUDENT_PLUS_PLAN = {
+    "name": "PLUS",
+    "price": 49.90,
+    "currency": "EUR",
+    "type": "one_time",  # pagamento único
+    "description": "Acesso completo à plataforma STUFF Intercâmbio"
+}
+
+class PlusPlanCheckoutRequest(BaseModel):
+    origin_url: str
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -290,6 +304,8 @@ class AdminStats(BaseModel):
     total_enrollments: int
     paid_enrollments: int
     total_revenue: float
+    plus_subscribers: int = 0
+    plus_revenue: float = 0.0
 
 # ============== AUTH HELPERS ==============
 
@@ -359,6 +375,7 @@ async def register(user_data: UserCreate):
         "email": user_data.email,
         "password": hash_password(user_data.password),
         "role": "student",  # Always student for regular registration
+        "plan": "free",  # Plano gratuito por padrão
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.users.insert_one(user)
@@ -371,6 +388,7 @@ async def register(user_data: UserCreate):
             name=user_data.name,
             email=user_data.email,
             role="student",
+            plan="free",
             created_at=user["created_at"]
         )
     )
@@ -440,6 +458,8 @@ async def login(credentials: UserLogin):
             email=user["email"],
             role=role,
             school_id=user.get("school_id"),
+            plan=user.get("plan", "free"),
+            plan_purchased_at=user.get("plan_purchased_at"),
             created_at=user["created_at"]
         )
     )
@@ -452,6 +472,8 @@ async def get_me(user: dict = Depends(get_current_user)):
         email=user["email"],
         role=user.get("role", "student"),
         school_id=user.get("school_id"),
+        plan=user.get("plan", "free"),
+        plan_purchased_at=user.get("plan_purchased_at"),
         created_at=user["created_at"],
         avatar=user.get("avatar")
     )
@@ -476,6 +498,8 @@ async def update_profile(data: UserProfileUpdate, user: dict = Depends(get_curre
         email=updated_user["email"],
         role=updated_user.get("role", "student"),
         school_id=updated_user.get("school_id"),
+        plan=updated_user.get("plan", "free"),
+        plan_purchased_at=updated_user.get("plan_purchased_at"),
         created_at=updated_user["created_at"],
         avatar=updated_user.get("avatar")
     )
@@ -506,6 +530,146 @@ async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_c
     
     return {"message": "Avatar atualizado com sucesso", "avatar": avatar_data}
 
+# ============== PLANO PLUS ROUTES ==============
+
+@api_router.get("/plus/info")
+async def get_plus_plan_info():
+    """Get PLUS plan information (public)"""
+    return {
+        "plan": STUDENT_PLUS_PLAN,
+        "features": [
+            "Acesso completo ao catálogo de escolas",
+            "Realizar matrículas em cursos",
+            "Chat da comunidade STUFF",
+            "Guias completos (PPS, GNIB, Passaporte, Carteira)",
+            "Suporte prioritário",
+            "Acesso vitalício"
+        ]
+    }
+
+@api_router.post("/plus/checkout")
+async def create_plus_checkout(
+    data: PlusPlanCheckoutRequest,
+    request: Request,
+    user: dict = Depends(get_current_user)
+):
+    """Create checkout session for PLUS plan"""
+    # Check if user already has PLUS
+    if user.get("plan") == "plus":
+        raise HTTPException(status_code=400, detail="Você já possui o Plano PLUS!")
+    
+    # Only students can buy PLUS plan
+    if user.get("role") != "student":
+        raise HTTPException(status_code=400, detail="Apenas estudantes podem adquirir o Plano PLUS")
+    
+    host_url = str(request.base_url).rstrip('/')
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    success_url = f"{data.origin_url}/plus/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{data.origin_url}/schools"
+    
+    checkout_request = CheckoutSessionRequest(
+        amount=STUDENT_PLUS_PLAN["price"],
+        currency="eur",
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata={
+            "type": "plus_plan",
+            "user_id": user["id"],
+            "user_email": user["email"],
+            "plan_name": "PLUS"
+        }
+    )
+    
+    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
+    
+    # Create transaction record
+    transaction = {
+        "id": str(uuid.uuid4()),
+        "session_id": session.session_id,
+        "type": "plus_plan",
+        "user_id": user["id"],
+        "user_email": user["email"],
+        "amount": STUDENT_PLUS_PLAN["price"],
+        "currency": "EUR",
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.payment_transactions.insert_one(transaction)
+    
+    logger.info(f"PLUS checkout created for user {user['id']}")
+    
+    return {"checkout_url": session.url, "session_id": session.session_id}
+
+@api_router.get("/plus/status/{session_id}")
+async def check_plus_payment_status(session_id: str, request: Request, user: dict = Depends(get_current_user)):
+    """Check PLUS plan payment status and activate if paid"""
+    host_url = str(request.base_url).rstrip('/')
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    try:
+        status = await stripe_checkout.get_checkout_status(session_id)
+        
+        # If paid, activate PLUS plan
+        if status.payment_status == "paid":
+            # Check if not already activated
+            transaction = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
+            if transaction and transaction.get("status") != "completed":
+                # Update transaction
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {"status": "completed", "paid_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                
+                # Activate PLUS plan for user
+                await db.users.update_one(
+                    {"id": user["id"]},
+                    {"$set": {
+                        "plan": "plus",
+                        "plan_purchased_at": datetime.now(timezone.utc).isoformat(),
+                        "plan_session_id": session_id
+                    }}
+                )
+                
+                logger.info(f"🎉 PLUS plan activated for user {user['id']} ({user['email']})")
+                logger.info(f"📧 EMAIL: Bem-vindo ao Plano PLUS!")
+                logger.info(f"   To: {user['email']}")
+        
+        return {
+            "status": status.status,
+            "payment_status": status.payment_status,
+            "amount": status.amount_total / 100 if status.amount_total else STUDENT_PLUS_PLAN["price"],
+            "currency": status.currency or "eur",
+            "plan_activated": status.payment_status == "paid"
+        }
+    except Exception as e:
+        logger.error(f"Error checking PLUS payment status: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao verificar status do pagamento")
+
+@api_router.get("/plus/subscribers/count")
+async def get_plus_subscribers_count():
+    """Get count of PLUS subscribers (public - for social proof)"""
+    count = await db.users.count_documents({"plan": "plus"})
+    return {"count": count}
+
+# Helper to check if user has PLUS plan
+async def require_plus_plan(user: dict = Depends(get_current_user)):
+    """Dependency that requires user to have PLUS plan"""
+    # Admin and school users have full access
+    if user.get("role") in ["admin", "school"]:
+        return user
+    # Students need PLUS plan for schools access
+    if user.get("plan") != "plus":
+        raise HTTPException(
+            status_code=403, 
+            detail="Acesso exclusivo para assinantes do Plano PLUS. Assine agora por €49,90!"
+        )
+    return user
+
 # ============== ADMIN ROUTES ==============
 
 @api_router.get("/admin/stats", response_model=AdminStats)
@@ -527,6 +691,10 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
     revenue_result = await db.payment_transactions.aggregate(pipeline).to_list(1)
     total_revenue = revenue_result[0]["total"] if revenue_result else 0
     
+    # PLUS subscribers stats
+    plus_subscribers = await db.users.count_documents({"plan": "plus"})
+    plus_revenue = plus_subscribers * STUDENT_PLUS_PLAN["price"]
+    
     return AdminStats(
         total_users=total_users,
         total_schools=total_schools,
@@ -535,7 +703,9 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
         total_courses=total_courses,
         total_enrollments=total_enrollments,
         paid_enrollments=paid_enrollments,
-        total_revenue=total_revenue
+        total_revenue=total_revenue,
+        plus_subscribers=plus_subscribers,
+        plus_revenue=plus_revenue
     )
 
 @api_router.get("/admin/schools")

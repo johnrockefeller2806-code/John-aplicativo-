@@ -199,7 +199,46 @@ export const AdminDashboard = () => {
               <div>
                 <p className="text-sm text-slate-500">Receita Total</p>
                 <p className="text-2xl font-bold text-slate-900">
-                  €{(stats?.total_revenue || 0).toLocaleString()}
+                  €{((stats?.total_revenue || 0) + (stats?.plus_revenue || 0)).toLocaleString()}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* PLUS Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card className="border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50" data-testid="stat-plus-subscribers">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-amber-500 rounded-xl">
+                  <TrendingUp className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm text-amber-700 font-medium">Assinantes PLUS</p>
+                  <p className="text-3xl font-bold text-amber-900">{stats?.plus_subscribers || 0}</p>
+                </div>
+              </div>
+              <Badge className="bg-amber-500 text-white text-lg px-4 py-2">
+                €{(stats?.plus_revenue || 0).toFixed(2)}
+              </Badge>
+            </CardContent>
+          </Card>
+
+          <Card className="border-slate-100 shadow-lg" data-testid="stat-conversion">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="p-3 bg-emerald-100 rounded-xl">
+                <TrendingUp className="h-6 w-6 text-emerald-700" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">Taxa de Conversão PLUS</p>
+                <p className="text-2xl font-bold text-slate-900">
+                  {stats?.total_users > 0 
+                    ? ((stats?.plus_subscribers || 0) / stats?.total_users * 100).toFixed(1)
+                    : 0}%
+                </p>
+                <p className="text-xs text-slate-400">
+                  {stats?.plus_subscribers || 0} de {stats?.total_users || 0} usuários
                 </p>
               </div>
             </CardContent>

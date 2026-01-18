@@ -940,15 +940,15 @@ export const Chat = () => {
                             <Mic className="h-4 w-4 text-white" />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm text-[#e9edef]">{msg.content}</p>
+                            <p className="text-sm text-gray-800">{msg.content}</p>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm text-[#e9edef] break-words whitespace-pre-wrap">{msg.content}</p>
+                        <p className="text-sm text-gray-800 break-words whitespace-pre-wrap">{msg.content}</p>
                       )}
                       
                       <div className="flex items-center justify-end gap-1 mt-1">
-                        <span className="text-[10px] text-[#8696a0]">{formatTime(msg.created_at)}</span>
+                        <span className="text-[10px] text-gray-500">{formatTime(msg.created_at)}</span>
                         {isOwn && <CheckCheck className="h-4 w-4 text-[#53bdeb]" />}
                       </div>
                       

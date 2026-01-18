@@ -710,7 +710,7 @@ export const Chat = () => {
         <div className="h-14 bg-[#00a884] flex items-center justify-between px-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border-2 border-white">
-              <AvatarImage src={user?.avatar} />
+              <AvatarImage src={LOGO_URL} className="object-cover" />
               <AvatarFallback className="bg-white text-[#00a884]">{getInitials(user?.name)}</AvatarFallback>
             </Avatar>
           </div>

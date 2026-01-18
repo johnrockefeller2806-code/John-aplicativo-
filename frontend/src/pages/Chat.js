@@ -776,15 +776,15 @@ export const Chat = () => {
                 <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} group`}>
                   <div className={`flex gap-2 max-w-[85%] ${isOwn ? 'flex-row-reverse' : ''}`}>
                     {!isOwn && showAvatar && (
-                      <Avatar className={`h-8 w-8 flex-shrink-0 mt-auto ${isAgent ? 'ring-2 ring-purple-400' : ''}`}>
+                      <Avatar className={`h-8 w-8 flex-shrink-0 mt-auto ${isAgent ? 'ring-2 ring-[#00a884]' : ''}`}>
                         {isAgent ? (
-                          <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-lg">🤖</AvatarFallback>
+                          <AvatarImage src={LOGO_URL} className="object-cover" />
                         ) : (
-                          <>
-                            <AvatarImage src={msg.user_avatar} />
-                            <AvatarFallback className="bg-[#00a884] text-white text-xs">{getInitials(msg.user_name)}</AvatarFallback>
-                          </>
+                          <AvatarImage src={msg.user_avatar} />
                         )}
+                        <AvatarFallback className={isAgent ? "bg-[#00a884] text-white" : "bg-[#00a884] text-white text-xs"}>
+                          {isAgent ? 'S' : getInitials(msg.user_name)}
+                        </AvatarFallback>
                       </Avatar>
                     )}
                     {!isOwn && !showAvatar && <div className="w-8" />}
@@ -793,20 +793,19 @@ export const Chat = () => {
                       isOwn 
                         ? 'bg-[#dcf8c6] rounded-tr-none' 
                         : isAgent 
-                          ? 'bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-tl-none' 
+                          ? 'bg-[#d9fdd3] border border-[#00a884]/20 rounded-tl-none' 
                           : 'bg-white rounded-tl-none'
                     }`}>
                       {!isOwn && showAvatar && (
                         <p className={`text-xs font-medium mb-1 ${
                           isAgent 
-                            ? 'text-purple-600 flex items-center gap-1' 
+                            ? 'text-[#00a884] flex items-center gap-1' 
                             : msg.is_admin 
                               ? 'text-amber-600' 
                               : 'text-[#00a884]'
                         }`}>
-                          {isAgent && <span className="text-base">🤖</span>}
                           {msg.user_name} 
-                          {isAgent && <Badge className="ml-1 bg-purple-100 text-purple-700 text-[10px] px-1 py-0">IA</Badge>}
+                          {isAgent && <Badge className="ml-1 bg-[#00a884]/10 text-[#00a884] text-[10px] px-1 py-0 border border-[#00a884]/30">IA</Badge>}
                           {msg.is_admin && !isAgent && '⭐'}
                         </p>
                       )}

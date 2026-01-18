@@ -188,23 +188,43 @@ export const Transport = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="all" className="space-y-6">
-          <TabsList className="bg-white border border-slate-100 p-1">
-            <TabsTrigger value="all" data-testid="tab-all">
+          <TabsList className="bg-white border border-slate-100 p-1 h-auto flex-wrap">
+            <TabsTrigger 
+              value="all" 
+              data-testid="tab-all"
+              className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white hover:bg-emerald-100 hover:text-emerald-700 transition-all duration-200"
+            >
               {language === 'pt' ? 'Todos' : 'All'}
             </TabsTrigger>
-            <TabsTrigger value="bus" data-testid="tab-bus">
+            <TabsTrigger 
+              value="bus" 
+              data-testid="tab-bus"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            >
               <Bus className="h-4 w-4 mr-1" />
               Bus
             </TabsTrigger>
-            <TabsTrigger value="luas" data-testid="tab-luas">
+            <TabsTrigger 
+              value="luas" 
+              data-testid="tab-luas"
+              className="data-[state=active]:bg-purple-600 data-[state=active]:text-white hover:bg-purple-100 hover:text-purple-700 transition-all duration-200"
+            >
               <Train className="h-4 w-4 mr-1" />
               Luas
             </TabsTrigger>
-            <TabsTrigger value="dart" data-testid="tab-dart">
+            <TabsTrigger 
+              value="dart" 
+              data-testid="tab-dart"
+              className="data-[state=active]:bg-green-600 data-[state=active]:text-white hover:bg-green-100 hover:text-green-700 transition-all duration-200"
+            >
               <Train className="h-4 w-4 mr-1" />
               DART
             </TabsTrigger>
-            <TabsTrigger value="bikes" data-testid="tab-bikes">
+            <TabsTrigger 
+              value="bikes" 
+              data-testid="tab-bikes"
+              className="data-[state=active]:bg-teal-600 data-[state=active]:text-white hover:bg-teal-100 hover:text-teal-700 transition-all duration-200"
+            >
               <Bike className="h-4 w-4 mr-1" />
               Bikes
             </TabsTrigger>

@@ -7,6 +7,7 @@ Features:
 - Message history (auto-delete after 2 days)
 - Moderator controls (delete messages, ban users)
 - Emoji support
+- AI Agent "Agente Comunidade" powered by OpenAI GPT
 """
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException, Query
@@ -19,6 +20,19 @@ import json
 import logging
 import jwt
 import asyncio
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Import LLM for Agente Comunidade
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    LLM_AVAILABLE = True
+except ImportError:
+    LLM_AVAILABLE = False
+    logging.warning("emergentintegrations not available - Agente Comunidade disabled")
 
 logger = logging.getLogger(__name__)
 

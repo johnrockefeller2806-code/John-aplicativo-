@@ -27,6 +27,7 @@ import { Chat } from "./pages/Chat";
 import { Profile } from "./pages/Profile";
 import { PlusPaywall } from "./pages/PlusPaywall";
 import { PlusSuccess } from "./pages/PlusSuccess";
+import { Tourism } from "./pages/Tourism";
 
 // Layout component to conditionally show navbar/footer
 const AppLayout = ({ children }) => {

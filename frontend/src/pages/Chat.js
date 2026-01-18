@@ -702,43 +702,159 @@ export const Chat = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-100 flex flex-col md:flex-row" style={{ height: '100dvh' }} data-testid="chat-page">
+    <div className="fixed inset-0 bg-[#111b21] flex flex-col md:flex-row" style={{ height: '100dvh' }} data-testid="chat-page">
       
-      {/* LEFT - Messages Area */}
-      <div className={`flex-1 flex flex-col bg-gray-50 min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
-        {/* Header */}
-        <div className="h-14 bg-[#00a884] flex items-center justify-between px-3 flex-shrink-0 shadow-md">
+      {/* LEFT SIDEBAR - WhatsApp Style */}
+      <div className={`w-full md:w-[420px] bg-[#111b21] flex flex-col border-r border-[#222d34] ${!showUsersList ? 'hidden md:flex' : 'flex'}`}>
+        {/* Sidebar Header */}
+        <div className="h-14 bg-[#202c33] flex items-center justify-between px-4 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user?.avatar} />
+              <AvatarFallback className="bg-[#00a884] text-white">{getInitials(user?.name)}</AvatarFallback>
+            </Avatar>
+          </div>
           <div className="flex items-center gap-2">
-            <a href="/" className="text-white hover:bg-white/20 p-2 rounded-full md:hidden">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSound}
+              className="text-[#aebac1] hover:bg-[#374248]"
+              title={soundEnabled ? 'Desativar som' : 'Ativar som'}
+            >
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
+            </Button>
+            <a href="/" className="text-[#aebac1] hover:bg-[#374248] p-2 rounded-full">
               <ArrowLeft className="h-5 w-5" />
             </a>
-            <img src={LOGO_URL} alt="STUFF" className="w-10 h-10 rounded-full object-cover border-2 border-white" />
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="p-2 bg-[#111b21]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8696a0]" />
+            <Input
+              value={searchUser}
+              onChange={(e) => setSearchUser(e.target.value)}
+              placeholder={language === 'pt' ? 'Pesquisar ou começar uma nova conversa' : 'Search or start a new chat'}
+              className="w-full bg-[#202c33] border-none text-white placeholder:text-[#8696a0] pl-10 rounded-lg h-9"
+            />
+          </div>
+        </div>
+
+        {/* Community Chat Entry - Featured */}
+        <div 
+          className="flex items-center gap-3 p-3 bg-[#202c33] hover:bg-[#2a3942] cursor-pointer border-b border-[#222d34]"
+          onClick={() => setShowUsersList(false)}
+        >
+          <div className="relative">
+            <img src={LOGO_URL} alt="STUFF" className="w-12 h-12 rounded-full object-cover" />
+            <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-[#00a884] text-[#00a884] border-2 border-[#202c33] rounded-full" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <h3 className="text-white font-medium">STUFF Comunidade</h3>
+              <span className="text-[#8696a0] text-xs">
+                {messages.length > 0 && formatTime(messages[messages.length - 1]?.created_at)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-[#8696a0] text-sm truncate flex-1">
+                {messages.length > 0 
+                  ? `${messages[messages.length - 1]?.user_name}: ${messages[messages.length - 1]?.content?.substring(0, 30)}...` 
+                  : language === 'pt' ? 'Toque para abrir o chat' : 'Tap to open chat'}
+              </p>
+              {messages.length > 0 && (
+                <Badge className="bg-[#00a884] text-white text-xs ml-2">{messages.length > 99 ? '99+' : messages.length}</Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Online Users Section */}
+        <div className="px-4 py-2 bg-[#111b21]">
+          <p className="text-[#00a884] text-xs font-medium uppercase tracking-wide">
+            {language === 'pt' ? 'Membros Online' : 'Online Members'} ({filteredUsers.length})
+          </p>
+        </div>
+        
+        <ScrollArea className="flex-1 bg-[#111b21]">
+          <div>
+            {filteredUsers.map((onlineUser) => (
+              <div key={onlineUser.user_id} className="flex items-center gap-3 p-3 hover:bg-[#202c33] cursor-pointer group">
+                <div className="relative">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={onlineUser.user_avatar} />
+                    <AvatarFallback className={`${onlineUser.role === 'admin' ? 'bg-amber-500' : 'bg-[#00a884]'} text-white`}>
+                      {getInitials(onlineUser.user_name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-[#00a884] text-[#00a884] border-2 border-[#111b21] rounded-full" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-white font-medium truncate">{onlineUser.user_name}</h3>
+                    {onlineUser.role === 'admin' && <Badge className="bg-amber-500/20 text-amber-400 text-xs border-0">Admin</Badge>}
+                  </div>
+                  <p className="text-[#8696a0] text-sm">{onlineUser.role === 'admin' ? 'Administrador' : 'Estudante'}</p>
+                </div>
+                {isAdmin && onlineUser.user_id !== user.id && onlineUser.role !== 'admin' && (
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 text-red-400 hover:bg-red-500/20" onClick={() => { setUserToBan(onlineUser); setBanDialogOpen(true); }}>
+                    <Ban className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            {filteredUsers.length === 0 && (
+              <div className="p-8 text-center text-[#8696a0]">
+                <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>{language === 'pt' ? 'Nenhum usuário online' : 'No users online'}</p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+
+      {/* RIGHT - Chat Area */}
+      <div className={`flex-1 flex flex-col min-h-0 ${showUsersList ? 'hidden md:flex' : 'flex'}`}>
+        {/* Chat Header */}
+        <div className="h-14 bg-[#202c33] flex items-center justify-between px-4 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowUsersList(true)}
+              className="md:hidden text-[#aebac1] hover:bg-[#374248]"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <img src={LOGO_URL} alt="STUFF" className="w-10 h-10 rounded-full object-cover" />
             <div>
-              <h2 className="text-white font-medium text-sm">STUFF Comunidade</h2>
-              <p className="text-white/80 text-xs flex items-center gap-1">
+              <h2 className="text-white font-medium">STUFF Comunidade</h2>
+              <p className="text-[#8696a0] text-xs flex items-center gap-1">
                 {isConnected ? (
-                  <><Circle className="h-2 w-2 fill-white text-white" />{onlineUsers.length} online</>
-                ) : isConnecting ? 'Conectando...' : (
-                  <><Circle className="h-2 w-2 fill-red-300 text-red-300" />Desconectado</>
+                  <><Circle className="h-2 w-2 fill-[#00a884] text-[#00a884]" />{onlineUsers.length} {language === 'pt' ? 'online' : 'online'}</>
+                ) : isConnecting ? (language === 'pt' ? 'Conectando...' : 'Connecting...') : (
+                  <><Circle className="h-2 w-2 fill-red-400 text-red-400" />{language === 'pt' ? 'Desconectado' : 'Disconnected'}</>
                 )}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-1">
-            {/* Sound toggle - mobile */}
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={toggleSound}
-              className="text-white hover:bg-white/20 h-9 w-9"
+              className="text-[#aebac1] hover:bg-[#374248] h-9 w-9"
             >
-              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-200" />}
+              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-400" />}
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowUsersList(true)}
-              className="md:hidden text-white hover:bg-white/20"
+              className="md:hidden text-[#aebac1] hover:bg-[#374248]"
             >
               <Users className="h-5 w-5" />
             </Button>
@@ -748,13 +864,14 @@ export const Chat = () => {
         {/* Messages */}
         <div 
           className="flex-1 overflow-y-auto p-3 space-y-2 min-h-0"
-          style={{ backgroundColor: '#e5ddd5', backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli0teleO...")' }}
+          style={{ backgroundColor: '#0b141a', backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3Oeli0teleO...")' }}
         >
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-gray-500">
-              <img src={LOGO_URL} alt="STUFF" className="w-16 h-16 rounded-full mb-4 opacity-50" />
-              <p>{language === 'pt' ? 'Nenhuma mensagem ainda' : 'No messages yet'}</p>
-              <p className="text-sm">{language === 'pt' ? 'Seja o primeiro!' : 'Be the first!'}</p>
+            <div className="flex flex-col items-center justify-center h-full text-[#8696a0]">
+              <img src={LOGO_URL} alt="STUFF" className="w-20 h-20 rounded-full mb-4 opacity-50" />
+              <p className="text-lg">{language === 'pt' ? 'Bem-vindo ao Chat!' : 'Welcome to Chat!'}</p>
+              <p className="text-sm">{language === 'pt' ? 'Seja o primeiro a enviar uma mensagem' : 'Be the first to send a message'}</p>
+              <p className="text-xs mt-4 text-[#00a884]">💡 {language === 'pt' ? 'Digite @AgenteComunidade para tirar dúvidas' : 'Type @AgenteComunidade to ask questions'}</p>
             </div>
           ) : (
             messages.filter(msg => !msg.deleted).map((msg, index) => {

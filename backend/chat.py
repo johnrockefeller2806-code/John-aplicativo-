@@ -447,6 +447,56 @@ async def get_banned_users(token: str = Query(...)):
     
     return bans
 
+# ============== AGENTE COMUNIDADE HANDLER ==============
+
+async def process_agente_comunidade_response(user_message: str, user_name: str):
+    """Process and broadcast Agente Comunidade response"""
+    try:
+        # Show typing indicator
+        await manager.broadcast({
+            "type": "typing",
+            "user_id": AGENTE_COMUNIDADE_ID,
+            "user_name": AGENTE_COMUNIDADE_NAME
+        })
+        
+        # Get AI response
+        response = await get_agente_comunidade_response(user_message, user_name)
+        
+        # Create agent message
+        agent_message = ChatMessage(
+            user_id=AGENTE_COMUNIDADE_ID,
+            user_name=AGENTE_COMUNIDADE_NAME,
+            user_avatar=None,
+            content=response,
+            message_type="text"
+        )
+        
+        # Save to database
+        message_dict = agent_message.model_dump()
+        message_dict["expire_at"] = datetime.now(timezone.utc) + timedelta(days=2)
+        message_dict["is_agent"] = True
+        await db.chat_messages.insert_one(message_dict)
+        
+        # Broadcast agent response
+        await manager.broadcast({
+            "type": "message",
+            "message": {
+                "id": agent_message.id,
+                "user_id": agent_message.user_id,
+                "user_name": agent_message.user_name,
+                "user_avatar": agent_message.user_avatar,
+                "content": agent_message.content,
+                "message_type": agent_message.message_type,
+                "created_at": agent_message.created_at,
+                "is_agent": True
+            }
+        })
+        
+        logger.info(f"Agente Comunidade responded to: {user_message[:50]}...")
+        
+    except Exception as e:
+        logger.error(f"Error in Agente Comunidade handler: {e}")
+
 # ============== WEBSOCKET ENDPOINT ==============
 
 @chat_router.websocket("/ws")

@@ -785,7 +785,11 @@ export const Chat = () => {
               <div key={onlineUser.user_id} className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer group border-b border-gray-100">
                 <div className="relative">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={onlineUser.user_avatar} />
+                    {onlineUser.role === 'admin' ? (
+                      <AvatarImage src={LOGO_URL} className="object-cover" />
+                    ) : (
+                      <AvatarImage src={onlineUser.user_avatar} />
+                    )}
                     <AvatarFallback className={`${onlineUser.role === 'admin' ? 'bg-amber-500' : 'bg-[#00a884]'} text-white`}>
                       {getInitials(onlineUser.user_name)}
                     </AvatarFallback>

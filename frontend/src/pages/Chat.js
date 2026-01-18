@@ -974,7 +974,7 @@ export const Chat = () => {
 
         {/* Typing indicator */}
         {typingUsers.length > 0 && (
-          <div className="px-4 py-1 text-xs text-[#00a884] bg-[#111b21]">
+          <div className="px-4 py-1 text-xs text-[#00a884] bg-gray-100">
             {typingUsers.join(', ')} {language === 'pt' ? 'digitando...' : 'typing...'}
           </div>
         )}
@@ -1002,11 +1002,11 @@ export const Chat = () => {
 
         {/* Audio Preview */}
         {audioBlob && !isRecording && (
-          <div className="bg-[#202c33] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0 border-t border-[#222d34]">
-            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-400 hover:bg-red-500/20">
+          <div className="bg-gray-100 px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0 border-t border-gray-200">
+            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-500 hover:bg-red-50">
               <Trash2 className="h-5 w-5" />
             </Button>
-            <div className="flex-1 flex items-center gap-3 bg-[#2a3942] rounded-full px-4 py-2">
+            <div className="flex-1 flex items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm">
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -1021,10 +1021,10 @@ export const Chat = () => {
               </Button>
               <div className="flex-1 flex items-center gap-0.5">
                 {[...Array(25)].map((_, i) => (
-                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-[#8696a0]'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
+                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-gray-300'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
                 ))}
               </div>
-              <span className="text-[#8696a0] text-sm">{formatRecordingTime(recordingTime)}</span>
+              <span className="text-gray-600 text-sm">{formatRecordingTime(recordingTime)}</span>
             </div>
             <Button onClick={sendAudioMessage} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-10 w-10">
               <Send className="h-5 w-5" />
@@ -1037,10 +1037,10 @@ export const Chat = () => {
           <>
             {/* Emoji Picker */}
             {showEmojiPicker && (
-              <div className="bg-[#202c33] border-t border-[#222d34] flex-shrink-0">
+              <div className="bg-white border-t border-gray-200 flex-shrink-0">
                 <div className="flex items-center justify-between px-3 py-2">
-                  <span className="text-[#8696a0] text-sm">Emojis</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-[#8696a0] hover:bg-[#374248]" onClick={() => setShowEmojiPicker(false)}>
+                  <span className="text-gray-600 text-sm">Emojis</span>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:bg-gray-100" onClick={() => setShowEmojiPicker(false)}>
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
@@ -1048,7 +1048,7 @@ export const Chat = () => {
                   onEmojiClick={onEmojiClick} 
                   width="100%" 
                   height={280} 
-                  theme="dark"
+                  theme="light"
                   searchPlaceholder="Buscar emoji..."
                   previewConfig={{ showPreview: false }}
                 />
@@ -1057,7 +1057,7 @@ export const Chat = () => {
             
             {/* Agent hint */}
             {messages.length > 0 && messages.length % 15 === 5 && (
-              <div className="bg-[#182229] px-3 py-2 text-center border-t border-[#222d34]">
+              <div className="bg-[#d9fdd3] px-3 py-2 text-center border-t border-[#00a884]/20">
                 <p className="text-[#00a884] text-xs">
                   💡 {language === 'pt' 
                     ? 'Dica: Digite @AgenteComunidade para tirar dúvidas sobre intercâmbio!' 
@@ -1066,8 +1066,8 @@ export const Chat = () => {
               </div>
             )}
             
-            <div className="bg-[#202c33] px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0">
-              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#374248] h-10 w-10">
+            <div className="bg-gray-100 px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 border-t border-gray-200">
+              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-gray-500 hover:bg-gray-200 h-10 w-10">
                 {showEmojiPicker ? <X className="h-6 w-6" /> : <Smile className="h-6 w-6" />}
               </Button>
 
@@ -1077,7 +1077,7 @@ export const Chat = () => {
                   value={newMessage}
                   onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
                   placeholder={language === 'pt' ? 'Mensagem ou @AgenteComunidade...' : 'Message or @AgenteComunidade...'}
-                  className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-lg h-11 text-base focus-visible:ring-[#00a884]"
+                  className="flex-1 bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 rounded-full h-11 text-base focus-visible:ring-[#00a884] shadow-sm"
                   disabled={!isConnected}
                   autoComplete="off"
                   autoCorrect="off"

@@ -77,6 +77,12 @@ export const Navbar = () => {
       color: 'orange'
     },
     { 
+      href: '/tourism', 
+      label: language === 'pt' ? 'Turismo' : 'Tourism', 
+      icon: Camera,
+      color: 'orange'
+    },
+    { 
       href: '/services', 
       label: language === 'pt' ? 'Serviços' : 'Services', 
       icon: FileText,

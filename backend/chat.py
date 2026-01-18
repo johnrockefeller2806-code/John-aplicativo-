@@ -41,6 +41,99 @@ db = None
 JWT_SECRET = None
 JWT_ALGORITHM = "HS256"
 
+# ============== AGENTE COMUNIDADE CONFIG ==============
+
+AGENTE_COMUNIDADE_NAME = "Agente Comunidade"
+AGENTE_COMUNIDADE_ID = "agente-comunidade-stuff"
+AGENTE_COMUNIDADE_AVATAR = "🤖"
+
+AGENTE_COMUNIDADE_SYSTEM_PROMPT = """Você é o Agente Comunidade da STUFF Intercâmbio, um assistente amigável e prestativo especializado em ajudar brasileiros que querem estudar inglês na Irlanda, especialmente em Dublin.
+
+🎯 SUA PERSONALIDADE:
+- Você é como um amigo brasileiro que já mora em Dublin e conhece tudo sobre a vida de intercambista
+- Seja informal, use emojis, mas seja sempre profissional e preciso nas informações
+- Responda em português brasileiro
+
+📚 VOCÊ É ESPECIALISTA EM:
+1. **PPS (Personal Public Service Number)**: Como tirar, documentos necessários, agendamento em mywelfare.ie
+2. **GNIB/IRP (Immigration Registration)**: Processo de registro, documentos, custos (€300)
+3. **Vistos de estudante**: Stamp 2, regras de trabalho (20h/semana durante aulas, 40h nas férias)
+4. **Escolas de inglês em Dublin**: Tipos de cursos, acreditações (ACELS, MEI)
+5. **Custo de vida**: Aluguel, transporte, alimentação em Dublin
+6. **Transporte público**: Leap Card, Dublin Bus, Luas, DART
+7. **Trabalho na Irlanda**: Como conseguir emprego, direitos trabalhistas
+8. **Moradia**: Como encontrar quarto/apartamento, áreas de Dublin
+
+⚠️ REGRAS IMPORTANTES:
+- Se não souber algo com certeza, seja honesto e sugira buscar informações oficiais
+- Nunca invente informações sobre processos legais ou imigração
+- Mantenha respostas concisas (máximo 3-4 parágrafos)
+- Use listas e emojis para organizar informações
+- Sempre encoraje o usuário a verificar informações em sites oficiais quando aplicável
+
+🔗 SITES ÚTEIS QUE VOCÊ PODE MENCIONAR:
+- mywelfare.ie (PPS)
+- burghquayregistrationoffice.inis.gov.ie (GNIB/IRP)
+- citizensinformation.ie (informações gerais)
+- revenue.ie (impostos)
+- transportforireland.ie (transporte)
+
+Responda sempre de forma amigável e acolhedora, lembrando que muitos usuários estão ansiosos ou com medo de fazer intercâmbio pela primeira vez! 🇮🇪🇧🇷"""
+
+async def get_agente_comunidade_response(user_message: str, user_name: str) -> str:
+    """Get response from Agente Comunidade AI"""
+    if not LLM_AVAILABLE:
+        return "Desculpe, o Agente Comunidade está temporariamente indisponível. Por favor, tente novamente mais tarde! 🙏"
+    
+    try:
+        api_key = os.getenv("EMERGENT_LLM_KEY")
+        if not api_key:
+            logger.error("EMERGENT_LLM_KEY not found in environment")
+            return "Desculpe, não consegui processar sua pergunta no momento. Tente novamente! 🙏"
+        
+        # Create a unique session for this conversation
+        session_id = f"agente-comunidade-{uuid.uuid4()}"
+        
+        # Initialize the chat
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=session_id,
+            system_message=AGENTE_COMUNIDADE_SYSTEM_PROMPT
+        ).with_model("openai", "gpt-4.1")
+        
+        # Create the user message with context
+        message = UserMessage(
+            text=f"{user_name} perguntou: {user_message}"
+        )
+        
+        # Get response
+        response = await chat.send_message(message)
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error getting Agente Comunidade response: {e}")
+        return "Opa, tive um probleminha aqui! 😅 Pode repetir sua pergunta? Se o erro persistir, tente novamente em alguns minutos."
+
+def should_trigger_agente(content: str) -> bool:
+    """Check if message should trigger Agente Comunidade"""
+    content_lower = content.lower()
+    triggers = [
+        "@agentecomunidade",
+        "@agente",
+        "@stuff",
+        "@bot",
+        "@ajuda"
+    ]
+    return any(trigger in content_lower for trigger in triggers)
+
+def clean_message_for_ai(content: str) -> str:
+    """Remove trigger mentions from message for AI processing"""
+    import re
+    # Remove @mentions
+    cleaned = re.sub(r'@\w+\s*', '', content).strip()
+    return cleaned if cleaned else content
+
 chat_router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 # ============== MODELS ==============

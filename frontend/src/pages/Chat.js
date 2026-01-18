@@ -908,21 +908,21 @@ export const Chat = () => {
                     
                     <div className={`relative px-3 py-2 rounded-lg shadow-sm ${
                       isOwn 
-                        ? 'bg-[#005c4b] rounded-tr-none' 
+                        ? 'bg-[#dcf8c6] rounded-tr-none' 
                         : isAgent 
-                          ? 'bg-[#1f3a35] border border-[#00a884]/30 rounded-tl-none' 
-                          : 'bg-[#202c33] rounded-tl-none'
+                          ? 'bg-[#d9fdd3] border border-[#00a884]/20 rounded-tl-none' 
+                          : 'bg-white rounded-tl-none'
                     }`}>
                       {!isOwn && showAvatar && (
                         <p className={`text-xs font-medium mb-1 ${
                           isAgent 
                             ? 'text-[#00a884] flex items-center gap-1' 
                             : msg.is_admin 
-                              ? 'text-amber-400' 
+                              ? 'text-amber-600' 
                               : 'text-[#00a884]'
                         }`}>
                           {msg.user_name} 
-                          {isAgent && <Badge className="ml-1 bg-[#00a884]/20 text-[#00a884] text-[10px] px-1 py-0 border border-[#00a884]/30">IA</Badge>}
+                          {isAgent && <Badge className="ml-1 bg-[#00a884]/10 text-[#00a884] text-[10px] px-1 py-0 border border-[#00a884]/30">IA</Badge>}
                           {msg.is_admin && !isAgent && '⭐'}
                         </p>
                       )}

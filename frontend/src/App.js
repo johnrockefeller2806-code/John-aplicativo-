@@ -57,6 +57,7 @@ function App() {
               <Route path="/schools" element={<Schools />} />
               <Route path="/schools/:id" element={<SchoolDetail />} />
               <Route path="/transport" element={<Transport />} />
+              <Route path="/tourism" element={<Tourism />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/pps" element={<PPSGuide />} />
               <Route path="/services/gnib" element={<GNIBGuide />} />

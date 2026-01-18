@@ -559,6 +559,16 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
                         "is_admin": user_info["role"] == "admin"
                     }
                 })
+                
+                # Check if message should trigger Agente Comunidade
+                if message_type == "text" and should_trigger_agente(content):
+                    # Process in background to not block
+                    asyncio.create_task(
+                        process_agente_comunidade_response(
+                            clean_message_for_ai(content),
+                            user_info["name"]
+                        )
+                    )
             
             elif data.get("type") == "typing":
                 # Broadcast typing indicator

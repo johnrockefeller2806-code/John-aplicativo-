@@ -974,7 +974,7 @@ export const Chat = () => {
 
         {/* Typing indicator */}
         {typingUsers.length > 0 && (
-          <div className="px-4 py-1 text-xs text-[#00a884] bg-gray-100">
+          <div className="px-4 py-1 text-xs text-[#00a884] bg-[#111b21]">
             {typingUsers.join(', ')} {language === 'pt' ? 'digitando...' : 'typing...'}
           </div>
         )}
@@ -1002,11 +1002,11 @@ export const Chat = () => {
 
         {/* Audio Preview */}
         {audioBlob && !isRecording && (
-          <div className="bg-gray-100 px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0 border-t">
-            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-500 hover:bg-red-50">
+          <div className="bg-[#202c33] px-4 pt-3 pb-20 md:pb-3 flex items-center gap-3 flex-shrink-0 border-t border-[#222d34]">
+            <Button variant="ghost" size="icon" onClick={cancelRecording} className="text-red-400 hover:bg-red-500/20">
               <Trash2 className="h-5 w-5" />
             </Button>
-            <div className="flex-1 flex items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm">
+            <div className="flex-1 flex items-center gap-3 bg-[#2a3942] rounded-full px-4 py-2">
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -1021,10 +1021,10 @@ export const Chat = () => {
               </Button>
               <div className="flex-1 flex items-center gap-0.5">
                 {[...Array(25)].map((_, i) => (
-                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-gray-300'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
+                  <div key={i} className={`w-1 rounded-full ${isPreviewPlaying ? 'bg-[#00a884] animate-pulse' : 'bg-[#8696a0]'}`} style={{ height: `${Math.random() * 12 + 4}px` }} />
                 ))}
               </div>
-              <span className="text-gray-700 text-sm">{formatRecordingTime(recordingTime)}</span>
+              <span className="text-[#8696a0] text-sm">{formatRecordingTime(recordingTime)}</span>
             </div>
             <Button onClick={sendAudioMessage} className="bg-[#00a884] hover:bg-[#06cf9c] text-white rounded-full h-10 w-10">
               <Send className="h-5 w-5" />
@@ -1035,12 +1035,12 @@ export const Chat = () => {
         {/* Message Input */}
         {!isRecording && !audioBlob && (
           <>
-            {/* Emoji Picker - Bottom Sheet on Mobile */}
+            {/* Emoji Picker */}
             {showEmojiPicker && (
-              <div className="bg-white border-t border-gray-200 flex-shrink-0">
+              <div className="bg-[#202c33] border-t border-[#222d34] flex-shrink-0">
                 <div className="flex items-center justify-between px-3 py-2">
-                  <span className="text-gray-600 text-sm">Emojis</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:bg-gray-100" onClick={() => setShowEmojiPicker(false)}>
+                  <span className="text-[#8696a0] text-sm">Emojis</span>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-[#8696a0] hover:bg-[#374248]" onClick={() => setShowEmojiPicker(false)}>
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
@@ -1048,17 +1048,17 @@ export const Chat = () => {
                   onEmojiClick={onEmojiClick} 
                   width="100%" 
                   height={280} 
-                  theme="light"
+                  theme="dark"
                   searchPlaceholder="Buscar emoji..."
                   previewConfig={{ showPreview: false }}
                 />
               </div>
             )}
             
-            {/* Agent hint - shown periodically */}
-            {messages.length > 0 && messages.length % 10 === 5 && (
-              <div className="bg-purple-50 px-3 py-2 text-center border-t border-purple-100">
-                <p className="text-purple-700 text-xs">
+            {/* Agent hint */}
+            {messages.length > 0 && messages.length % 15 === 5 && (
+              <div className="bg-[#182229] px-3 py-2 text-center border-t border-[#222d34]">
+                <p className="text-[#00a884] text-xs">
                   💡 {language === 'pt' 
                     ? 'Dica: Digite @AgenteComunidade para tirar dúvidas sobre intercâmbio!' 
                     : 'Tip: Type @AgenteComunidade to ask questions about studying abroad!'}
@@ -1066,8 +1066,8 @@ export const Chat = () => {
               </div>
             )}
             
-            <div className="bg-gray-100 px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0 relative z-50 border-t">
-              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-gray-500 hover:bg-gray-200 h-10 w-10">
+            <div className="bg-[#202c33] px-3 pt-3 pb-20 md:pb-3 flex items-center gap-2 flex-shrink-0">
+              <Button variant="ghost" size="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#8696a0] hover:bg-[#374248] h-10 w-10">
                 {showEmojiPicker ? <X className="h-6 w-6" /> : <Smile className="h-6 w-6" />}
               </Button>
 
@@ -1077,7 +1077,7 @@ export const Chat = () => {
                   value={newMessage}
                   onChange={(e) => { setNewMessage(e.target.value); handleTyping(); }}
                   placeholder={language === 'pt' ? 'Mensagem ou @AgenteComunidade...' : 'Message or @AgenteComunidade...'}
-                  className="flex-1 bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 rounded-full h-11 text-base focus-visible:ring-[#00a884] shadow-sm"
+                  className="flex-1 bg-[#2a3942] border-none text-white placeholder:text-[#8696a0] rounded-lg h-11 text-base focus-visible:ring-[#00a884]"
                   disabled={!isConnected}
                   autoComplete="off"
                   autoCorrect="off"
@@ -1098,107 +1098,6 @@ export const Chat = () => {
             </div>
           </>
         )}
-      </div>
-
-      {/* RIGHT - Users List */}
-      <div className={`w-full md:w-80 bg-white flex flex-col border-l border-gray-200 ${showUsersList ? 'flex' : 'hidden md:flex'}`}>
-        {/* Header with STUFF Logo */}
-        <div className="h-14 bg-[#00a884] flex items-center justify-between px-4 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <img src={LOGO_URL} alt="STUFF" className="h-10 w-10 rounded-full object-cover border-2 border-white" />
-            <span className="text-white font-semibold">STUFF Online</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Sound toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleSound}
-              className="text-white hover:bg-white/20"
-              title={soundEnabled ? 'Desativar som' : 'Ativar som'}
-            >
-              {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5 text-red-200" />}
-            </Button>
-            {isConnected ? <Wifi className="h-5 w-5 text-white" /> : <WifiOff className="h-5 w-5 text-red-200" />}
-            <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" onClick={() => setShowUsersList(false)}>
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Search */}
-        <div className="p-2 flex-shrink-0 bg-gray-50">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              value={searchUser}
-              onChange={(e) => setSearchUser(e.target.value)}
-              placeholder={language === 'pt' ? 'Pesquisar' : 'Search'}
-              className="w-full bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 pl-10 rounded-lg h-9 focus-visible:ring-[#00a884]"
-            />
-          </div>
-        </div>
-
-        {/* Community Chat Entry */}
-        <div 
-          className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-200"
-          onClick={() => setShowUsersList(false)}
-        >
-          <img src={LOGO_URL} alt="STUFF" className="w-12 h-12 rounded-full object-cover" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <h3 className="text-gray-800 font-medium">STUFF Comunidade</h3>
-              <span className="text-gray-500 text-xs">
-                {messages.length > 0 && formatTime(messages[messages.length - 1]?.created_at)}
-              </span>
-            </div>
-            <p className="text-gray-500 text-sm truncate">
-              {messages.length > 0 ? `${messages[messages.length - 1]?.user_name}: ${messages[messages.length - 1]?.content?.substring(0, 25)}...` : 'Toque para abrir'}
-            </p>
-          </div>
-          {messages.length > 0 && <Badge className="bg-[#00a884] text-white text-xs">{messages.length}</Badge>}
-        </div>
-
-        {/* Online Users */}
-        <div className="px-3 py-2 flex-shrink-0 bg-gray-50">
-          <p className="text-[#00a884] text-xs font-medium uppercase">{language === 'pt' ? 'Online' : 'Online'} ({filteredUsers.length})</p>
-        </div>
-        
-        <ScrollArea className="flex-1">
-          <div className="divide-y divide-gray-100">
-            {filteredUsers.map((onlineUser) => (
-              <div key={onlineUser.user_id} className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer group">
-                <div className="relative">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={onlineUser.user_avatar} />
-                    <AvatarFallback className={`${onlineUser.role === 'admin' ? 'bg-amber-500' : 'bg-[#00a884]'} text-white`}>
-                      {getInitials(onlineUser.user_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-[#00a884] text-[#00a884] border-2 border-white rounded-full" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-gray-800 font-medium truncate">{onlineUser.user_name}</h3>
-                    {onlineUser.role === 'admin' && <Badge className="bg-amber-100 text-amber-600 text-xs">Admin</Badge>}
-                  </div>
-                  <p className="text-gray-500 text-sm">{onlineUser.role === 'admin' ? 'Administrador' : 'Estudante'}</p>
-                </div>
-                {isAdmin && onlineUser.user_id !== user.id && onlineUser.role !== 'admin' && (
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 text-red-500 hover:bg-red-50" onClick={() => { setUserToBan(onlineUser); setBanDialogOpen(true); }}>
-                    <Ban className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            ))}
-            {filteredUsers.length === 0 && (
-              <div className="p-8 text-center text-gray-400">
-                <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>{language === 'pt' ? 'Nenhum usuário online' : 'No users online'}</p>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
       </div>
 
       {/* Ban Dialog */}

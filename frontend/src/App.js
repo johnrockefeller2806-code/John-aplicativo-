@@ -30,19 +30,22 @@ import { PlusSuccess } from "./pages/PlusSuccess";
 import { Tourism } from "./pages/Tourism";
 import { Emergency } from "./pages/Emergency";
 import { DigitalPassport, PassportVerify } from "./pages/DigitalPassport";
+import { PassportView } from "./pages/PassportView";
 
 // Layout component to conditionally show navbar/footer
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isChat = location.pathname === '/chat';
+  const isPassportView = location.pathname.startsWith('/passport/view/');
+  const hideNavFooter = isChat || isPassportView;
   
   return (
-    <div className={`App ${isChat ? '' : 'min-h-screen flex flex-col'}`}>
-      {!isChat && <Navbar />}
-      <main className={isChat ? '' : 'flex-1'}>
+    <div className={`App ${hideNavFooter ? '' : 'min-h-screen flex flex-col'}`}>
+      {!hideNavFooter && <Navbar />}
+      <main className={hideNavFooter ? '' : 'flex-1'}>
         {children}
       </main>
-      {!isChat && <Footer />}
+      {!hideNavFooter && <Footer />}
     </div>
   );
 };
@@ -84,6 +87,7 @@ function App() {
               <Route path="/payment/success" element={<PaymentSuccess />} />
               <Route path="/passport" element={<DigitalPassport />} />
               <Route path="/passport/verify/:token" element={<PassportVerify />} />
+              <Route path="/passport/view/:token" element={<PassportView />} />
               
               {/* PLUS Plan Routes */}
               <Route path="/plus" element={<PlusPaywall />} />

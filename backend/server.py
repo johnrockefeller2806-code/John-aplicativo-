@@ -2160,6 +2160,38 @@ async def verify_passport(token: str):
         "valid_until": passport.get("valid_until")
     }
 
+@api_router.get("/passport/view/{token}")
+async def view_passport(token: str):
+    """Public endpoint to view full passport (for QR scan)"""
+    passport = await db.digital_passports.find_one(
+        {"qr_code_token": token},
+        {"_id": 0}
+    )
+    if not passport:
+        raise HTTPException(status_code=404, detail="Passaporte não encontrado")
+    
+    # Return full passport data for display
+    return {
+        "id": passport.get("id"),
+        "status": passport.get("status"),
+        "user_name": passport.get("user_name"),
+        "user_email": passport.get("user_email"),
+        "user_nationality": passport.get("user_nationality"),
+        "user_avatar": passport.get("user_avatar"),
+        "enrollment_number": passport.get("enrollment_number"),
+        "school_name": passport.get("school_name"),
+        "school_address": passport.get("school_address"),
+        "school_phone": passport.get("school_phone"),
+        "school_email": passport.get("school_email"),
+        "course_name": passport.get("course_name"),
+        "course_start_date": passport.get("course_start_date"),
+        "course_end_date": passport.get("course_end_date"),
+        "course_duration_weeks": passport.get("course_duration_weeks"),
+        "course_schedule": passport.get("course_schedule"),
+        "issued_at": passport.get("issued_at"),
+        "valid_until": passport.get("valid_until")
+    }
+
 @api_router.put("/passport/nationality")
 async def update_passport_nationality(data: PassportUpdateNationality, user: dict = Depends(get_current_user)):
     """Update nationality on passport"""

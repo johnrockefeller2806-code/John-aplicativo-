@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
+import { NotificationPrompt, NotificationToggle } from '../components/NotificationToggle';
 import { 
   GraduationCap, 
   Calendar, 
@@ -16,7 +17,8 @@ import {
   AlertCircle,
   ArrowRight,
   BookOpen,
-  IdCard
+  IdCard,
+  ClipboardList
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -136,6 +138,9 @@ export const Dashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-8">
+        {/* Notification Prompt */}
+        <NotificationPrompt />
+        
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 -mt-12 mb-8">
           <Card className="border-slate-100 shadow-lg" data-testid="stat-enrollments">
@@ -240,21 +245,22 @@ export const Dashboard = () => {
                       {enrollment.status === 'paid' && (
                         <div className="flex items-center gap-3">
                           <Button 
+                            onClick={() => navigate(`/enrollment/${enrollment.id}`)}
+                            variant="outline"
+                            className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                            data-testid={`tracker-button-${enrollment.id}`}
+                          >
+                            <ClipboardList className="h-4 w-4 mr-2" />
+                            {language === 'pt' ? 'Acompanhar' : 'Track'}
+                          </Button>
+                          <Button 
                             onClick={() => navigate('/passport')}
                             className="bg-emerald-700 hover:bg-emerald-600"
                             data-testid={`passport-button-${enrollment.id}`}
                           >
                             <IdCard className="h-4 w-4 mr-2" />
-                            {language === 'pt' ? 'Passaporte Digital' : 'Digital Passport'}
+                            {language === 'pt' ? 'Passaporte' : 'Passport'}
                           </Button>
-                          <div className="text-right">
-                            <p className="text-sm text-emerald-600 font-medium">
-                              {language === 'pt' ? 'Carta em processamento' : 'Letter in process'}
-                            </p>
-                            <p className="text-xs text-slate-400">
-                              {language === 'pt' ? 'Até 5 dias úteis' : 'Up to 5 business days'}
-                            </p>
-                          </div>
                         </div>
                       )}
                     </div>

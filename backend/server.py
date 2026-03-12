@@ -16,6 +16,8 @@ from emergentintegrations.payments.stripe.checkout import (
     StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 )
 import base64
+from pywebpush import webpush, WebPushException
+import json
 
 # Import chat module
 from chat import chat_router, init_chat_module, setup_ttl_index
@@ -2458,6 +2460,9 @@ async def send_passport_email(user: dict, passport: dict, school: dict, course: 
     }
     await db.email_logs.insert_one(email_log)
     
+    # Send push notification for passport ready
+    await send_push_notification_for_event(user["id"], "passport_ready", {"passport_url": passport_url})
+    
     return email_log
 
 # ============== CONTRACT & SIGNATURE SYSTEM ==============
@@ -2660,6 +2665,9 @@ async def sign_contract(
     
     # Send signature confirmation email
     await send_contract_signed_email(user, contract, signed_at)
+    
+    # Send push notification
+    await send_push_notification_for_event(user["id"], "contract_signed")
     
     # Generate passport if payment was made
     enrollment = await db.enrollments.find_one({"id": enrollment_id}, {"_id": 0})
@@ -2991,6 +2999,164 @@ async def send_school_letter_notification(user: dict, enrollment: dict):
     
     logger.info(email_content)
     logger.info(f"📧 [MOCK EMAIL] School letter notification sent to: {user['email']}")
+
+# ============== PUSH NOTIFICATIONS ==============
+
+VAPID_PUBLIC_KEY = os.environ.get('VAPID_PUBLIC_KEY', '')
+VAPID_PRIVATE_KEY = os.environ.get('VAPID_PRIVATE_KEY', '')
+VAPID_MAILTO = os.environ.get('VAPID_MAILTO', 'mailto:support@stuffintercambio.com')
+
+class PushSubscription(BaseModel):
+    endpoint: str
+    keys: Dict[str, str]
+
+class PushNotificationRequest(BaseModel):
+    title: str
+    body: str
+    icon: str = "/logo192.png"
+    url: str = "/"
+    tag: str = "stuff-notification"
+
+@api_router.get("/push/vapid-key")
+async def get_vapid_public_key():
+    """Get VAPID public key for push subscription"""
+    return {"publicKey": VAPID_PUBLIC_KEY}
+
+@api_router.post("/push/subscribe")
+async def subscribe_push(subscription: PushSubscription, user: dict = Depends(get_current_user)):
+    """Subscribe user to push notifications"""
+    # Store subscription in database
+    sub_data = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "user_email": user["email"],
+        "endpoint": subscription.endpoint,
+        "keys": subscription.keys,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "active": True
+    }
+    
+    # Update or insert subscription (one per endpoint)
+    await db.push_subscriptions.update_one(
+        {"endpoint": subscription.endpoint},
+        {"$set": sub_data},
+        upsert=True
+    )
+    
+    logger.info(f"🔔 Push subscription registered for {user['email']}")
+    
+    # Send welcome notification
+    await send_push_to_user(user["id"], {
+        "title": "Notificações Ativadas! 🔔",
+        "body": "Você receberá atualizações sobre sua matrícula.",
+        "icon": "/logo192.png",
+        "url": "/dashboard"
+    })
+    
+    return {"success": True, "message": "Subscribed to push notifications"}
+
+@api_router.delete("/push/unsubscribe")
+async def unsubscribe_push(user: dict = Depends(get_current_user)):
+    """Unsubscribe user from push notifications"""
+    result = await db.push_subscriptions.update_many(
+        {"user_id": user["id"]},
+        {"$set": {"active": False}}
+    )
+    logger.info(f"🔕 Push unsubscribed for {user['email']}")
+    return {"success": True, "unsubscribed": result.modified_count}
+
+@api_router.get("/push/status")
+async def get_push_status(user: dict = Depends(get_current_user)):
+    """Get push notification status for user"""
+    subscription = await db.push_subscriptions.find_one(
+        {"user_id": user["id"], "active": True},
+        {"_id": 0, "endpoint": 1, "created_at": 1}
+    )
+    return {
+        "subscribed": subscription is not None,
+        "subscription": subscription
+    }
+
+async def send_push_to_user(user_id: str, notification: dict):
+    """Send push notification to a specific user"""
+    subscriptions = await db.push_subscriptions.find(
+        {"user_id": user_id, "active": True}
+    ).to_list(10)
+    
+    if not subscriptions:
+        logger.info(f"🔕 No active push subscriptions for user {user_id}")
+        return False
+    
+    payload = json.dumps({
+        "title": notification.get("title", "STUFF Intercâmbio"),
+        "body": notification.get("body", ""),
+        "icon": notification.get("icon", "/logo192.png"),
+        "badge": "/logo192.png",
+        "tag": notification.get("tag", "stuff-notification"),
+        "data": {
+            "url": notification.get("url", "/"),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    })
+    
+    success_count = 0
+    for sub in subscriptions:
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": sub["endpoint"],
+                    "keys": sub["keys"]
+                },
+                data=payload,
+                vapid_private_key=VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": VAPID_MAILTO}
+            )
+            success_count += 1
+            logger.info(f"🔔 Push sent to {sub.get('user_email', user_id)}")
+        except WebPushException as e:
+            logger.error(f"Push failed: {e}")
+            # Mark subscription as inactive if expired
+            if e.response and e.response.status_code in [404, 410]:
+                await db.push_subscriptions.update_one(
+                    {"id": sub["id"]},
+                    {"$set": {"active": False}}
+                )
+    
+    return success_count > 0
+
+async def send_push_notification_for_event(user_id: str, event_type: str, data: dict = None):
+    """Send push notification based on event type"""
+    notifications = {
+        "contract_signed": {
+            "title": "Contrato Assinado! ✍️",
+            "body": "Seu contrato foi assinado com sucesso. Próximo passo: pagamento.",
+            "url": "/dashboard"
+        },
+        "payment_confirmed": {
+            "title": "Pagamento Confirmado! 💳",
+            "body": "Seu pagamento foi processado. Seu passaporte está sendo gerado!",
+            "url": "/dashboard"
+        },
+        "passport_ready": {
+            "title": "Passaporte Digital Pronto! 🎫",
+            "body": "Seu Passaporte Digital de Estudante está disponível.",
+            "url": data.get("passport_url", "/passport") if data else "/passport"
+        },
+        "letter_processing": {
+            "title": "Carta em Processamento 📄",
+            "body": "A carta da escola está sendo preparada. Prazo: 5 dias úteis.",
+            "url": "/dashboard"
+        },
+        "letter_ready": {
+            "title": "Carta da Escola Pronta! 📄",
+            "body": "A carta oficial da escola está disponível para download.",
+            "url": "/dashboard"
+        }
+    }
+    
+    notification = notifications.get(event_type)
+    if notification:
+        await send_push_to_user(user_id, notification)
 
 # Include router and add middleware
 app.include_router(api_router)

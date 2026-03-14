@@ -18,6 +18,9 @@ import { Link } from 'react-router-dom';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// DestinoAI Logo URL
+const DESTINOAI_LOGO = "https://customer-assets.emergentagent.com/job_871dbea6-6289-44ca-b76c-a0b66a131e4c/artifacts/bh5v4fon_WhatsApp%20Image%202026-03-14%20at%2009.24.22.jpeg";
+
 // Welcome suggestions
 const SUGGESTIONS = [
   { icon: GraduationCap, text: "Quero estudar inglês na Irlanda", color: "bg-emerald-100 text-emerald-700 hover:bg-emerald-200" },
@@ -36,10 +39,8 @@ const ChatMessage = ({ message, isUser }) => (
     }`}>
       {!isUser && (
         <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-violet-500 flex items-center justify-center">
-            <Sparkles className="w-3 h-3 text-white" />
-          </div>
-          <span className="text-xs font-semibold text-sky-600">DestinoAI</span>
+          <img src={DESTINOAI_LOGO} alt="DestinoAI" className="w-6 h-6 object-contain" />
+          <span className="text-xs font-semibold text-emerald-600">DestinoAI</span>
         </div>
       )}
       <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed">{message.content}</p>
@@ -55,15 +56,13 @@ const TypingIndicator = () => (
   <div className="flex justify-start animate-fade-in">
     <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm border border-slate-100">
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-violet-500 flex items-center justify-center">
-          <Sparkles className="w-3 h-3 text-white" />
-        </div>
-        <span className="text-xs font-semibold text-sky-600">DestinoAI</span>
+        <img src={DESTINOAI_LOGO} alt="DestinoAI" className="w-6 h-6 object-contain" />
+        <span className="text-xs font-semibold text-emerald-600">DestinoAI</span>
       </div>
       <div className="flex gap-1">
-        <span className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-        <span className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-        <span className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
       </div>
     </div>
   </div>
@@ -167,16 +166,11 @@ export const DestinoAI = () => {
             <Link to="/" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg">
-              <Plane className="w-5 h-5 text-sky-600" />
-            </div>
-            <div>
-              <h1 className="text-white font-bold text-lg flex items-center gap-2">
-                DestinoAI
-                <Sparkles className="w-4 h-4 text-amber-300" />
-              </h1>
-              <p className="text-sky-100 text-xs">Seu consultor de intercâmbio com IA</p>
-            </div>
+            <img 
+              src={DESTINOAI_LOGO} 
+              alt="DestinoAI" 
+              className="h-12 w-auto object-contain"
+            />
           </div>
           
           {messages.length > 0 && (
@@ -202,13 +196,12 @@ export const DestinoAI = () => {
             {/* Welcome Screen */}
             {showWelcome && messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center py-8">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-500 to-violet-500 flex items-center justify-center mb-6 shadow-lg">
-                  <Globe2 className="w-10 h-10 text-white" />
-                </div>
+                <img 
+                  src={DESTINOAI_LOGO} 
+                  alt="DestinoAI" 
+                  className="w-48 h-auto object-contain mb-6"
+                />
                 
-                <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-800 mb-2 text-center">
-                  Olá! Eu sou o DestinoAI 👋
-                </h2>
                 <p className="text-slate-500 text-center max-w-md mb-8">
                   Seu consultor especialista em intercâmbio. Vou te ajudar a planejar toda a sua jornada de estudos no exterior!
                 </p>
@@ -270,7 +263,7 @@ export const DestinoAI = () => {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Digite sua mensagem..."
                   disabled={isLoading}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-400 focus:ring-2 focus:ring-sky-100 outline-none transition-all text-slate-700 placeholder:text-slate-400 disabled:bg-slate-100"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none transition-all text-slate-700 placeholder:text-slate-400 disabled:bg-slate-100"
                   data-testid="chat-input"
                 />
                 <MessageCircle className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
@@ -278,7 +271,7 @@ export const DestinoAI = () => {
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="px-5 py-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-sky-500/30"
+                className="px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-emerald-500/30"
                 data-testid="send-btn"
               >
                 <Send className="w-5 h-5" />
@@ -286,7 +279,7 @@ export const DestinoAI = () => {
               </button>
             </form>
             <p className="text-center text-xs text-slate-400 mt-3">
-              Powered by DestinoAI • GPT-4o • Emergent
+              Powered by DestinoAI • Seu Intercâmbio Inteligente
             </p>
           </div>
         </div>

@@ -3679,85 +3679,117 @@ DESTINOAI_SYSTEM_PROMPT = """Você é o DestinoAI, um consultor especialista em 
 - **NUNCA peça o nome do usuário** - responda diretamente como o ChatGPT faz
 - Seja prestativo e forneça informações completas imediatamente
 - Não faça perguntas desnecessárias - antecipe o que o usuário precisa saber
-- Mantenha o contexto da conversa - lembre do que foi discutido antes
+- Mantenha o contexto da conversa
 
 ## FORMATO DAS RESPOSTAS:
 - Respostas ricas e detalhadas (como ChatGPT)
-- Use formatação com **negrito**, listas e seções quando apropriado
-- Forneça dados concretos: preços, durações, requisitos
+- Use formatação com **negrito**, listas e seções
+- Forneça dados concretos e ATUALIZADOS
 - Inclua prós e contras de cada opção
-- Seja direto - não enrole
+- Seja direto e informativo
 
-## SEU CONHECIMENTO:
+## DADOS ATUALIZADOS 2025-2026:
 
-### IRLANDA 🇮🇪
-- Permissão de trabalho: 20h/semana (40h nas férias)
-- Visto Stamp 2 permite trabalho legal
-- Custo médio 6 meses: €7.500-€12.000
-- Cidades: Dublin (mais cara), Cork (custo-benefício), Galway (cultural)
-- Requisitos: Passaporte válido, €4.200 em conta, seguro saúde, matrícula
-- IRP: €300, obrigatório em 90 dias
+### 🇮🇪 IRLANDA (Atualizado em 30 de junho de 2025)
 
-### MALTA 🇲🇹
-- Trabalho: 20h/semana após 90 dias
-- Custo médio 6 meses: €5.500-€8.000
-- Vantagens: Clima mediterrâneo, custo menor, UE
-- Desvantagens: Inglês não nativo, país pequeno
+**Permissão de trabalho:**
+- 20h/semana durante as aulas
+- 40h/semana nas férias (junho-setembro e 15 dez - 15 jan)
+- Visto Stamp 2
 
-### CANADÁ 🇨🇦
-- Trabalho: 20h/semana com Study Permit
-- Custo médio 6 meses: CAD 12.000-18.000
-- Vantagens: Imigração possível, PGWP
-- Desvantagens: Visto difícil, inverno rigoroso
+**💰 Comprovação Financeira (VALORES ATUAIS 2025-2026):**
 
-### AUSTRÁLIA 🇦🇺
-- Trabalho: 48h/quinzena (ilimitado nas férias)
-- Custo médio 6 meses: AUD 15.000-22.000
-- Vantagens: Salário alto, praias, clima
-- Desvantagens: Distância, custo alto
+1️⃣ **Curso de até 8 meses** (ex: inglês 25 semanas + férias):
+   - **€6.665 no total**
+   - Ou cerca de **€833 por mês** de permanência
+   - Este é o caso mais comum para brasileiros com intercâmbio de inglês
 
-## EXEMPLO DE COMO RESPONDER:
+2️⃣ **Curso com mais de 8 meses** (ex: faculdade ou pós):
+   - **€10.000 disponíveis** para o primeiro ano
+   - Mais €10.000 para cada ano adicional
 
-Usuário: "Irlanda"
+**Custos estimados (25 semanas - 8 meses):**
+- Curso de inglês: €2.800 - €5.500
+- Acomodação: €4.500 - €7.500 (€180-€300/semana)
+- Seguro saúde: €400 - €600
+- Passagem aérea: €700 - €1.100
+- IRP (registro de imigração): €300
+- **TOTAL ESTIMADO: €8.700 - €15.000**
 
-Resposta ideal:
-"A Irlanda é uma excelente escolha para intercâmbio! Aqui está tudo que você precisa saber:
-
-**Por que a Irlanda?**
-✅ Trabalho legal de 20h/semana durante as aulas
-✅ 40h/semana nas férias (junho-setembro e dezembro)
-✅ Inglês nativo
-✅ Porta de entrada para a Europa
-
-**Principais cidades:**
-- **Dublin** - Mais oportunidades de emprego, vida agitada, aluguel ~€800-1200/mês
-- **Cork** - 20-30% mais barato, ótima qualidade de vida
-- **Galway** - Cidade cultural, menor e acolhedora
-
-**Investimento estimado (25 semanas):**
-| Item | Valor |
-|------|-------|
-| Curso de inglês | €2.500 - €4.500 |
-| Acomodação | €4.000 - €6.500 |
-| Seguro saúde | €400 |
-| Passagem aérea | €600 - €900 |
-| IRP (registro) | €300 |
-| **TOTAL** | **€7.800 - €12.600** |
+**Cidades principais:**
+- **Dublin**: Capital, mais oportunidades, aluguel €900-€1.400/mês
+- **Cork**: 25% mais barata, ótima qualidade de vida
+- **Galway**: Cultural, menor, muito acolhedora
+- **Limerick**: Mais acessível, em crescimento
 
 **Documentos necessários:**
-📄 Passaporte com validade mínima de 6 meses
-📄 Carta de aceitação da escola
-📄 Seguro saúde (€25.000 cobertura mínima)
-📄 Comprovante de €4.200 em conta
-📄 Passagem de ida
+- Passaporte válido (mínimo 6 meses)
+- Carta de aceitação da escola
+- Seguro saúde (cobertura mínima €25.000)
+- Comprovante financeiro (€6.665 para até 8 meses)
+- Passagem aérea de ida
+- Acomodação para as primeiras semanas
 
-Quer saber mais sobre alguma cidade específica ou ver opções de escolas?"
+### 🇲🇹 MALTA
+
+**Permissão de trabalho:**
+- 20h/semana após 90 dias
+- Licença específica necessária
+
+**Comprovação financeira:**
+- €48 por dia de estadia
+- Cerca de €1.440/mês
+
+**Custos estimados (25 semanas):**
+- Curso: €2.500 - €4.000
+- Acomodação: €3.000 - €5.000
+- Seguro: €350
+- Passagem: €500 - €800
+- **TOTAL: €6.350 - €10.150**
+
+**Vantagens:** Custo 30% menor, clima mediterrâneo, UE
+**Desvantagens:** Inglês não é língua nativa, país pequeno
+
+### 🇨🇦 CANADÁ
+
+**Permissão de trabalho:**
+- 20h/semana com Study Permit (apenas para cursos de college/universidade)
+- Cursos de idiomas NÃO permitem trabalho
+
+**Comprovação financeira:**
+- CAD 20.635 para o primeiro ano (2025)
+- Mais mensalidade do curso
+
+**Custos estimados (6 meses de inglês):**
+- Curso: CAD 8.000 - €12.000
+- Acomodação: CAD 6.000 - €9.000
+- Seguro: CAD 600 - €800
+- Passagem: CAD 1.500 - €2.000
+- **TOTAL: CAD 16.100 - €23.800**
+
+### 🇦🇺 AUSTRÁLIA
+
+**Permissão de trabalho:**
+- 48h/quinzena durante aulas
+- Ilimitado nas férias
+
+**Comprovação financeira:**
+- AUD 29.710/ano (2025)
+- Mais custos do curso
+
+**Custos estimados (6 meses):**
+- Curso: AUD 8.000 - €12.000
+- Acomodação: AUD 8.000 - €12.000
+- OSHC (seguro obrigatório): AUD 500 - €700
+- Passagem: AUD 2.000 - €2.500
+- **TOTAL: AUD 18.500 - €27.200**
 
 ## REGRAS IMPORTANTES:
 1. NUNCA pergunte o nome - responda direto
-2. Sempre dê informações completas na primeira resposta
-3. Use dados reais e atualizados
-4. Seja útil como um consultor experiente"""
+2. USE SEMPRE os valores ATUALIZADOS de 2025-2026
+3. Cite a fonte quando relevante (ex: "valores atualizados pelo governo irlandês em junho de 2025")
+4. Seja específico com números e requisitos
+5. Compare opções quando fizer sentido"""
 
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', 'sk-emergent-aAaD492D5E7E2D1261')
 
@@ -3804,20 +3836,29 @@ class DestinoAIAgent:
         if any(kw in user_lower for kw in ["olá", "oi", "hello", "hi", "bom dia", "boa tarde", "boa noite"]):
             return """Olá! 👋 Sou o DestinoAI, seu consultor de intercâmbio!
 
-Estou com um problema temporário na conexão com a IA, mas posso te ajudar com informações básicas!
+📍 **Destinos populares (valores 2025-2026):**
 
-📍 **Destinos populares:**
-- 🇮🇪 **Irlanda** - Trabalho 20h/semana, custo médio €7.500
-- 🇲🇹 **Malta** - Custo menor (€5.500), clima mediterrâneo  
-- 🇨🇦 **Canadá** - Possibilidade de imigração, ~CAD 12.000
-- 🇦🇺 **Austrália** - Trabalho 48h/quinzena, ~AUD 15.000
+🇮🇪 **Irlanda** 
+- Trabalho: 20h/semana
+- Comprovação: €6.665 (até 8 meses)
+- Custo total: €8.700 - €15.000
 
-Qual país te interessa? Digite o nome do país para saber mais!
+🇲🇹 **Malta**
+- Trabalho: 20h/semana após 90 dias
+- Custo total: €6.350 - €10.150
 
-⚠️ *Para IA completa, adicione saldo em Profile > Universal Key > Add Balance*"""
+🇨🇦 **Canadá**
+- Trabalho: apenas com college/universidade
+- Custo total: CAD 16.000 - €24.000
+
+🇦🇺 **Austrália**
+- Trabalho: 48h/quinzena
+- Custo total: AUD 18.500 - €27.000
+
+Digite o nome do país para informações detalhadas!"""
         
         if any(kw in user_lower for kw in ["irlanda", "ireland", "dublin"]):
-            return """🇮🇪 **Irlanda - Excelente escolha!**
+            return """🇮🇪 **Irlanda - Informações Atualizadas 2025-2026**
 
 **Por que a Irlanda?**
 ✅ Trabalho legal: 20h/semana (40h nas férias)
@@ -3825,98 +3866,126 @@ Qual país te interessa? Digite o nome do país para saber mais!
 ✅ Porta de entrada para Europa
 ✅ Cultura acolhedora
 
-**Escolas em Dublin:**
-| Escola | Preço/semana |
-|--------|--------------|
-| Kaplan Dublin | €280 |
-| EC Dublin | €260 |
-| Atlas Language | €200 |
-| ISI Dublin | €180 |
+**💰 Comprovação Financeira (atualizado junho/2025):**
 
-**Custo estimado (25 semanas):**
-- Curso: ~€4.000
-- Acomodação: ~€5.000
-- Seguro: ~€400
-- Passagem: ~€700
-- IRP: €300
-- **TOTAL: ~€10.400**
+1️⃣ **Curso até 8 meses** (ex: inglês 25 semanas):
+- **€6.665 no total**
+- Ou **€833/mês** de permanência
+
+2️⃣ **Curso +8 meses** (faculdade/pós):
+- **€10.000** para o primeiro ano
+
+**Custos estimados (25 semanas):**
+| Item | Valor |
+|------|-------|
+| Curso de inglês | €2.800 - €5.500 |
+| Acomodação | €4.500 - €7.500 |
+| Seguro saúde | €400 - €600 |
+| Passagem aérea | €700 - €1.100 |
+| IRP (visto) | €300 |
+| **TOTAL** | **€8.700 - €15.000** |
 
 **Documentos necessários:**
 📄 Passaporte válido (6+ meses)
 📄 Carta de aceitação da escola
-📄 Comprovante de €4.200 em conta
-📄 Seguro saúde internacional
-📄 Passagem aérea
+📄 Comprovante de €6.665 em conta
+📄 Seguro saúde (cobertura €25.000+)
+📄 Passagem aérea de ida
 
-Quer saber mais sobre alguma cidade ou escola específica?"""
+**Principais cidades:**
+- **Dublin** - Mais empregos, aluguel €900-€1.400/mês
+- **Cork** - 25% mais barato, qualidade de vida
+- **Galway** - Cultural e acolhedora
+
+Quer saber sobre escolas ou cidades específicas?"""
         
         if any(kw in user_lower for kw in ["malta"]):
-            return """🇲🇹 **Malta - Ótimo custo-benefício!**
+            return """🇲🇹 **Malta - Informações 2025-2026**
 
 **Por que Malta?**
 ✅ Custo 30% menor que Irlanda
-✅ Clima mediterrâneo (sol o ano todo!)
+✅ Clima mediterrâneo
 ✅ Trabalho permitido após 90 dias
 ✅ União Europeia
 
-**Custo estimado (25 semanas):**
-- Curso: ~€3.500
-- Acomodação: ~€3.000
-- Seguro: ~€350
-- Passagem: ~€600
-- **TOTAL: ~€7.450**
+**💰 Comprovação Financeira:**
+- **€48 por dia** de estadia
+- Cerca de **€1.440/mês**
 
-⚠️ Desvantagem: Inglês não é língua nativa dos malteses.
+**Custos estimados (25 semanas):**
+| Item | Valor |
+|------|-------|
+| Curso de inglês | €2.500 - €4.000 |
+| Acomodação | €3.000 - €5.000 |
+| Seguro saúde | €350 |
+| Passagem aérea | €500 - €800 |
+| **TOTAL** | **€6.350 - €10.150** |
+
+⚠️ **Atenção:** Inglês não é língua nativa dos malteses.
 
 Posso ajudar com mais informações?"""
         
-        if any(kw in user_lower for kw in ["custo", "preço", "valor", "quanto"]):
-            return """💰 **Custos de Intercâmbio (25 semanas)**
+        if any(kw in user_lower for kw in ["custo", "preço", "valor", "quanto", "comprovação", "financeira"]):
+            return """💰 **Custos de Intercâmbio 2025-2026**
 
-| País | Custo Total |
-|------|-------------|
-| 🇲🇹 Malta | €7.000 - €10.000 |
-| 🇮🇪 Irlanda | €8.000 - €12.000 |
-| 🇨🇦 Canadá | CAD 12.000 - €18.000 |
-| 🇦🇺 Austrália | AUD 15.000 - €22.000 |
+**Comprovação Financeira por país:**
 
-**O que está incluso:**
-- Curso de inglês
-- Acomodação
-- Seguro saúde
-- Passagem aérea
-- Taxas de visto
+🇮🇪 **Irlanda:**
+- Até 8 meses: **€6.665** (ou €833/mês)
+- +8 meses: **€10.000/ano**
+- Custo total estimado: €8.700 - €15.000
+
+🇲🇹 **Malta:**
+- **€48/dia** (€1.440/mês)
+- Custo total: €6.350 - €10.150
+
+🇨🇦 **Canadá:**
+- **CAD 20.635/ano** + mensalidade
+- Custo total: CAD 16.100 - €23.800
+
+🇦🇺 **Austrália:**
+- **AUD 29.710/ano** + curso
+- Custo total: AUD 18.500 - €27.200
+
+*Valores atualizados conforme governos locais (2025)*
 
 Qual destino você quer explorar em detalhes?"""
         
         if any(kw in user_lower for kw in ["documento", "checklist", "visto", "papelada"]):
-            return """📋 **Checklist de Documentos (Irlanda)**
+            return """📋 **Checklist de Documentos - Irlanda 2025-2026**
 
-**Obrigatórios:**
+**Antes de embarcar:**
 ✅ Passaporte válido (mínimo 6 meses)
 ✅ Carta de aceitação da escola
 ✅ Seguro saúde (cobertura €25.000+)
-✅ Comprovante de €4.200 em conta
-✅ Passagem aérea
+✅ Comprovante financeiro **€6.665** (até 8 meses)
+✅ Passagem aérea de ida
+✅ Comprovante de acomodação inicial
 
-**Após chegar:**
-✅ Registro IRP em até 90 dias (€300)
+**Após chegar (em até 90 dias):**
+✅ Registro IRP - €300
 ✅ Abrir conta bancária irlandesa
 ✅ Obter PPS Number (para trabalhar)
+
+**Documentos para o IRP:**
+- Passaporte original
+- Carta da escola
+- Seguro vigente
+- Extrato bancário atualizado
+- €300 (somente cartão de débito)
 
 Quer o checklist de outro país?"""
         
         return """Olá! Sou o DestinoAI! 🌍
 
-Posso te ajudar com:
+Posso te ajudar com informações **atualizadas de 2025-2026**:
+
 📍 **Destinos** - Irlanda, Malta, Canadá, Austrália
-📚 **Escolas** - Preços e características
-💰 **Custos** - Estimativas completas
-📋 **Documentos** - Checklist por país
+💰 **Custos** - Valores atuais de comprovação financeira
+📋 **Documentos** - Checklist completo por país
+🏫 **Escolas** - Opções e preços
 
-Digite o nome de um país ou sua dúvida!
-
-*Para respostas mais detalhadas, adicione saldo na Universal Key*"""
+Digite o nome de um país ou sua dúvida!"""
     
     async def _get_relevant_data(self, user_input: str) -> str:
         """Get relevant data based on user input"""

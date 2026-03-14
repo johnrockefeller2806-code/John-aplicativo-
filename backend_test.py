@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class DigitalPassportAPITester:
-    def __init__(self, base_url="https://thirsty-knuth-2.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://student-passport-hub.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.admin_token = None
         self.student_token = None

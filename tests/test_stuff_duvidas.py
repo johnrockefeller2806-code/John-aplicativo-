@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://dublin-exchange.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://student-passport-hub.preview.emergentagent.com')
 
 class TestContactEndpoint:
     """Tests for /api/contact endpoint"""

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, UploadFile, File, Response, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -18,6 +18,7 @@ from emergentintegrations.payments.stripe.checkout import (
 import base64
 from pywebpush import webpush, WebPushException
 import json
+import httpx
 
 # Import chat module
 from chat import chat_router, init_chat_module, setup_ttl_index
@@ -312,6 +313,10 @@ class AdminStats(BaseModel):
 
 # ============== AUTH HELPERS ==============
 
+# Emergent Auth URL for Google OAuth
+EMERGENT_AUTH_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+SESSION_EXPIRY_DAYS = 7
+
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
@@ -327,12 +332,54 @@ def create_token(user_id: str, email: str, role: str = "student") -> str:
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    if not credentials:
+async def get_session_from_cookie_or_header(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -> Optional[str]:
+    """Get session token from cookie first, then Authorization header as fallback"""
+    if session_token:
+        return session_token
+    if credentials:
+        return credentials.credentials
+    return None
+
+async def get_current_user(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get current user from session token (cookie or header)"""
+    token = session_token or (credentials.credentials if credentials else None)
+    
+    if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Check user_sessions collection for Google OAuth sessions
+    session = await db.user_sessions.find_one({"session_token": token}, {"_id": 0})
+    if session:
+        # Validate expiry
+        expires_at = session.get("expires_at")
+        if isinstance(expires_at, str):
+            expires_at = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at < datetime.now(timezone.utc):
+            raise HTTPException(status_code=401, detail="Session expired")
+        
+        # Get user by user_id
+        user = await db.users.find_one({"user_id": session["user_id"]}, {"_id": 0})
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return user
+    
+    # Fallback to legacy JWT token validation
     try:
-        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password": 0})
+        if not user:
+            # Try user_id field
+            user = await db.users.find_one({"user_id": payload["sub"]}, {"_id": 0})
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
         return user
@@ -341,61 +388,201 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-async def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+async def get_admin_user(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    user = await get_current_user(request, session_token, credentials)
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     return user
 
-async def get_school_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+async def get_school_user(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    user = await get_current_user(request, session_token, credentials)
     if user.get("role") != "school":
         raise HTTPException(status_code=403, detail="School access required")
     return user
 
-async def get_optional_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    if not credentials:
-        return None
+async def get_optional_user(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     try:
-        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password": 0})
-        return user
+        return await get_current_user(request, session_token, credentials)
     except:
         return None
 
 # ============== AUTH ROUTES ==============
 
-@api_router.post("/auth/register", response_model=TokenResponse)
-async def register(user_data: UserCreate):
-    existing = await db.users.find_one({"email": user_data.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email já cadastrado")
-    
-    user_id = str(uuid.uuid4())
-    user = {
-        "id": user_id,
-        "name": user_data.name,
-        "email": user_data.email,
-        "password": hash_password(user_data.password),
-        "role": "student",  # Always student for regular registration
-        "plan": "free",  # Plano gratuito por padrão
-        "created_at": datetime.now(timezone.utc).isoformat()
-    }
-    await db.users.insert_one(user)
-    
-    token = create_token(user_id, user_data.email, "student")
-    return TokenResponse(
-        access_token=token,
-        user=UserResponse(
-            id=user_id,
-            name=user_data.name,
-            email=user_data.email,
-            role="student",
-            plan="free",
-            created_at=user["created_at"]
+# Google OAuth Session Request Model
+class GoogleSessionRequest(BaseModel):
+    session_id: str
+
+# Google OAuth Session Response
+class GoogleAuthResponse(BaseModel):
+    user: UserResponse
+    message: str = "Login successful"
+
+@api_router.post("/auth/google/session")
+async def process_google_session(data: GoogleSessionRequest, response: Response):
+    """
+    Process Google OAuth session_id from Emergent Auth.
+    Exchange session_id for user data and create persistent session.
+    REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    """
+    try:
+        # Call Emergent Auth to get session data
+        async with httpx.AsyncClient() as client:
+            auth_response = await client.get(
+                EMERGENT_AUTH_URL,
+                headers={"X-Session-ID": data.session_id},
+                timeout=30.0
+            )
+            
+            if auth_response.status_code != 200:
+                logger.error(f"Emergent Auth error: {auth_response.status_code} - {auth_response.text}")
+                raise HTTPException(status_code=401, detail="Invalid session")
+            
+            session_data = auth_response.json()
+        
+        email = session_data.get("email")
+        name = session_data.get("name", "")
+        picture = session_data.get("picture", "")
+        session_token = session_data.get("session_token")
+        
+        if not email or not session_token:
+            raise HTTPException(status_code=401, detail="Invalid session data")
+        
+        # Check if user exists by email
+        existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+        
+        if existing_user:
+            # Update existing user data if needed
+            user_id = existing_user.get("user_id") or existing_user.get("id")
+            await db.users.update_one(
+                {"email": email},
+                {"$set": {
+                    "name": name or existing_user.get("name"),
+                    "avatar": picture or existing_user.get("avatar"),
+                    "user_id": user_id,  # Ensure user_id field exists
+                    "last_login": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            user = await db.users.find_one({"email": email}, {"_id": 0})
+        else:
+            # Create new user
+            user_id = f"user_{uuid.uuid4().hex[:12]}"
+            user = {
+                "user_id": user_id,
+                "id": user_id,  # For compatibility with legacy code
+                "name": name,
+                "email": email,
+                "avatar": picture,
+                "role": "student",
+                "plan": "free",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "last_login": datetime.now(timezone.utc).isoformat()
+            }
+            await db.users.insert_one(user)
+            user = await db.users.find_one({"email": email}, {"_id": 0})
+        
+        # Create session record
+        expires_at = datetime.now(timezone.utc) + timedelta(days=SESSION_EXPIRY_DAYS)
+        session_record = {
+            "user_id": user.get("user_id") or user.get("id"),
+            "session_token": session_token,
+            "expires_at": expires_at,
+            "created_at": datetime.now(timezone.utc)
+        }
+        
+        # Delete old sessions for this user and insert new one
+        await db.user_sessions.delete_many({"user_id": session_record["user_id"]})
+        await db.user_sessions.insert_one(session_record)
+        
+        # Set httpOnly cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=SESSION_EXPIRY_DAYS * 24 * 60 * 60
         )
+        
+        logger.info(f"Google OAuth login successful for {email}")
+        
+        return {
+            "user": UserResponse(
+                id=user.get("user_id") or user.get("id"),
+                name=user.get("name", ""),
+                email=user.get("email"),
+                role=user.get("role", "student"),
+                plan=user.get("plan", "free"),
+                avatar=user.get("avatar"),
+                created_at=user.get("created_at", datetime.now(timezone.utc).isoformat())
+            ),
+            "message": "Login successful"
+        }
+        
+    except httpx.RequestError as e:
+        logger.error(f"HTTP error during Google auth: {e}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    except Exception as e:
+        logger.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+@api_router.get("/auth/me")
+async def get_me(
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get current authenticated user"""
+    user = await get_current_user(request, session_token, credentials)
+    return UserResponse(
+        id=user.get("user_id") or user.get("id"),
+        name=user.get("name", ""),
+        email=user.get("email"),
+        role=user.get("role", "student"),
+        school_id=user.get("school_id"),
+        plan=user.get("plan", "free"),
+        plan_purchased_at=user.get("plan_purchased_at"),
+        created_at=user.get("created_at", ""),
+        avatar=user.get("avatar")
     )
 
+@api_router.post("/auth/logout")
+async def logout(
+    response: Response,
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Logout user by deleting session and clearing cookie"""
+    token = session_token or (credentials.credentials if credentials else None)
+    
+    if token:
+        # Delete session from database
+        await db.user_sessions.delete_one({"session_token": token})
+    
+    # Clear cookie
+    response.delete_cookie(
+        key="session_token",
+        path="/",
+        secure=True,
+        samesite="none"
+    )
+    
+    return {"message": "Logged out successfully"}
+
+# Legacy routes kept for school registration (they still need password)
 @api_router.post("/auth/register-school", response_model=TokenResponse)
 async def register_school(data: SchoolRegister):
     """Register a new school account"""
@@ -403,7 +590,7 @@ async def register_school(data: SchoolRegister):
     if existing:
         raise HTTPException(status_code=400, detail="Email já cadastrado")
     
-    user_id = str(uuid.uuid4())
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
     school_id = str(uuid.uuid4())
     
     # Create school record
@@ -423,6 +610,7 @@ async def register_school(data: SchoolRegister):
     # Create user record
     user = {
         "id": user_id,
+        "user_id": user_id,
         "name": data.name,
         "email": data.email,
         "password": hash_password(data.password),
@@ -445,71 +633,52 @@ async def register_school(data: SchoolRegister):
         )
     )
 
-@api_router.post("/auth/login", response_model=TokenResponse)
-async def login(credentials: UserLogin):
-    user = await db.users.find_one({"email": credentials.email})
-    if not user or not verify_password(credentials.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Email ou senha incorretos")
-    
-    role = user.get("role", "student")
-    token = create_token(user["id"], user["email"], role)
-    return TokenResponse(
-        access_token=token,
-        user=UserResponse(
-            id=user["id"],
-            name=user["name"],
-            email=user["email"],
-            role=role,
-            school_id=user.get("school_id"),
-            plan=user.get("plan", "free"),
-            plan_purchased_at=user.get("plan_purchased_at"),
-            created_at=user["created_at"]
-        )
-    )
-
-@api_router.get("/auth/me")
-async def get_me(user: dict = Depends(get_current_user)):
-    return UserResponse(
-        id=user["id"],
-        name=user["name"],
-        email=user["email"],
-        role=user.get("role", "student"),
-        school_id=user.get("school_id"),
-        plan=user.get("plan", "free"),
-        plan_purchased_at=user.get("plan_purchased_at"),
-        created_at=user["created_at"],
-        avatar=user.get("avatar")
-    )
-
 @api_router.put("/auth/profile")
-async def update_profile(data: UserProfileUpdate, user: dict = Depends(get_current_user)):
+async def update_profile(
+    data: UserProfileUpdate,
+    request: Request,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Update user profile (name and avatar)"""
+    user = await get_current_user(request, session_token, credentials)
     update_data = {k: v for k, v in data.model_dump().items() if v is not None}
     
     if not update_data:
         raise HTTPException(status_code=400, detail="No data to update")
     
+    user_id = user.get("user_id") or user.get("id")
     await db.users.update_one(
-        {"id": user["id"]},
+        {"$or": [{"user_id": user_id}, {"id": user_id}]},
         {"$set": update_data}
     )
     
-    updated_user = await db.users.find_one({"id": user["id"]}, {"_id": 0, "password": 0})
+    updated_user = await db.users.find_one(
+        {"$or": [{"user_id": user_id}, {"id": user_id}]}, 
+        {"_id": 0, "password": 0}
+    )
     return UserResponse(
-        id=updated_user["id"],
-        name=updated_user["name"],
-        email=updated_user["email"],
+        id=updated_user.get("user_id") or updated_user.get("id"),
+        name=updated_user.get("name", ""),
+        email=updated_user.get("email"),
         role=updated_user.get("role", "student"),
         school_id=updated_user.get("school_id"),
         plan=updated_user.get("plan", "free"),
         plan_purchased_at=updated_user.get("plan_purchased_at"),
-        created_at=updated_user["created_at"],
+        created_at=updated_user.get("created_at", ""),
         avatar=updated_user.get("avatar")
     )
 
 @api_router.post("/auth/upload-avatar")
-async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+async def upload_avatar(
+    file: UploadFile = File(...),
+    request: Request = None,
+    session_token: Optional[str] = Cookie(default=None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Upload profile avatar image"""
+    user = await get_current_user(request, session_token, credentials)
+    
     # Validate file type - accept all image types
     if not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="Por favor, envie uma imagem.")
@@ -524,12 +693,13 @@ async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_c
     avatar_data = f"data:{file.content_type};base64,{base64_image}"
     
     # Update user avatar
+    user_id = user.get("user_id") or user.get("id")
     await db.users.update_one(
-        {"id": user["id"]},
+        {"$or": [{"user_id": user_id}, {"id": user_id}]},
         {"$set": {"avatar": avatar_data}}
     )
     
-    logger.info(f"Avatar uploaded for user {user['id']}")
+    logger.info(f"Avatar uploaded for user {user_id}")
     
     return {"message": "Avatar atualizado com sucesso", "avatar": avatar_data}
 
@@ -2613,7 +2783,7 @@ async def simulate_payment_flow(request: SimulatePaymentRequest):
         },
         "passport": {
             "enrollment_number": passport["enrollment_number"],
-            "view_url": f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
+            "view_url": f"https://student-passport-hub.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
         },
         "email_sent_to": request.email,
         "email_log": email_log
@@ -2737,7 +2907,7 @@ async def generate_digital_passport(enrollment_id: str):
 
 async def send_passport_email(user: dict, passport: dict, school: dict, course: dict):
     """Send email with digital passport link (MOCK - logs to console)"""
-    passport_url = f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
+    passport_url = f"https://student-passport-hub.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
     
     email_html = f"""
     ╔══════════════════════════════════════════════════════════════════════╗
@@ -3235,17 +3405,17 @@ async def simulate_complete_flow(enrollment_id: str, request: Request):
                 "step": 3, 
                 "action": "passport_generated", 
                 "status": "✅",
-                "passport_url": f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
+                "passport_url": f"https://student-passport-hub.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
             })
-            results["passport_url"] = f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
+            results["passport_url"] = f"https://student-passport-hub.preview.emergentagent.com/passport/view/{passport['qr_code_token']}"
     else:
         results["steps"].append({
             "step": 3, 
             "action": "passport_generated", 
             "status": "⏭️ já existe",
-            "passport_url": f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{existing_passport['qr_code_token']}"
+            "passport_url": f"https://student-passport-hub.preview.emergentagent.com/passport/view/{existing_passport['qr_code_token']}"
         })
-        results["passport_url"] = f"https://thirsty-knuth-2.preview.emergentagent.com/passport/view/{existing_passport['qr_code_token']}"
+        results["passport_url"] = f"https://student-passport-hub.preview.emergentagent.com/passport/view/{existing_passport['qr_code_token']}"
     
     # Step 4: School Letter notification
     await send_school_letter_notification(user, enrollment)

@@ -216,7 +216,7 @@ class TestSchoolSubscriptionEndpoints:
         response = requests.post(
             f"{BASE_URL}/api/school/subscription/subscribe",
             headers={"Authorization": f"Bearer {school_token}"},
-            json={"plan": "starter", "origin_url": "https://dublin-exchange.preview.emergentagent.com"}
+            json={"plan": "starter", "origin_url": "https://student-passport-hub.preview.emergentagent.com"}
         )
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
@@ -230,7 +230,7 @@ class TestSchoolSubscriptionEndpoints:
         response = requests.post(
             f"{BASE_URL}/api/school/subscription/subscribe",
             headers={"Authorization": f"Bearer {school_token}"},
-            json={"plan": "professional", "origin_url": "https://dublin-exchange.preview.emergentagent.com"}
+            json={"plan": "professional", "origin_url": "https://student-passport-hub.preview.emergentagent.com"}
         )
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
@@ -242,7 +242,7 @@ class TestSchoolSubscriptionEndpoints:
         response = requests.post(
             f"{BASE_URL}/api/school/subscription/subscribe",
             headers={"Authorization": f"Bearer {school_token}"},
-            json={"plan": "premium", "origin_url": "https://dublin-exchange.preview.emergentagent.com"}
+            json={"plan": "premium", "origin_url": "https://student-passport-hub.preview.emergentagent.com"}
         )
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()

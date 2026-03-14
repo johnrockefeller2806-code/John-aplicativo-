@@ -93,7 +93,7 @@ Plataforma completa de intercâmbio educacional para Dublin, Irlanda - conectand
 - **Teste**: tracker.test@gmail.com / Test123!
 
 ### URLs de Teste
-- Passaporte: `https://thirsty-knuth-2.preview.emergentagent.com/passport/view/335fd3a7-6029-41ea-8822-8dfc33c7ff0a`
+- Passaporte: `https://student-passport-hub.preview.emergentagent.com/passport/view/335fd3a7-6029-41ea-8822-8dfc33c7ff0a`
 
 ---
 
